@@ -1,0 +1,158 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Joue aux échecs contre Stockfish : plusieurs niveaux, thèmes, analyse."><meta name="theme-color" content="#1f3a5f"><title>Échecs — jouer contre l&#x27;IA</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"><link rel="stylesheet" href="styles.css"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icons/icon-192.png"><script src="data.js"></script></head><body><style>
+.chess-layout{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.chess-main{display:flex;gap:10px;align-items:flex-start}
+.chess-evalwrap{display:flex;flex-direction:column;align-items:center}
+.chess-evalbar{width:16px;height:var(--bs,min(92vw,480px));border-radius:8px;background:#3a3f47;overflow:hidden;position:relative}
+.chess-evalbar .fill{position:absolute;bottom:0;left:0;right:0;background:#f5f3ec;transition:height .35s}
+.chess-eval-txt{font-family:'JetBrains Mono',monospace;font-size:.72rem;text-align:center;color:var(--muted);margin-top:4px}
+.chess-board{width:var(--bs,min(92vw,480px));aspect-ratio:1;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);border:3px solid #6b4a2b;border-radius:8px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.sq{border:0;margin:0;padding:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:calc(var(--bs,480px)/11);line-height:1;cursor:pointer;position:relative;user-select:none}
+.thb-brown .sq.lt{background:#ead9b8}.thb-brown .sq.dk{background:#b58863}
+.thb-green .sq.lt{background:#eeeed2}.thb-green .sq.dk{background:#769656}
+.thb-blue .sq.lt{background:#dee3e6}.thb-blue .sq.dk{background:#8ca2ad}
+.thb-gray .sq.lt{background:#e9e9e9}.thb-gray .sq.dk{background:#9aa0a6}
+.thb-wood .sq.lt{background:#e8c99b}.thb-wood .sq.dk{background:#a06a43}
+.sq.sel{box-shadow:inset 0 0 0 4px #f4d03f}
+.sq.tgt::after{content:'';width:30%;height:30%;border-radius:50%;background:rgba(20,20,20,.28)}
+.sq.tgt:has(.pc)::after{width:86%;height:86%;background:transparent;border:5px solid rgba(20,20,20,.28);border-radius:50%}
+.sq.chk{box-shadow:inset 0 0 0 4px #e74c3c}
+.sq.lm{box-shadow:inset 0 0 0 100px rgba(244,208,63,.28)}
+.pc{pointer-events:none}
+.pcs-classic .pc.pw{color:#fafafa;text-shadow:0 1px 1px #000,0 0 2px #444}.pcs-classic .pc.pb{color:#141414;text-shadow:0 1px 1px rgba(255,255,255,.4)}
+.pcs-plein .pc.pw{color:#f7f7f7;text-shadow:0 0 1px #000}.pcs-plein .pc.pb{color:#141414}
+.pcs-contour .pc.pw{color:#fff;-webkit-text-stroke:1.4px #333}.pcs-contour .pc.pb{color:#1b1b1b;-webkit-text-stroke:1.4px #eee}
+.sq .co{position:absolute;font-size:9px;font-weight:700;opacity:.65;pointer-events:none}
+.sq .co.rl{top:2px;left:3px}.sq .co.cl{bottom:1px;right:3px}
+.sq.lt .co{color:#8a6d3b}.sq.dk .co{color:#f0e2c8}
+.promo-pick{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(20,18,40,.55);z-index:5}
+.promo-pick[hidden]{display:none!important}
+.promo-in{background:#fff;border-radius:12px;padding:12px 14px;text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.promo-t{font-weight:700;margin-bottom:8px;color:#4b3fa7}
+.promo-in button{font-size:34px;line-height:1;margin:0 4px;border:1px solid #ccc;background:#f6f5fb;border-radius:8px;cursor:pointer;padding:6px 8px;color:#191919}
+.promo-in button:hover{background:#eae7f7;border-color:#4b3fa7}
+.chess-side{min-width:250px;flex:1}
+.chess-ctrls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.chess-ctrls select,.chess-ctrls button{font-family:inherit;font-size:.83rem;padding:7px 11px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:inherit;cursor:pointer}
+.chess-ctrls label{font-size:.8rem;color:var(--muted)}
+.chess-ctrls button.ask{background:var(--royal,#4b3fa7);color:#fff;border:0}
+#chessStatus{font-weight:700;margin:4px 0 10px;font-size:1rem;color:var(--royal,#4b3fa7)}
+#chessMoves{font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.7;color:var(--muted);max-height:150px;overflow:auto;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px}
+#chessAnalysis{margin-top:12px}
+.an-head{margin-bottom:8px}
+.an-list{max-height:280px;overflow:auto;border:1px solid var(--border);border-radius:8px;background:var(--card)}
+.an-row{display:flex;align-items:center;gap:8px;padding:6px 10px;border-bottom:1px solid var(--border);flex-wrap:wrap;font-size:.83rem}
+.an-row:last-child{border-bottom:0}
+.an-mv{font-family:'JetBrains Mono',monospace;min-width:72px}
+.an-tag{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:10px;color:#fff}
+.t-g{background:#1f9d55}.t-g2{background:#579c3b}.t-w{background:#c79a3a}.t-o{background:#e07b2c}.t-r{background:#d64545}
+.an-best{font-size:.74rem;color:var(--muted)}
+.an-why{margin-left:auto;font-size:.72rem;padding:4px 10px;border:1px solid var(--border);background:transparent;color:var(--royal,#4b3fa7);border-radius:8px;cursor:pointer}
+.an-why:hover{background:rgba(120,110,200,.12)}
+</style><script>window.PB_PAGE={id:"echecs",label:"Échecs"};</script><nav class="sitenav"><div class="in"><a class="brand" href="index.html"><span class="m">&#9822;</span><span class="t2">Plan de Bataille</span></a><a class="lnk" href="index.html">Accueil</a><a class="lnk" href="revision.html">Révision</a><a class="lnk" href="qcm.html">QCM</a><a class="lnk" href="flashcards.html">Cartes</a><a class="lnk" href="outils.html">Outils</a><a class="lnk" href="progres.html">Progrès</a><a class="lnk" href="examens.html">Examens</a><a class="lnk active" href="echecs.html">&#9822; Échecs</a><a class="lnk" href="code.html">&#9001;/&#9002; Code</a><a class="lnk" href="youssef.html">Coran</a><a class="lnk lnk-prem" href="premium.html" title="Compte Premium">&#9733; Premium</a><a class="lnk nav-pages" href="#" title="Pages créées par le Tuteur IA">&#10022; Cr&eacute;ations <span class="nav-pages-badge"></span></a><span class="sp"></span><button class="theme-btn" id="themeBtn" aria-label="Thème"><span id="themeIcon">◐</span><span id="themeTxt">Thème</span></button><button class="acct-btn" id="acctBtn" aria-label="Compte"><span class="acct-av" id="acctAv">&#128100;</span><span id="acctLabel">Compte</span></button></div></nav><div class="auth-modal" id="authModal" hidden><div class="auth-in"><button class="auth-x" id="authClose" aria-label="Fermer">&times;</button><div class="auth-brand"><span class="m">&#9822;</span> Plan de Bataille</div><div id="authForms"><div class="auth-tabs"><button class="auth-tab on" data-tab="login">Se connecter</button><button class="auth-tab" data-tab="signup">S’inscrire</button></div><button class="auth-google" id="authGoogle"><span class="g-ic">G</span> Continuer avec Google</button><div class="auth-or"><span>ou</span></div><label class="auth-l" id="nameWrap" hidden>Nom (facultatif)<input type="text" id="authName" autocomplete="name"></label><label class="auth-l">Adresse e-mail<input type="email" id="authEmail" autocomplete="email" placeholder="ton@email.com"></label><label class="auth-l">Mot de passe<input type="password" id="authPass" autocomplete="current-password" placeholder="au moins 6 caractères"></label><button class="btn ask auth-submit" id="authSubmit">Se connecter</button><button class="auth-reset" id="authReset" hidden>Mot de passe oublié ?</button><div class="auth-msg" id="authMsg"></div></div><div id="authProfile" hidden><div class="auth-hi">Connecté</div><div class="auth-who"><span class="auth-avatar" id="profAv">S</span><div><div class="auth-name" id="profName"></div><div class="auth-email" id="profEmail"></div></div></div><a class="auth-prem" href="premium.html">&#9733; Passer à Premium — IA puissante & illimitée</a><a class="auth-admin" id="authAdmin" href="admin.html" hidden>&#127915; Générer des codes Premium</a><p class="auth-note">Tes conversations avec le tuteur IA sont enregistrées sur ton compte et te suivent sur tous tes appareils.</p><button class="btn auth-logout" id="authLogout">Se déconnecter</button></div><div class="auth-setup" id="authSetup" hidden>Les comptes ne sont pas encore activés. Ouvre le fichier <b>COMPTE-configuration.txt</b> (dans le dossier du site) pour connecter une base Firebase gratuite en 5 minutes.</div></div></div><header class="phero"><div class="in"><div class="eyebrow" style="color:var(--accent);font-family:JetBrains Mono,monospace;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase">Échecs</div><h1>Joue contre l'ordinateur</h1><p>Un vrai moteur (Stockfish) avec plusieurs niveaux, thèmes et une analyse de partie. Clique une pièce puis sa case d'arrivée.</p></div></header><main class="wrap"><div class="chess-layout"><div><div style="position:relative"><div class="chess-main"><div class="chess-evalwrap"><div class="chess-evalbar"><div class="fill" id="chessEvalFill" style="height:50%"></div></div><div class="chess-eval-txt" id="chessEvalTxt">0.0</div></div><div class="chess-board thb-brown pcs-classic" id="chessBoard"></div></div><div class="promo-pick" id="promoPick" hidden><div class="promo-in"><div class="promo-t">Promotion :</div><button data-p="q" title="Dame">&#9819;</button><button data-p="r" title="Tour">&#9820;</button><button data-p="b" title="Fou">&#9821;</button><button data-p="n" title="Cavalier">&#9822;</button></div></div></div><p class="src-note" style="margin-top:8px;max-width:520px">Moteur : <b>Stockfish</b> (WebAssembly, GPLv3) &mdash; repli automatique sur le moteur intégré. La barre à gauche montre l'avantage.</p></div><div class="chess-side"><div id="chessStatus">Chargement…</div><div class="chess-ctrls"><button class="btn ask" id="chessNew">Nouvelle partie</button><button class="btn" id="chessUndo">Annuler</button><button class="btn" id="chessFlip">Retourner</button><button class="btn" id="chessAnalyze">&#9822; Analyser la partie</button></div><div class="chess-ctrls"><label>Niveau <select id="chessDiff"><option value="1">Facile</option><option value="2">Moyen</option><option value="3">Fort</option><option value="4" selected>Maître (Stockfish)</option></select></label><label>Tu joues <select id="chessColor"><option value="w" selected>Blancs</option><option value="b">Noirs</option></select></label></div><div class="chess-ctrls"><label>Échiquier <select id="chessTheme"><option value="brown">Bois clair</option><option value="green">Vert (chess.com)</option><option value="blue">Bleu</option><option value="gray">Gris</option><option value="wood">Bois foncé</option></select></label><label>Pièces <select id="chessPieces"><option value="classic">Classiques</option><option value="plein">Pleines</option><option value="contour">Contour</option></select></label><label>Taille <select id="chessSize"><option value="s">Petit</option><option value="m" selected>Moyen</option><option value="l">Grand</option></select></label></div><h4 class="an-h" style="margin:12px 0 6px">Coups joués</h4><div id="chessMoves">La partie commence.</div><div id="chessAnalysis"></div><p class="src-note" style="margin-top:10px">Analyse : chaque coup est noté (Meilleur &rarr; Gaffe). Clique « Pourquoi ? » pour que le Tuteur IA t'explique le coup.</p></div></div></main><script src="chess-lib.js"></script><script>
+(function(){
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  var st=document.getElementById('chessStatus');
+  if(typeof Chess==='undefined'){ if(st) st.textContent='Moteur indisponible (recharge la page).'; return; }
+  /* ---- Moteur intégré (repli + analyse) ---- */
+  var PVAL={p:100,n:320,b:330,r:500,q:900,k:0};
+  function evalWhite(g){ var b=g.board(), s=0; for(var r=0;r<8;r++)for(var c=0;c<8;c++){ var p=b[r][c]; if(!p) continue; var v=PVAL[p.type]; var cd=Math.max(Math.abs(3.5-r),Math.abs(3.5-c)); v+=(3.5-cd)*3; if(p.type==='p') v+=(p.color==='w'?(6-r):(r-1))*5; if(p.type==='n'||p.type==='b') v+=(3.5-cd)*2; s+= p.color==='w'? v : -v; } return s; }
+  function relStatic(g){ var w=evalWhite(g); return g.turn()==='w'? w : -w; }
+  function orderMoves(ms){ function mv(m){ var s=0; if(m.captured) s+=(PVAL[m.captured]||0); if(m.promotion) s+=800; return s; } return ms.sort(function(a,b){ return mv(b)-mv(a); }); }
+  function negamax(g,depth,alpha,beta){ if(g.in_checkmate()) return -100000-depth; if(g.game_over()) return 0; if(depth<=0) return relStatic(g); var moves=orderMoves(g.moves({verbose:true})); var best=-Infinity; for(var i=0;i<moves.length;i++){ g.move(moves[i]); var sc=-negamax(g,depth-1,-beta,-alpha); g.undo(); if(sc>best) best=sc; if(best>alpha) alpha=best; if(alpha>=beta) break; } return best; }
+  function bestMove(g,depth,rnd){ var moves=orderMoves(g.moves({verbose:true})); if(!moves.length) return null; var best=null,bv=-Infinity,alpha=-Infinity,beta=Infinity,ties=[]; for(var i=0;i<moves.length;i++){ g.move(moves[i]); var sc=-negamax(g,depth-1,-beta,-alpha); g.undo(); if(sc>bv){ bv=sc; best=moves[i]; ties=[moves[i]]; } else if(sc===bv){ ties.push(moves[i]); } if(bv>alpha) alpha=bv; } if(rnd&&ties.length>1) return ties[Math.floor(Math.random()*ties.length)]; return best; }
+
+  /* ---- Stockfish (jeu) avec repli ---- */
+  var sf=null, sfReady=false, sfQueue=[], sfCur=null, sfScore=null;
+  function onSF(line){ if(typeof line!=='string') return;
+    if(line.indexOf('uciok')>=0){ sfReady=true; try{ sf.postMessage('isready'); }catch(e){} return; }
+    var sm=line.match(/score (cp|mate) (-?\d+)/); if(sm){ sfScore={type:sm[1],val:parseInt(sm[2],10)}; }
+    var bm=line.match(/^bestmove\s+(\S+)/); if(bm){ if(sfCur){ var cur=sfCur; sfCur=null; if(cur._to) clearTimeout(cur._to); cur.res({best:bm[1],score:sfScore}); } sfScore=null; pump(); } }
+  function pump(){ if(sfCur||!sfQueue.length||!sfReady||!sf) return; sfCur=sfQueue.shift();
+    try{ if(sfCur.skill!=null) sf.postMessage('setoption name Skill Level value '+sfCur.skill); sf.postMessage('position fen '+sfCur.fen); sf.postMessage('go '+sfCur.go); }catch(e){ var c=sfCur; sfCur=null; c.res(null); return; }
+    sfCur._to=setTimeout(function(){ if(sfCur){ var c=sfCur; sfCur=null; c.res(null); pump(); } }, sfCur.tmo||6000); }
+  function initSF(){ try{ sf=new Worker('sf.js'); sf.onmessage=function(e){ onSF((typeof e.data==='string')?e.data:(e.data&&e.data.data)||''); }; sf.onerror=function(){ sfReady=false; sf=null; }; sf.postMessage('uci'); }catch(e){ sf=null; sfReady=false; } }
+  function sfGo(fen,go,skill,tmo){ return new Promise(function(res){ if(!sfReady||!sf){ res(null); return; } sfQueue.push({fen:fen,go:go,skill:skill,tmo:tmo,res:res}); pump(); }); }
+  function sfMove(fen,opt){ return sfGo(fen,'movetime '+opt.mt,opt.skill,opt.mt+4000).then(function(r){ return r? r.best: null; }); }
+  function sfEval(fen){ return sfGo(fen,'depth 12',null,5000).then(function(r){ if(!r||!r.score) return null; var turn=(fen.split(' ')[1]||'w'); var cp=(r.score.type==='mate')?(r.score.val>0?100000:-100000):r.score.val; return turn==='w'? cp : -cp; }); }
+  initSF();
+
+  var LEVELS={'1':{skill:2,mt:200,depth:1},'2':{skill:8,mt:500,depth:2},'3':{skill:14,mt:900,depth:2},'4':{skill:20,mt:1400,depth:3}};
+  var GLY={ classic:{w:{p:'♙',n:'♘',b:'♗',r:'♖',q:'♕',k:'♔'},b:{p:'♟',n:'♞',b:'♝',r:'♜',q:'♛',k:'♚'}},
+            plein:{w:{p:'♟',n:'♞',b:'♝',r:'♜',q:'♛',k:'♚'},b:{p:'♟',n:'♞',b:'♝',r:'♜',q:'♛',k:'♚'}} };
+  function pref(){ try{ return JSON.parse(localStorage.getItem('pb_chess_pref'))||{}; }catch(e){ return {}; } }
+  function savePref(o){ try{ localStorage.setItem('pb_chess_pref',JSON.stringify(o)); }catch(e){} }
+  var P=pref(); var theme=P.theme||'brown', pcs=P.pcs||'classic', size=P.size||'m';
+  var g=new Chess(), human='w', lvl='4', sel=null, flip=false, thinking=false, over=false, lastMove=null, pendPromo=null;
+  var boardEl=document.getElementById('chessBoard'), movesEl=document.getElementById('chessMoves'), barEl=document.getElementById('chessEvalFill'), barTxt=document.getElementById('chessEvalTxt');
+  function ranks(){ return flip?['1','2','3','4','5','6','7','8']:['8','7','6','5','4','3','2','1']; }
+  function files(){ return flip?['h','g','f','e','d','c','b','a']:['a','b','c','d','e','f','g','h']; }
+  function kingSq(color){ var b=g.board(); for(var r=0;r<8;r++)for(var c=0;c<8;c++){ var p=b[r][c]; if(p&&p.type==='k'&&p.color===color) return 'abcdefgh'[c]+(8-r); } return null; }
+  var SIZES={s:'360px',m:'480px',l:'600px'};
+  function applyStyle(){ if(!boardEl) return; boardEl.className='chess-board thb-'+theme+' pcs-'+pcs; boardEl.style.setProperty('--bs','min(92vw,'+(SIZES[size]||SIZES.m)+')'); }
+  function glyphs(){ return pcs==='plein'?GLY.plein:GLY.classic; }
+  function render(){ if(!boardEl) return; applyStyle(); boardEl.innerHTML=''; var b=g.board(); var tg= sel? g.moves({square:sel,verbose:true}).map(function(m){return m.to;}):[]; var chk=g.in_check()?kingSq(g.turn()):null; var rk=ranks(), fl=files(); var G=glyphs();
+    rk.forEach(function(rank,ri){ fl.forEach(function(file,ci){ var sq=file+rank; var r=8-parseInt(rank,10), c='abcdefgh'.indexOf(file); var p=b[r][c];
+      var cell=document.createElement('button'); cell.className='sq '+(((r+c)%2===0)?'lt':'dk'); cell.setAttribute('data-sq',sq);
+      if(lastMove&&(lastMove.from===sq||lastMove.to===sq)) cell.classList.add('lm');
+      if(p){ var s=document.createElement('span'); s.className='pc '+(p.color==='w'?'pw':'pb'); s.textContent=G[p.color][p.type]; cell.appendChild(s); }
+      if(sel===sq) cell.classList.add('sel'); if(tg.indexOf(sq)>=0) cell.classList.add('tgt'); if(chk===sq) cell.classList.add('chk');
+      if(ci===0){ var rl=document.createElement('span'); rl.className='co rl'; rl.textContent=rank; cell.appendChild(rl); }
+      if(ri===7){ var cl=document.createElement('span'); cl.className='co cl'; cl.textContent=file; cell.appendChild(cl); }
+      cell.addEventListener('click',function(){ onClick(sq); }); boardEl.appendChild(cell); }); });
+    status(); updateBar(); }
+  function setBar(cp){ if(!barEl) return; var pct=100/(1+Math.exp(-cp/350)); barEl.style.height=pct.toFixed(1)+'%'; if(barTxt){ if(Math.abs(cp)>=99000){ barTxt.textContent=(cp>0?'+M':'-M'); } else { var v=cp/100; barTxt.textContent=(v>=0?'+':'')+v.toFixed(1); } } }
+  var barSeq=0;
+  function updateBar(){ if(!barEl) return; var seq=++barSeq; if(sfReady){ var fen=g.fen(); sfEval(fen).then(function(cp){ if(seq!==barSeq) return; setBar(cp==null?evalWhite(g):cp); }); setBar(evalWhite(g)); } else { setBar(evalWhite(g)); } }
+  function status(){ var s='';
+    if(g.in_checkmate()){ over=true; s=(g.turn()===human?'Échec et mat — tu as perdu 😅 (rejoue !)':'Échec et mat — tu as gagné ! 🎉'); }
+    else if(g.in_stalemate()){ over=true; s='Pat — partie nulle.'; }
+    else if(g.insufficient_material()){ over=true; s='Nulle (matériel insuffisant).'; }
+    else if(g.in_draw()){ over=true; s='Partie nulle.'; }
+    else { over=false; s=(g.turn()===human?('À toi de jouer'+(g.in_check()?' — échec !':'')):('L\'ordinateur réfléchit'+(sfReady?' (Stockfish)':'')+'…')); }
+    if(st) st.textContent=s; renderMoves(); }
+  function renderMoves(){ if(!movesEl) return; var h=g.history(); var o=''; for(var i=0;i<h.length;i+=2){ o+=(i/2+1)+'. '+h[i]+' '+(h[i+1]||'')+'   '; } movesEl.textContent=o||'La partie commence.'; }
+  function doMove(mo){ g.move(mo); lastMove={from:mo.from,to:mo.to}; sel=null; render(); setTimeout(aiMove,150); }
+  function onClick(sq){ if(thinking||over||pendPromo) return; if(g.turn()!==human) return; var b=g.board(); var r=8-parseInt(sq[1],10), c='abcdefgh'.indexOf(sq[0]); var p=b[r][c];
+    if(sel){ if(sq===sel){ sel=null; render(); return; } var legal=g.moves({square:sel,verbose:true}).filter(function(m){return m.to===sq;}); if(legal.length){ if(legal[0].promotion){ askPromo(sel,sq); return; } doMove({from:sel,to:sq}); return; } if(p&&p.color===human){ sel=sq; render(); return; } sel=null; render(); return; }
+    if(p&&p.color===human){ sel=sq; render(); } }
+  function askPromo(from,to){ pendPromo={from:from,to:to}; var ov=document.getElementById('promoPick'); if(!ov){ doMove({from:from,to:to,promotion:'q'}); pendPromo=null; return; } ov.hidden=false; }
+  function aiMove(){ if(over||g.turn()===human) return; thinking=true; status(); var opt=LEVELS[lvl]||LEVELS['4']; var fen=g.fen();
+    Promise.resolve().then(function(){ return sfReady? sfMove(fen,opt): null; }).then(function(uci){ var applied=false;
+      if(uci && uci.length>=4 && uci!=='(none)'){ var from=uci.slice(0,2),to=uci.slice(2,4),promo=uci.slice(4,5); var legal=g.moves({verbose:true}).some(function(m){return m.from===from&&m.to===to;}); if(legal){ var mo={from:from,to:to}; if(promo) mo.promotion=promo; try{ g.move(mo); lastMove={from:from,to:to}; applied=true; }catch(e){} } }
+      if(!applied){ var m=bestMove(g,opt.depth,opt.depth<2); if(m){ g.move(m); lastMove={from:m.from,to:m.to}; applied=true; } }
+      thinking=false; sel=null; render(); }); }
+  function newGame(){ g=new Chess(); sel=null; over=false; thinking=false; lastMove=null; pendPromo=null; var ov=document.getElementById('promoPick'); if(ov) ov.hidden=true; var an=document.getElementById('chessAnalysis'); if(an) an.innerHTML=''; if(sfReady){ try{ sf.postMessage('ucinewgame'); }catch(e){} } render(); if(g.turn()!==human) setTimeout(aiMove,300); }
+  /* ---- Analyse de la partie ---- */
+  function perspEval(sim,color){ var w=evalWhite(sim); return color==='w'? w : -w; }
+  function classify(loss){ if(loss<15) return {t:'Meilleur',c:'g'}; if(loss<45) return {t:'Excellent',c:'g'}; if(loss<95) return {t:'Bon',c:'g2'}; if(loss<180) return {t:'Imprécision',c:'w'}; if(loss<360) return {t:'Erreur',c:'o'}; return {t:'Gaffe',c:'r'}; }
+  function analyze(){ var an=document.getElementById('chessAnalysis'); if(!an) return; var hist=g.history({verbose:true}); if(!hist.length){ an.innerHTML='<div class="src-note">Joue quelques coups, puis relance l\'analyse.</div>'; return; }
+    an.innerHTML='<div class="src-note">Analyse en cours…</div>'; var sim=new Chess(), rows=[], i=0;
+    function step(){ var end=Math.min(i+2,hist.length);
+      for(; i<end; i++){ var mover=sim.turn(); var bm=bestMove(sim,2,false); var bestEval=null, bestSan=null; if(bm){ sim.move(bm); bestEval=perspEval(sim,mover); bestSan=bm.san; sim.undo(); }
+        var pl=hist[i]; sim.move({from:pl.from,to:pl.to,promotion:pl.promotion}); var playedEval=perspEval(sim,mover);
+        var loss=(bestEval!=null)?Math.max(0,bestEval-playedEval):0; var cl=classify(loss);
+        rows.push({idx:i,san:pl.san,color:mover,cl:cl,best:bestSan,loss:Math.round(loss),fen:sim.fen(),before:(i>0?rows:null)}); }
+      if(i<hist.length){ an.innerHTML='<div class="src-note">Analyse… '+Math.round(i/hist.length*100)+'%</div>'; setTimeout(step,0); return; }
+      draw(rows); }
+    setTimeout(step,0);
+    function draw(rows){ var h='<div class="an-head"><b>Analyse de la partie</b> <span class="src-note">('+rows.length+' coups)</span></div><div class="an-list">';
+      rows.forEach(function(rr){ var num=Math.floor(rr.idx/2)+1; var side=(rr.color==='w')?(num+'.'):(num+'…'); var extra=(rr.loss>=95 && rr.best)?(' <span class="an-best">meilleur : '+esc(rr.best)+'</span>'):'';
+        h+='<div class="an-row"><span class="an-mv">'+side+' '+esc(rr.san)+'</span><span class="an-tag t-'+rr.cl.c+'">'+rr.cl.t+'</span>'+extra+'<button class="an-why" data-fen="'+esc(rr.fen)+'" data-san="'+esc(rr.san)+'" data-best="'+esc(rr.best||'')+'">Pourquoi ?</button></div>'; });
+      h+='</div>'; an.innerHTML=h;
+      Array.prototype.forEach.call(an.querySelectorAll('.an-why'),function(btn){ btn.addEventListener('click',function(){ var fen=btn.getAttribute('data-fen'), san=btn.getAttribute('data-san'), best=btn.getAttribute('data-best');
+        var q='Analyse ce coup d\'échecs comme un entraîneur. Position (FEN) : '+fen+'. Coup joué : '+san+(best?('. Le moteur préférait : '+best):'')+'. Explique en 3-4 phrases : l\'idée du coup, l\'erreur éventuelle, et le meilleur plan.';
+        if(window.PB_ASK){ window.PB_ASK(q); } else { try{ toast('Ouvre le Tuteur IA pour l\'explication.'); }catch(e){} } }); });
+    } }
+  var bN=document.getElementById('chessNew'); if(bN) bN.addEventListener('click',newGame);
+  var bU=document.getElementById('chessUndo'); if(bU) bU.addEventListener('click',function(){ if(thinking)return; g.undo(); if(g.turn()!==human){ g.undo(); } over=false; sel=null; lastMove=null; render(); });
+  var bF=document.getElementById('chessFlip'); if(bF) bF.addEventListener('click',function(){ flip=!flip; render(); });
+  var bA=document.getElementById('chessAnalyze'); if(bA) bA.addEventListener('click',analyze);
+  var dL=document.getElementById('chessDiff'); if(dL) dL.addEventListener('change',function(){ lvl=dL.value||'4'; });
+  var cC=document.getElementById('chessColor'); if(cC) cC.addEventListener('change',function(){ human=cC.value; flip=(human==='b'); newGame(); });
+  var tS=document.getElementById('chessTheme'); if(tS){ tS.value=theme; tS.addEventListener('change',function(){ theme=tS.value; var o=pref(); o.theme=theme; savePref(o); render(); }); }
+  var pS=document.getElementById('chessPieces'); if(pS){ pS.value=pcs; pS.addEventListener('change',function(){ pcs=pS.value; var o=pref(); o.pcs=pcs; savePref(o); render(); }); }
+  var zS=document.getElementById('chessSize'); if(zS){ zS.value=size; zS.addEventListener('change',function(){ size=zS.value; var o=pref(); o.size=size; savePref(o); render(); }); }
+  var pp=document.getElementById('promoPick'); if(pp){ Array.prototype.forEach.call(pp.querySelectorAll('button[data-p]'),function(btn){ btn.addEventListener('click',function(){ var pr=btn.getAttribute('data-p'); pp.hidden=true; if(pendPromo){ var m=pendPromo; pendPromo=null; doMove({from:m.from,to:m.to,promotion:pr}); } }); }); }
+  render(); if(g.turn()!==human) setTimeout(aiMove,400);
+})();
+</script><div class="toast" id="toast" role="status" aria-live="polite"></div><button class="fab" id="fab">&#129302; Tuteur IA</button><div class="chatpanel" id="chatpanel"><div class="cp-head"><h3>Tuteur IA</h3><div class="cp-hbtns"><button class="cp-ic" id="chatExpand" title="Plein écran">&#10530;</button><button class="cp-ic" id="chatNew" title="Nouvelle conversation">&#8635;</button><button class="cp-ic" id="chatClose" title="Fermer">&times;</button></div></div><div class="sub">Pose ta question — je sais sur quelle page tu es.</div><div class="preset"><button data-ask="Explique-moi ce chapitre clairement, étape par étape, avec un exemple et 2 exercices corrigés : ">Explique un chapitre</button><button data-ask="Donne-moi une série de 5 exercices progressifs avec correction détaillée sur : ">Exercices + correction</button><button data-ask="Fais-moi passer un QCM interactif de 6 questions (je clique mes réponses, tu corriges) sur : ">Teste-moi (QCM interactif)</button><button data-ask="Corrige TOUTES les erreurs de mon travail (langue, méthode, raisonnement), explique chacune et donne une version corrigée. Voici mon travail : ">Corrige mon travail</button><button data-ask="Construis-moi un planning de révision de la semaine, personnalisé et imprimable (avec un tableau par jour). Priorités : Maths et Physique-Chimie. Voici mes contraintes : ">🗓️ Fais-moi un planning</button><button data-ask="Lance un QCM de maths">🧭 Lance un QCM</button></div><div class="cp-msgs" id="chatMsgs"></div><div class="cp-imgprev" id="cpImgPrev"></div><div class="cp-in"><button class="io-btn attach-btn" id="chatAttach" title="Joindre une photo">&#128206;</button><button class="io-btn mic-btn" id="chatMic" title="Dicter à la voix">&#127908;</button><button class="io-btn gen-btn" id="chatGen" title="Générer une image">&#127912;</button><textarea id="chatInput" rows="2" placeholder="Écris, dicte 🎤, photo 📎, image 🎨…"></textarea><button class="btn ask send" id="chatSend" aria-label="Envoyer">&#10148;</button></div><div class="cp-note">Réponses par une IA — vérifie les points importants.</div><input type="file" id="chatFile" accept="image/*" hidden></div><div class="chatfull" id="chatFull" hidden><aside class="cf-side"><div class="cf-brand"><span class="m">&#9822;</span> Tuteur IA</div><button class="cf-new" id="cfNew">&#43; Nouvelle conversation</button><div class="cf-list" id="cfList"></div><div class="cf-side-foot" id="cfUser">Plan de Bataille</div></aside><main class="cf-main"><header class="cf-top"><button class="cp-ic cf-menu" id="cfMenu" title="Conversations">&#9776;</button><div class="cf-title" id="cfTitle">Tuteur IA</div><div class="cp-hbtns"><button class="cp-ic" id="cfReduce" title="Réduire">&#10529;</button><button class="cp-ic" id="cfClose" title="Fermer">&times;</button></div></header><div class="cf-msgs" id="cfMsgs"></div><div class="cf-inwrap"><div class="cf-imgprev" id="cfImgPrev"></div><div class="cf-in"><button class="io-btn attach-btn" id="cfAttach" title="Joindre une photo">&#128206;</button><button class="io-btn mic-btn" id="cfMic" title="Dicter à la voix">&#127908;</button><button class="io-btn gen-btn" id="cfGen" title="Générer une image">&#127912;</button><textarea id="cfInput" rows="1" placeholder="Écris, dicte 🎤, photo 📎, image 🎨…"></textarea><button class="cf-send" id="cfSend" aria-label="Envoyer">&#10148;</button></div><div class="cf-note">Tuteur IA de Plan de Bataille — il connaît la page où tu es, lit tes photos et écoute ta voix. Réponses à vérifier.</div></div></main></div><button class="selask" id="selAsk" hidden>&#129302; Demander à l’IA</button><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script><script src="firebase-config.js"></script><script src="premium.js"></script><script src="app.js"></script><script src="auth.js"></script></body></html>

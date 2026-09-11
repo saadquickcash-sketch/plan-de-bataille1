@@ -1,0 +1,134 @@
+========================================================================
+  PLAN DE BATAILLE — GUIDE PREMIUM (abonnement)
+  Comment activer l'IA puissante et vendre des codes d'activation
+========================================================================
+
+Ce que fait le système Premium (déjà en place dans le site) :
+  • Gratuit  : tuteur IA (modèle gratuit), 10 messages IA / jour, tout le site.
+  • Premium  : IA BEAUCOUP plus puissante + messages ILLIMITÉS + priorité.
+  • Débloquage : l'élève entre un CODE sur la page « ★ Premium » → activé
+    sur son compte, synchronisé sur tous ses appareils.
+
+Tu n'as RIEN à coder. Il y a seulement 2 réglages à faire une fois.
+
+------------------------------------------------------------------------
+ÉTAPE 1 — ALLUMER L'IA PUISSANTE (clé secrète, jamais dans le site)
+------------------------------------------------------------------------
+Le site contient déjà une fonction serveur : functions/api/chat.js.
+Elle appelle un modèle IA puissant en gardant TA CLÉ SECRÈTE côté serveur.
+(La clé n'apparaît jamais dans le code public — c'est la bonne pratique.)
+
+1. Procure-toi une clé d'API auprès d'un fournisseur d'IA « compatible
+   OpenAI » (OpenAI, OpenRouter, Groq, Together…). C'est TOI qui paies
+   l'IA à l'usage : c'est le coût de ton offre Premium.
+
+2. Dans Cloudflare Pages → ton projet → Settings → Environment variables,
+   ajoute (pour Production ET Preview) selon ton fournisseur :
+
+   ▶ GOOGLE GEMINI (recommandé, gratuit — marche avec les clés « AQ.… ») :
+        AI_PROVIDER = gemini
+        AI_MODEL    = gemini-2.5-flash        (un modèle « Flash » = gratuit)
+        AI_API_KEY  = ta_clé (AQ.… ou AIza…)
+        (PAS besoin de AI_BASE pour Gemini.)
+        Clé gratuite : https://aistudio.google.com  →  « Get API key ».
+
+   ▶ Compatible OpenAI (OpenAI, Groq, OpenRouter…) :
+        AI_API_KEY  = ta_clé_secrète            (obligatoire)
+        AI_MODEL    = ex. gpt-4o / llama-3.3-70b-versatile   (facultatif)
+        AI_BASE     = URL du endpoint /chat/completions       (facultatif)
+        (Groq : AI_BASE = https://api.groq.com/openai/v1/chat/completions)
+
+3. Redéploie (ou pousse un nouveau ZIP). Vérifie que tout marche en
+   ouvrant dans ton navigateur :  https://TON-SITE/api/chat
+   → tu dois voir {"ok":true,"configured":true}.
+
+Tant que AI_API_KEY n'est pas définie, les abonnés Premium retombent
+automatiquement et sans erreur sur le modèle gratuit (rien ne casse).
+
+IMPORTANT (déploiement) : les fonctions Cloudflare ne marchent qu'avec le
+dossier « functions/ » présent dans ce qui est déployé. Garde-le dans le
+ZIP. Le drag-and-drop « Cloudflare Drop » simple ne gère pas toujours les
+fonctions — utilise le projet Cloudflare Pages (Direct Upload) du même
+compte, qui, lui, les active.
+
+------------------------------------------------------------------------
+ÉTAPE 2 — CRÉER DES CODES (avec ta page privée, sans rien coder)
+------------------------------------------------------------------------
+IMPORTANT — d'où viennent les codes ? C'EST TOI qui les fabriques. Un code
+est juste un mot (ex. PB-A7K9-M2X4) qui vaut X jours de Premium, comme une
+carte de recharge téléphone. Tu les crées, tu les vends, l'élève les tape.
+
+LE PLUS SIMPLE (recommandé) :
+  1. Connecte-toi sur le SITE avec TON compte (saad.quickcash@gmail.com).
+  2. Clique « Compte » → un bouton « 🎫 Générer des codes Premium »
+     apparaît (visible seulement pour toi).
+  3. Choisis le nombre de codes (ex. 20) + la durée (30 / 365 jours…),
+     clique « Générer ». Les codes s'affichent → « Tout copier ».
+  4. Vends-les (WhatsApp, en classe…) et envoie le code à chaque élève.
+
+(Accès direct aussi : https://TON-SITE/admin.html)
+
+La page te montre aussi TOUS tes codes et lesquels sont encore
+« Disponible » ou déjà « Utilisé ». Un code ne fonctionne qu'UNE fois.
+
+⚙ L'admin est reconnu par son E-MAIL : par défaut saad.quickcash@gmail.com.
+   Pour utiliser un autre e-mail, dis-le-moi (ou remplace-le dans les
+   règles ci-dessous ET dans le fichier auth.js).
+
+------------------------------------------------------------------------
+ÉTAPE 3 — RÈGLES DE SÉCURITÉ FIRESTORE (à coller)
+------------------------------------------------------------------------
+Dans Firebase → Firestore → Règles. Vérifie que l'e-mail admin
+(saad.quickcash@gmail.com, 2 endroits) est bien le tien, puis « Publier » :
+
+  rules_version = '2';
+  service cloud.firestore {
+    match /databases/{db}/documents {
+
+      // Chaque utilisateur gère SON document (conversations, plan, etc.)
+      match /users/{uid} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+
+      // Codes premium
+      match /premium_codes/{code} {
+        allow get: if request.auth != null;                       // lire un code pour l'utiliser
+        allow list, create, delete:                               // gérer les codes = toi (l'admin)
+          if request.auth != null && request.auth.token.email == 'saad.quickcash@gmail.com';
+        allow update:                                             // toi, OU un élève qui active son code
+          if (request.auth != null && request.auth.token.email == 'saad.quickcash@gmail.com')
+          || (request.auth != null
+              && resource.data.active == true
+              && request.resource.data.active == false
+              && request.resource.data.usedBy == request.auth.uid);
+      }
+    }
+  }
+
+------------------------------------------------------------------------
+PRIX, PAIEMENT ET CONTACT (déjà configurés)
+------------------------------------------------------------------------
+La page premium.html affiche déjà :
+  • Prix : Premium 39 DH/mois, Premium+ 69 DH/mois, annuel 399 DH.
+  • Paiement PayPal : fsltrq@hotmail.com
+  • Paiement Cash Plus : au nom du receveur « Faissal Bennis »
+  • WhatsApp (demandes + preuves de paiement) : +212 645 88 87 60
+  • Les MONTANTS exacts par formule sont affichés en évidence, avec un
+    rappel de bien vérifier le montant avant de payer.
+Le parcours élève : il choisit sa formule → il paie le montant exact
+(PayPal ou Cash Plus) → il envoie sa preuve sur WhatsApp → tu lui génères
+un code (page « Générer des codes ») → il le colle sur la page Premium.
+Pour changer un prix, un moyen de paiement ou le numéro, dis-le-moi et je
+le mets à jour proprement.
+
+------------------------------------------------------------------------
+NOTE DE SÉCURITÉ (honnête)
+------------------------------------------------------------------------
+Le blocage côté navigateur (limite de 10/jour, badge Premium) est du
+« confort » : un utilisateur très technique pourrait le contourner
+localement. Ce qui compte vraiment — l'IA PUISSANTE qui te coûte de
+l'argent — est protégée côté serveur par ta clé secrète. Pour un
+verrouillage total, on peut ajouter une vérification d'abonnement dans
+functions/api/chat.js (le fichier contient déjà l'emplacement « TODO
+habilitation »). Dis-moi quand tu voudras franchir cette étape.
+========================================================================

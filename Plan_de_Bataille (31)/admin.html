@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Générateur de codes — Plan de Bataille</title>
+<style>
+:root{--bg:#f4f3f8;--card:#fff;--border:#e5e2ef;--text:#1a1830;--muted:#6b6880;--accent:#6c5ce7;--ok:#1f9d55;--bad:#d64545}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);padding:24px 16px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto}
+h1{font-size:1.5rem;margin:0 0 4px}
+.sub{color:var(--muted);font-size:.92rem;margin:0 0 20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:18px}
+.card h2{font-size:1.05rem;margin:0 0 12px}
+label{display:block;font-size:.82rem;color:var(--muted);margin:10px 0 4px;font-weight:600}
+input,select{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:10px;font-size:1rem;font-family:inherit;background:#fff;color:inherit}
+.row{display:flex;gap:12px;flex-wrap:wrap}.row>div{flex:1;min-width:130px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:11px;padding:12px 18px;font-weight:800;font-size:.98rem;cursor:pointer;font-family:inherit;background:linear-gradient(135deg,#6c5ce7,#4b3fa7);color:#fff;box-shadow:0 8px 20px rgba(108,92,231,.3)}
+.btn:hover{filter:brightness(1.06)}.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--muted);box-shadow:none}
+.btn.green{background:linear-gradient(135deg,#25d366,#1aa851);box-shadow:0 8px 20px rgba(37,211,102,.3)}
+.msg{font-size:.9rem;margin-top:10px;min-height:1.2em}.msg.ok{color:var(--ok)}.msg.bad{color:var(--bad)}
+.uid{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.82rem;background:#f2f1f7;border:1px solid var(--border);border-radius:8px;padding:8px 10px;word-break:break-all;margin-top:6px}
+.codes{margin-top:14px}
+.codebox{font-family:ui-monospace,Menlo,Consolas,monospace;background:#f7f6fc;border:1px solid var(--border);border-radius:10px;padding:12px;white-space:pre-wrap;word-break:break-all;font-size:.95rem;max-height:280px;overflow:auto}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.86rem}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--border)}
+th{color:var(--muted);font-weight:700;font-size:.76rem;text-transform:uppercase;letter-spacing:.04em}
+.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.72rem;font-weight:700}
+.pill.on{background:rgba(31,157,85,.15);color:#157a42}.pill.used{background:rgba(214,69,69,.14);color:#b23b3b}
+.hide{display:none}
+.warn{background:#fff8e6;border:1px solid #f0d68a;border-radius:10px;padding:12px 14px;font-size:.86rem;color:#7a5b00;margin-top:10px}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎫 Générateur de codes Premium</h1>
+  <p class="sub">Page privée du propriétaire. Génère des codes d'activation à vendre, sans toucher à la console Firebase.</p>
+
+  <!-- Connexion -->
+  <div class="card" id="loginCard">
+    <h2>1. Connexion propriétaire</h2>
+    <div id="loggedOut">
+      <label>Adresse e-mail</label>
+      <input type="email" id="email" placeholder="ton@email.com" autocomplete="email">
+      <label>Mot de passe</label>
+      <input type="password" id="pass" placeholder="ton mot de passe" autocomplete="current-password">
+      <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" id="loginBtn">Se connecter</button>
+        <button class="btn ghost" id="googleBtn">Continuer avec Google</button>
+      </div>
+      <div class="msg" id="loginMsg"></div>
+    </div>
+    <div id="loggedIn" class="hide">
+      <div>Connecté : <b id="who"></b></div>
+      <div id="adminStatus" style="margin-top:8px"></div>
+      <div class="uid" id="uid" style="margin-top:8px"></div>
+      <div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn ghost" id="logoutBtn">Se déconnecter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Génération -->
+  <div class="card hide" id="genCard">
+    <h2>2. Générer des codes</h2>
+    <div class="row">
+      <div><label>Combien de codes ?</label><input type="number" id="count" value="10" min="1" max="200"></div>
+      <div><label>Durée (jours)</label>
+        <select id="days"><option value="30">30 jours (1 mois)</option><option value="90">90 jours (3 mois)</option><option value="180">180 jours</option><option value="365">365 jours (1 an)</option></select>
+      </div>
+      <div><label>Étiquette (pour toi)</label><input type="text" id="label" placeholder="ex : Vente mars"></div>
+    </div>
+    <button class="btn" id="genBtn" style="margin-top:14px">✨ Générer les codes</button>
+    <div class="msg" id="genMsg"></div>
+    <div class="codes hide" id="genResult">
+      <label>Codes générés — copie-les et envoie-les sur WhatsApp :</label>
+      <div class="codebox" id="codeBox"></div>
+      <button class="btn green" id="copyAll" style="margin-top:10px">📋 Tout copier</button>
+    </div>
+  </div>
+
+  <!-- Liste -->
+  <div class="card hide" id="listCard">
+    <h2>3. Mes codes existants</h2>
+    <button class="btn ghost" id="refreshBtn">🔄 Rafraîchir la liste</button>
+    <div class="msg" id="listMsg"></div>
+    <div id="listHolder"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+(function(){
+  var CFG = window.FIREBASE_CONFIG || {};
+  function ok(v){ return v && String(v).indexOf('VOTRE_')!==0; }
+  var configured = ok(CFG.apiKey) && ok(CFG.projectId);
+  var loginMsg=document.getElementById('loginMsg');
+  if(!configured || typeof firebase==='undefined'){
+    loginMsg.className='msg bad';
+    loginMsg.textContent="Firebase n'est pas encore configuré (ouvre COMPTE-configuration.txt). Cette page a besoin des comptes activés.";
+    return;
+  }
+  firebase.initializeApp(CFG);
+  var auth=firebase.auth(), db=firebase.firestore();
+  var ADMIN_EMAIL = (window.PB_ADMIN_EMAIL || 'saad.quickcash@gmail.com').toLowerCase();
+
+  var el=function(id){ return document.getElementById(id); };
+  function show(id,on){ el(id).classList[on?'remove':'add']('hide'); }
+
+  // ---- Connexion ----
+  el('loginBtn').addEventListener('click',function(){
+    var e=el('email').value.trim(), p=el('pass').value;
+    if(!e||!p){ loginMsg.className='msg bad'; loginMsg.textContent='Entre ton e-mail et ton mot de passe.'; return; }
+    loginMsg.className='msg'; loginMsg.textContent='Connexion…';
+    auth.signInWithEmailAndPassword(e,p).catch(function(err){ loginMsg.className='msg bad'; loginMsg.textContent=humanErr(err); });
+  });
+  el('googleBtn').addEventListener('click',function(){
+    var pr=new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(pr).catch(function(err){ loginMsg.className='msg bad'; loginMsg.textContent=humanErr(err); });
+  });
+  el('logoutBtn').addEventListener('click',function(){ auth.signOut(); });
+
+  function humanErr(e){ var c=(e&&e.code)||''; if(c.indexOf('wrong-password')>=0||c.indexOf('invalid-credential')>=0) return 'E-mail ou mot de passe incorrect.'; if(c.indexOf('user-not-found')>=0) return 'Aucun compte avec cet e-mail.'; if(c.indexOf('too-many')>=0) return 'Trop d’essais, réessaie plus tard.'; return (e&&e.message)||'Erreur de connexion.'; }
+  function copy(txt,btn,back){ try{ navigator.clipboard.writeText(txt); var o=btn.textContent; btn.textContent='✓ Copié'; setTimeout(function(){ btn.textContent=back||o; },1400); }catch(e){} }
+
+  auth.onAuthStateChanged(function(u){
+    if(u){
+      show('loggedOut',false); show('loggedIn',true);
+      el('who').textContent=(u.email||u.displayName||'compte');
+      var isAdmin=(u.email||'').toLowerCase()===ADMIN_EMAIL;
+      var st=el('adminStatus');
+      if(isAdmin){ st.className='msg ok'; st.textContent='✓ Tu es bien l’administrateur — tu peux générer des codes.'; el('uid').style.display='none'; show('genCard',true); show('listCard',true); loadList(); }
+      else { st.className='msg bad'; st.innerHTML='⚠ Ce compte n’est pas l’administrateur configuré (<b>'+esc(ADMIN_EMAIL)+'</b>). Connecte-toi avec le bon compte.'; el('uid').style.display='block'; el('uid').textContent='UID de ce compte : '+u.uid; show('genCard',false); show('listCard',false); }
+    } else {
+      show('loggedOut',true); show('loggedIn',false); show('genCard',false); show('listCard',false);
+    }
+  });
+
+  // ---- Génération de codes ----
+  var ALPHA='ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // sans 0 O 1 I L
+  function rand(n){ var s='',arr; try{ arr=new Uint32Array(n); crypto.getRandomValues(arr); }catch(e){ arr=null; }
+    for(var i=0;i<n;i++){ var r=arr?arr[i]:Math.floor(Math.random()*4294967296); s+=ALPHA[r%ALPHA.length]; } return s; }
+  function newCode(){ var a=rand(4), b=rand(4); return 'PB-'+a+'-'+b; }        // affiché
+  function normId(disp){ return disp.replace(/-/g,'').toUpperCase(); }          // id Firestore
+
+  el('genBtn').addEventListener('click',function(){
+    var u=auth.currentUser; if(!u) return;
+    var count=Math.max(1,Math.min(200, parseInt(el('count').value,10)||10));
+    var days=parseInt(el('days').value,10)||30;
+    var label=el('label').value.trim();
+    var genMsg=el('genMsg'); genMsg.className='msg'; genMsg.textContent='Génération…'; el('genBtn').disabled=true;
+
+    var batch=db.batch(), disp=[], used={};
+    for(var i=0;i<count;i++){ var d=newCode(); if(used[d]){ i--; continue; } used[d]=1; disp.push(d);
+      var ref=db.collection('premium_codes').doc(normId(d));
+      batch.set(ref,{ days:days, active:true, label:label||'', display:d, createdAt:Date.now(), createdBy:u.uid }); }
+    batch.commit().then(function(){
+      genMsg.className='msg ok'; genMsg.textContent='✅ '+disp.length+' code(s) créé(s) — '+days+' jours chacun.';
+      el('codeBox').textContent=disp.join('\n'); show('genResult',true); el('genBtn').disabled=false; loadList();
+    }).catch(function(err){
+      el('genBtn').disabled=false; genMsg.className='msg bad';
+      if((err&&err.code||'').indexOf('permission')>=0){ genMsg.innerHTML='⛔ Permission refusée par Firebase. Les règles Firestore ne sont pas encore publiées.<div class="warn">Va sur Firebase → Firestore Database → onglet « Règles », colle les règles fournies dans PREMIUM-guide.txt (elles contiennent déjà ton e-mail), puis clique « Publier ». Reviens ici et réessaie.</div>'; }
+      else genMsg.textContent='Erreur : '+((err&&err.message)||'inconnue');
+    });
+  });
+  el('copyAll').addEventListener('click',function(){ copy(el('codeBox').textContent, el('copyAll'),'📋 Tout copier'); });
+
+  // ---- Liste des codes ----
+  el('refreshBtn').addEventListener('click',loadList);
+  function fmt(ms){ try{ return new Date(ms).toLocaleDateString('fr-FR'); }catch(e){ return ''; } }
+  function loadList(){
+    var listMsg=el('listMsg'), holder=el('listHolder'); listMsg.className='msg'; listMsg.textContent='Chargement…'; holder.innerHTML='';
+    db.collection('premium_codes').orderBy('createdAt','desc').limit(300).get().then(function(snap){
+      listMsg.textContent=''; if(snap.empty){ holder.innerHTML='<p class="sub">Aucun code pour l’instant.</p>'; return; }
+      var rows='<table><tr><th>Code</th><th>Durée</th><th>Statut</th><th>Créé le</th></tr>';
+      var nb=0, avail=0;
+      snap.forEach(function(doc){ var d=doc.data(); nb++; var disp=d.display||doc.id;
+        var status = (d.active!==false && !d.usedBy) ? '<span class="pill on">Disponible</span>' : '<span class="pill used">Utilisé</span>';
+        if(d.active!==false && !d.usedBy) avail++;
+        rows+='<tr><td>'+esc(disp)+'</td><td>'+(d.days||'?')+' j</td><td>'+status+'</td><td>'+fmt(d.createdAt)+'</td></tr>'; });
+      rows+='</table>';
+      holder.innerHTML='<p class="sub">'+nb+' code(s) — <b>'+avail+' disponible(s)</b> à vendre.</p>'+rows;
+    }).catch(function(err){
+      if((err&&err.code||'').indexOf('permission')>=0){ listMsg.className='msg bad'; listMsg.innerHTML='⛔ Publie d’abord les règles Firestore (voir PREMIUM-guide.txt), puis rafraîchis.'; }
+      else { listMsg.className='msg bad'; listMsg.textContent='Erreur : '+((err&&err.message)||'inconnue'); }
+    });
+  }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+})();
+</script>
+</body>
+</html>
