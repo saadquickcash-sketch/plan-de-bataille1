@@ -44,7 +44,7 @@
     setPremiumUntil:function(until, code){ var o={plan:'premium', until:until||0, since:Date.now(), code:code||''}; this.setAll(o); if(window.PB_onPlanChange){ try{ window.PB_onPlanChange(o); }catch(e){} } return o; },
     reset:function(){ var o={plan:'free',until:0}; this.setAll(o); if(window.PB_onPlanChange){ try{ window.PB_onPlanChange(o); }catch(e){} } return o; }
   };
-  window.PB_isPremium = function(){ return window.PB_plan.isPremium(); };
+  window.PB_isPremium = function(){ try{ if(typeof window.PB_isAdmin==='function' && window.PB_isAdmin()) return true; }catch(e){} return window.PB_plan.isPremium(); };
 
   window.PB_quota = {
     freeLimit:function(){ return FREE_LIMIT; },
