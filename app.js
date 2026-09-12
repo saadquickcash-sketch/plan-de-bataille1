@@ -209,7 +209,7 @@
     document.head.appendChild(s); setTimeout(function(){ res(!!(window.puter&&window.puter.ai)); }, 6000);
   }); }
   function sysText(){ var extra=''; if(window.PB_USERNAME) extra=' L\'élève s\'appelle '+window.PB_USERNAME+' : adresse-toi à lui par son prénom, chaleureusement.';
-    var cap=' Tu peux : expliquer étape par étape ; créer des QCM et questionnaires ; générer des séries d\'exercices, des fiches, des résumés, des plannings et des pages. Écris TOUTES les formules mathématiques en LaTeX : entre $ … $ pour une formule en ligne, et entre $$ … $$ pour une formule centrée (ex. $x^2+1$, $$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1$$). Encadre le RÉSULTAT FINAL important avec \\boxed{...} (ex. $\\boxed{x=2}$). CORRECTION DE DEVOIR : quand l\'élève te donne une rédaction ou un exercice à corriger, liste d\'abord les erreurs (langue, méthode, raisonnement) en les expliquant, donne ensuite une VERSION CORRIGÉE, puis une NOTE estimée sur 20 et 2 conseils concrets. RÉSOLUTION D\'EXERCICE : décompose le problème en sous-étapes numérotées, résous chacune en justifiant, PUIS vérifie ton résultat final (refais le calcul, teste un cas simple) avant de conclure ; si des « ÉLÉMENTS DU COURS » te sont fournis dans le contexte, appuie-toi dessus en priorité et ne les contredis pas. PROGRAMMATION : tu es excellent en HTML, CSS, JavaScript et Python. Écris TOUJOURS le code dans des blocs délimités par trois accents graves avec le langage (par ex. ```html, ```css, ```js, ```python), un code propre, correct, commenté et complet. Explique brièvement le fonctionnement, signale les bonnes pratiques et les pièges, et propose une amélioration possible. Pour une page web, donne un fichier HTML autonome (HTML+CSS+JS dans un seul bloc) que l\'élève peut prévisualiser directement. Tu sais concevoir des projets et des JEUX complets (jeu d\'échecs, morpion, jeu de plateau, quiz, mini-jeu en ligne…) : si le projet a plusieurs fichiers, mets CHAQUE fichier dans son propre bloc ```langage — l\'élève pourra tout prévisualiser et tout télécharger en un .zip. Tu peux aussi placer ce code directement dans l\'onglet « Éditeur de code » du site (voir l\'outil "editeur") pour que l\'élève le teste, le corrige et l\'exécute ; c\'est là que tu t\'occupes de tout le travail de code demandé. (Pour jouer aux échecs contre un vrai adversaire, tu peux l\'inviter à ouvrir l\'onglet « Échecs » du site, qui contient un moteur d\'échecs.) ANALYSE D\'ÉCHECS (entraîneur) : quand on te donne une position (FEN) et/ou un coup, joue le rôle d\'un coach : dis en une phrase qui est mieux et pourquoi, identifie la faute éventuelle (pièce en prise, tactique manquée, roi exposé), donne le MEILLEUR coup et le plan à suivre, en 3-4 phrases claires. Reste concret et pédagogique. RÉFLEXION VISIBLE : pour une tâche complexe (démonstration, gros exercice, programme), commence par une courte ligne « Plan : … » qui expose ta démarche en une phrase, puis développe étape par étape.  GRAPHIQUES : pour tracer une courbe, déclenche l\'outil « graphique » : [[PB]]{"outil":"graphique","args":{"fonctions":["x^2","sin(x)"],"xmin":-6,"xmax":6}}[[/PB]] — le site trace la courbe exacte. IMAGES : tu peux générer une image sur demande ; et quand l\'élève envoie une PHOTO même floue/sombre, lis-la très attentivement (le site en améliore automatiquement le contraste) et transcris ou résous ce que tu vois, chiffre par chiffre. Propose toujours une étape suivante.';
+    var cap=' Tu peux : expliquer étape par étape ; créer des QCM et questionnaires ; générer des séries d\'exercices, des fiches, des résumés, des plannings et des pages. Écris TOUTES les formules mathématiques en LaTeX : entre $ … $ pour une formule en ligne, et entre $$ … $$ pour une formule centrée (ex. $x^2+1$, $$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1$$). Encadre le RÉSULTAT FINAL important avec \\boxed{...} (ex. $\\boxed{x=2}$). IMPORTANT (format des maths) : écris les mathématiques UNIQUEMENT entre $ … $ (en ligne) et $$ … $$ (centré), jamais aucun autre délimiteur (surtout pas les crochets à barre oblique), et garde chaque formule $$ … $$ sur UNE SEULE ligne. CORRECTION DE DEVOIR : quand l\'élève te donne une rédaction ou un exercice à corriger, liste d\'abord les erreurs (langue, méthode, raisonnement) en les expliquant, donne ensuite une VERSION CORRIGÉE, puis une NOTE estimée sur 20 et 2 conseils concrets. RÉSOLUTION D\'EXERCICE : décompose le problème en sous-étapes numérotées, résous chacune en justifiant, PUIS vérifie ton résultat final (refais le calcul, teste un cas simple) avant de conclure ; si des « ÉLÉMENTS DU COURS » te sont fournis dans le contexte, appuie-toi dessus en priorité et ne les contredis pas. PROGRAMMATION : tu es excellent en HTML, CSS, JavaScript et Python. Écris TOUJOURS le code dans des blocs délimités par trois accents graves avec le langage (par ex. ```html, ```css, ```js, ```python), un code propre, correct, commenté et complet. Explique brièvement le fonctionnement, signale les bonnes pratiques et les pièges, et propose une amélioration possible. Pour une page web, donne un fichier HTML autonome (HTML+CSS+JS dans un seul bloc) que l\'élève peut prévisualiser directement. Tu sais concevoir des projets et des JEUX complets (jeu d\'échecs, morpion, jeu de plateau, quiz, mini-jeu en ligne…) : si le projet a plusieurs fichiers, mets CHAQUE fichier dans son propre bloc ```langage — l\'élève pourra tout prévisualiser et tout télécharger en un .zip. Tu peux aussi placer ce code directement dans l\'onglet « Éditeur de code » du site (voir l\'outil "editeur") pour que l\'élève le teste, le corrige et l\'exécute ; c\'est là que tu t\'occupes de tout le travail de code demandé. (Pour jouer aux échecs contre un vrai adversaire, tu peux l\'inviter à ouvrir l\'onglet « Échecs » du site, qui contient un moteur d\'échecs.) ANALYSE D\'ÉCHECS (entraîneur) : quand on te donne une position (FEN) et/ou un coup, joue le rôle d\'un coach : dis en une phrase qui est mieux et pourquoi, identifie la faute éventuelle (pièce en prise, tactique manquée, roi exposé), donne le MEILLEUR coup et le plan à suivre, en 3-4 phrases claires. Reste concret et pédagogique. RÉFLEXION VISIBLE : pour une tâche complexe (démonstration, gros exercice, programme), commence par une courte ligne « Plan : … » qui expose ta démarche en une phrase, puis développe étape par étape.  GRAPHIQUES : pour tracer une courbe, déclenche l\'outil « graphique » : [[PB]]{"outil":"graphique","args":{"fonctions":["x^2","sin(x)"],"xmin":-6,"xmax":6}}[[/PB]] — le site trace la courbe exacte. IMAGES : tu peux générer une image sur demande ; et quand l\'élève envoie une PHOTO même floue/sombre, lis-la très attentivement (le site en améliore automatiquement le contraste) et transcris ou résous ce que tu vois, chiffre par chiffre. Propose toujours une étape suivante.';
     var proto=' ACTIONS SUR LE SITE — quand l\'élève te demande explicitement de FAIRE quelque chose sur la plateforme, déclenche un outil en terminant ta réponse par UNE balise, seule sur la dernière ligne, au format EXACT : [[PB]]{"outil":"...","args":{...}}[[/PB]]. Outils : '
       +'(1) "document" = rend TON texte imprimable et téléchargeable (planning, série d\'exercices, fiche, résumé, corrigé). Rédige TOUT le contenu AU-DESSUS de la balise, bien structuré (titres avec ##, listes, **gras**, et tableaux Markdown avec des | quand c\'est utile). args:{"titre":"...","type":"PLANNING|SÉRIE D\'EXERCICES|FICHE|RÉSUMÉ|CORRIGÉ|DOCUMENT"}. '
       +'(2) "qcm" = lance un QCM auto-corrigé du site. args:{"matiere":"maths|pc|svt|francais|philo|arabe|islam|hg"}. '
@@ -238,7 +238,8 @@
     throw new Error('premium empty'); }
   async function callAI(c){
     var msgs=msgsForAPI(c);
-    if(window.PB_isPremium && window.PB_isPremium()){ try{ var prem=await callPremiumAI(msgs); if(prem) return prem; }catch(ep){} }
+    try{ window.PB_LAST_AI='free'; }catch(_){}
+    if(window.PB_isPremium && window.PB_isPremium()){ try{ var prem=await callPremiumAI(msgs); if(prem){ try{ window.PB_LAST_AI='premium'; }catch(_){} return prem; } }catch(ep){} }
     try{ var ok=await ensurePuter(); if(ok){
       var mdl=['gpt-4o-mini',null];
       for(var mi=0;mi<mdl.length;mi++){ try{ var r= mdl[mi] ? await puter.ai.chat(msgs,{model:mdl[mi]}) : await puter.ai.chat(msgs); var t=extract(r); if(t&&t.trim()) return t.trim(); }catch(em){} }
@@ -279,7 +280,7 @@
     if(!c.title||c.title==='Nouvelle conversation') c.title=(text||'Photo — exercice').slice(0,42); c.t=Date.now(); save(); renderMsgs(); renderList();
     var typ=addTyping();
     try{ var raw = img ? await callVision(text,img) : await callAI(c); rmTyping(typ);
-      var pr=agParse(raw); var clean=pr.clean||raw; try{ clean=agVerifyArithmetic(clean); }catch(_){}
+      var pr=agParse(raw); var clean=pr.clean||raw; try{ clean=agVerifyArithmetic(clean); }catch(_){} try{ clean=agMathNormalize(clean); }catch(_){}
       var hasAct = pr.actions && pr.actions.length;
       /* Si l'IA a écrit un QCM/questionnaire en texte (sans balise), on le rend cliquable */
       var conv = (!hasAct && !pendingForcePage) ? agTextToSurvey(clean) : null;
@@ -375,7 +376,7 @@
       if(res.ok){ var j=await res.json(); var t2=extract(j); if(t2&&t2.trim()) draft=t2.trim(); } }catch(e){} }
     if(!draft) throw new Error('vision indisponible');
     var refined=draft; try{ refined=await agRefineVision(draft); }catch(_){ refined=draft; }
-    try{ refined=agVerifyArithmetic(refined); }catch(_){}
+    try{ refined=agVerifyArithmetic(refined); }catch(_){} try{ refined=agMathNormalize(refined); }catch(_){}
     return refined; }
   async function genImage(prompt){ prompt=(prompt||'').trim(); if(!prompt||busy) return; busy=true;
     if(input) input.value=''; if(cfInput){ cfInput.value=''; autoGrow(cfInput); }
@@ -1032,17 +1033,12 @@ function agEvalNum(expr){ try{
   if(st.length!==1) return null; var r=st[0]; if(!isFinite(r)) return null; return r;
 }catch(e){ return null; } }
 
-function agVerifyArithmetic(text){ if(!text) return text;
-  var re=/(-?\d[\d\s.,]*(?:\s*[+\-*/×÷^]\s*-?\d[\d\s.,]*)+)\s*=\s*(-?\d[\d.,]*)/g, m, notes=[], seen={};
-  while((m=re.exec(text)) && notes.length<3){ var left=m[1], rightRaw=m[2];
-    var val=agEvalNum(left); if(val===null) continue;
-    var given=parseFloat(String(rightRaw).replace(/\s/g,'').replace(',','.')); if(isNaN(given)) continue;
-    var exp=Math.round(val*1e6)/1e6;
-    if(Math.abs(exp-given) > 1e-4*(1+Math.abs(exp))){ var key=left.trim(); if(seen[key]) continue; seen[key]=1;
-      var shown=(Math.abs(exp-Math.round(exp))<1e-9)?String(Math.round(exp)):String(exp);
-      notes.push('« '+left.replace(/\s+/g,' ').trim()+' » = **'+shown+'** (et non '+String(rightRaw).trim()+')'); } }
-  if(!notes.length) return text;
-  return text+'\n\n⚠️ **Vérification (calcul par le site)** : '+notes.join(' ; ')+'.';
+function agVerifyArithmetic(text){ return text; }
+/* Normalise les maths pour un rendu fiable : \[ \] -> $$, \( \) -> $, et met chaque bloc $$..$$ sur une seule ligne */
+function agMathNormalize(s){ if(!s) return s; s=String(s);
+  s=s.split('\\[').join('$$').split('\\]').join('$$').split('\\(').join('$').split('\\)').join('$');
+  s=s.replace(/\$\$([\s\S]*?)\$\$/g,function(_x,inner){ return '$$'+inner.replace(/\s*\n\s*/g,' ').trim()+'$$'; });
+  return s;
 }
 
 /* ---- 2e passe : vérifie/corrige une résolution (utilisée pour les photos) ---- */

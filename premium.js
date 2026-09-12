@@ -231,34 +231,31 @@ if(typeof module!=='undefined' && require.main===module){
   T('quotaCheck resets by day + counts', function(){ var r=m.quotaCheck({date:'2000-01-01',used:99}, 25); assert.equal(r.used,0); assert.equal(r.allowed,true); var r2=m.quotaCheck(r.state,25); r2.state.used=25; var r3=m.quotaCheck(r2.state,25); assert.equal(r3.allowed,false); assert.equal(r3.left,0); });
   console.log('OK '+ok+' tests');
 }
-/* ===== Indicateur : quelle IA répond (Premium/Gemini ou gratuite) ===== */
+
+/* ===== Indicateur d'IA : badge permanent dans l'en-tête du chat ===== */
 (function(){
-  if(typeof window==='undefined' || !window.fetch || window.__pbAiWrap) return;
-  window.__pbAiWrap = true;
-  var _fetch = window.fetch.bind(window);
-  function pbAiBadge(txt, ok){
+  if(typeof window==='undefined' || typeof document==='undefined') return;
+  function label(){
+    if(window.PB_LAST_AI==='premium') return {t:'⚡ IA Premium (Gemini)', ok:true};
+    if(window.PB_LAST_AI==='free') return {t:'💬 IA gratuite', ok:false};
+    var prem=false; try{ prem=!!(window.PB_isPremium && window.PB_isPremium()); }catch(e){}
+    return prem ? {t:'⚡ IA Premium (Gemini)', ok:true} : {t:'💬 IA gratuite', ok:false};
+  }
+  function paint(){
     try{
-      var t=document.createElement('div'); t.textContent=txt;
-      t.style.cssText='position:fixed;z-index:2147483601;left:50%;bottom:80px;transform:translateX(-50%);padding:9px 16px;border-radius:20px;font:700 13px system-ui,-apple-system,sans-serif;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.28);opacity:0;transition:opacity .25s;white-space:nowrap;background:'+(ok?'linear-gradient(135deg,#7c5cff,#4b3fa7)':'#5a5a68');
-      document.body.appendChild(t);
-      requestAnimationFrame(function(){ t.style.opacity='1'; });
-      setTimeout(function(){ t.style.opacity='0'; setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); },320); }, 3000);
+      var info=label();
+      var heads=document.querySelectorAll('.cp-head h3, .cf-brand');
+      for(var i=0;i<heads.length;i++){
+        var h=heads[i], b=h.querySelector('.pb-aibadge');
+        if(!b){ b=document.createElement('span'); b.className='pb-aibadge'; h.appendChild(b); }
+        b.textContent=info.t;
+        b.style.cssText='display:inline-block;margin-left:8px;padding:2px 9px;border-radius:20px;font:700 11px system-ui,-apple-system,sans-serif;vertical-align:middle;white-space:nowrap;color:'+(info.ok?'#fff':'#3a3a44')+';background:'+(info.ok?'linear-gradient(135deg,#7c5cff,#4b3fa7)':'#e6e3f0');
+      }
     }catch(e){}
   }
-  window.fetch=function(input, init){
-    var url=''; try{ url=(typeof input==='string')?input:((input&&input.url)||''); }catch(e){}
-    var p=_fetch(input, init);
-    try{
-      if(/\/api\/chat/.test(url)){
-        return p.then(function(res){
-          try{ res.clone().json().then(function(j){
-            if(j && j.reply && String(j.reply).trim()){ window.PB_LAST_AI='premium'; pbAiBadge('⚡ IA Premium (Gemini)', true); }
-          }).catch(function(){}); }catch(e){}
-          return res;
-        });
-      }
-      if(/text\.pollinations\.ai/i.test(url)){ window.PB_LAST_AI='free'; pbAiBadge('💬 IA gratuite', false); }
-    }catch(e){}
-    return p;
-  };
+  window.PB_paintAiBadge=paint;
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', paint); else paint();
+  window.addEventListener('pb-plan', paint);
+  window.addEventListener('pb-admin', paint);
+  setInterval(paint, 1500);
 })();
