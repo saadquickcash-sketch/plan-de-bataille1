@@ -231,3 +231,34 @@ if(typeof module!=='undefined' && require.main===module){
   T('quotaCheck resets by day + counts', function(){ var r=m.quotaCheck({date:'2000-01-01',used:99}, 25); assert.equal(r.used,0); assert.equal(r.allowed,true); var r2=m.quotaCheck(r.state,25); r2.state.used=25; var r3=m.quotaCheck(r2.state,25); assert.equal(r3.allowed,false); assert.equal(r3.left,0); });
   console.log('OK '+ok+' tests');
 }
+/* ===== Indicateur : quelle IA répond (Premium/Gemini ou gratuite) ===== */
+(function(){
+  if(typeof window==='undefined' || !window.fetch || window.__pbAiWrap) return;
+  window.__pbAiWrap = true;
+  var _fetch = window.fetch.bind(window);
+  function pbAiBadge(txt, ok){
+    try{
+      var t=document.createElement('div'); t.textContent=txt;
+      t.style.cssText='position:fixed;z-index:2147483601;left:50%;bottom:80px;transform:translateX(-50%);padding:9px 16px;border-radius:20px;font:700 13px system-ui,-apple-system,sans-serif;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.28);opacity:0;transition:opacity .25s;white-space:nowrap;background:'+(ok?'linear-gradient(135deg,#7c5cff,#4b3fa7)':'#5a5a68');
+      document.body.appendChild(t);
+      requestAnimationFrame(function(){ t.style.opacity='1'; });
+      setTimeout(function(){ t.style.opacity='0'; setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); },320); }, 3000);
+    }catch(e){}
+  }
+  window.fetch=function(input, init){
+    var url=''; try{ url=(typeof input==='string')?input:((input&&input.url)||''); }catch(e){}
+    var p=_fetch(input, init);
+    try{
+      if(/\/api\/chat/.test(url)){
+        return p.then(function(res){
+          try{ res.clone().json().then(function(j){
+            if(j && j.reply && String(j.reply).trim()){ window.PB_LAST_AI='premium'; pbAiBadge('⚡ IA Premium (Gemini)', true); }
+          }).catch(function(){}); }catch(e){}
+          return res;
+        });
+      }
+      if(/text\.pollinations\.ai/i.test(url)){ window.PB_LAST_AI='free'; pbAiBadge('💬 IA gratuite', false); }
+    }catch(e){}
+    return p;
+  };
+})();
