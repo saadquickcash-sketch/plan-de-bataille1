@@ -65,14 +65,16 @@ export async function onRequestPost(context) {
     /generativelanguage\.googleapis\.com/i.test(base);
 
   // Modèle : un modèle "vision" quand il y a une image, sinon le modèle texte habituel
-  const visionModel = env.AI_VISION_MODEL || 'meta-llama/llama-4-scout-17b-16e-instruct';
+  const visionModel = env.AI_VISION_MODEL || 'qwen/qwen3.6-27b';
   const textModel = env.AI_MODEL || (isGemini ? 'gemini-2.5-flash' : 'gpt-4o');
   const model = hasImage ? visionModel : textModel;
+  // Les modèles vision du tier gratuit ont une limite de sortie faible (OTPM ~1000) : on borne plus bas pour les images
+  const maxTokens = hasImage ? (Number(env.AI_VISION_MAXTOK) || 900) : (Number(env.AI_MAXTOK) || 1800);
 
   try {
     const reply = isGemini
-      ? await callGemini(env, trimmed, model)
-      : await callOpenAICompat(env, base, trimmed, model);
+      ? await callGemini(env, trimmed, model, maxTokens)
+      : await callOpenAICompat(env, base, trimmed, model, maxTokens);
     if (!reply) return bad(502, "L'IA n'a rien renvoyé.");
     return new Response(JSON.stringify({ reply }), { status: 200, headers: cors });
   } catch (e) {
@@ -91,12 +93,12 @@ function redactKeys(s) {
 }
 
 /* ---------- Fournisseur « compatible OpenAI » (OpenAI, Groq, OpenRouter…) ---------- */
-async function callOpenAICompat(env, base, trimmed, modelOverride) {
+async function callOpenAICompat(env, base, trimmed, modelOverride, maxTokens) {
   const model = modelOverride || env.AI_MODEL || 'gpt-4o';
   const res = await fetch(base, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + env.AI_API_KEY },
-    body: JSON.stringify({ model, messages: trimmed, temperature: 0.6, max_tokens: 1800 })
+    body: JSON.stringify({ model, messages: trimmed, temperature: 0.6, max_tokens: maxTokens || 1800 })
   });
   if (!res.ok) { let d = ''; try { d = (await res.text()).slice(0, 200); } catch (e) {} throw new Error("Erreur IA (" + res.status + "). " + redactKeys(d)); }
   const data = await res.json();
@@ -105,7 +107,7 @@ async function callOpenAICompat(env, base, trimmed, modelOverride) {
 }
 
 /* ---------- Google Gemini (endpoint NATIF — marche avec les clés AQ.… et AIza…) ---------- */
-async function callGemini(env, trimmed, modelOverride) {
+async function callGemini(env, trimmed, modelOverride, maxTokens) {
   const model = modelOverride || env.AI_MODEL || 'gemini-2.5-flash';
   // systemInstruction = tous les messages "system" réunis ; le reste en user/model
   const sysText = trimmed.filter(m => m.role === 'system').map(m => (typeof m.content === 'string' ? m.content : '')).join('\n\n');
@@ -128,7 +130,7 @@ async function callGemini(env, trimmed, modelOverride) {
     .map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: toParts(m.content) }));
   const payload = {
     contents,
-    generationConfig: { temperature: 0.6, maxOutputTokens: 1600 }
+    generationConfig: { temperature: 0.6, maxOutputTokens: maxTokens || 1600 }
   };
   if (sysText) payload.systemInstruction = { parts: [{ text: sysText }] };
 
