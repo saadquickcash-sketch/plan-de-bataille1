@@ -28,7 +28,7 @@
  *   Pour une PHOTO          : on essaie les clés « vision » et « all ».
  *
  *   Fournisseurs pris en charge :
- *   • GOOGLE GEMINI  : AI_PROVIDER=gemini, AI_MODEL=gemini-2.5-flash, AI_API_KEY=AQ.… / AIza…
+ *   • GOOGLE GEMINI  : AI_PROVIDER=gemini, AI_MODEL=gemini-flash-latest, AI_API_KEY=AQ.… / AIza…
  *   • Compatible OpenAI (OpenAI, Groq, OpenRouter…) : AI_API_KEY, AI_MODEL, AI_BASE (endpoint /chat/completions)
  */
 
@@ -121,7 +121,7 @@ function buildBackends(env) {
     }
     // Modèle : pour Gemini on force un modèle Gemini valide si l'hérité n'en est pas un.
     let model = env['AI_MODEL' + s] || env.AI_MODEL || '';
-    if (isGemini && !/gemini|gemma/i.test(model)) model = 'gemini-2.5-flash';
+    if (isGemini && !/gemini|gemma/i.test(model)) model = 'gemini-flash-latest';
     if (!isGemini && !model) model = 'gpt-4o';
     // Modèle « vision » : Gemini est multimodal (même modèle) ; sinon modèle vision dédié.
     let visionModel;
@@ -184,9 +184,14 @@ async function callOpenAICompat(backend, trimmed, modelOverride, maxTokens) {
          (data && data.content && Array.isArray(data.content) && data.content[0] && data.content[0].text) || '';
 }
 
-/* ---------- Google Gemini (endpoint NATIF — marche avec les clés AQ.… et AIza…) ---------- */
+/* ---------- Google Gemini (endpoint NATIF — marche avec les clés AQ.… et AIza…) ----------
+   Auto-guérison : si le modèle demandé n'existe plus (404), on réessaie
+   automatiquement avec des alias Gemini valides, pour résister aux
+   changements de nom de modèle côté Google. */
+const GEMINI_FALLBACK_MODELS = ['gemini-flash-latest', 'gemini-3.5-flash', 'gemini-2.0-flash'];
+
 async function callGemini(backend, trimmed, modelOverride, maxTokens) {
-  const model = modelOverride || backend.model || 'gemini-2.5-flash';
+  const wanted = modelOverride || backend.model || 'gemini-flash-latest';
   // systemInstruction = tous les messages "system" réunis ; le reste en user/model
   const sysText = trimmed.filter(m => m.role === 'system').map(m => (typeof m.content === 'string' ? m.content : '')).join('\n\n');
   const toParts = (content) => {
@@ -211,20 +216,32 @@ async function callGemini(backend, trimmed, modelOverride, maxTokens) {
     generationConfig: { temperature: 0.6, maxOutputTokens: maxTokens || 1600 }
   };
   if (sysText) payload.systemInstruction = { parts: [{ text: sysText }] };
+  const bodyStr = JSON.stringify(payload);
 
-  const url = 'https://generativelanguage.googleapis.com/v1beta/models/' +
-              encodeURIComponent(model) + ':generateContent';
-  const res = await fetchWithTimeout(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': backend.key },
-    body: JSON.stringify(payload)
-  });
-  if (!res.ok) { let d = ''; try { d = (await res.text()).slice(0, 220); } catch (e) {} throw new Error("Gemini HTTP " + res.status + " " + redactKeys(d)); }
-  const data = await res.json();
-  const cand = data && data.candidates && data.candidates[0];
-  const parts = cand && cand.content && cand.content.parts;
-  if (Array.isArray(parts)) return parts.map(p => p && p.text ? p.text : '').join('');
-  return '';
+  // Liste de modèles à essayer : celui demandé d'abord, puis les alias de secours (sans doublon)
+  const candidates = [wanted].concat(GEMINI_FALLBACK_MODELS.filter(m => m !== wanted));
+  let lastErr = '';
+  for (const model of candidates) {
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/' +
+                encodeURIComponent(model) + ':generateContent';
+    const res = await fetchWithTimeout(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': backend.key },
+      body: bodyStr
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const cand = data && data.candidates && data.candidates[0];
+      const parts = cand && cand.content && cand.content.parts;
+      if (Array.isArray(parts)) return parts.map(p => p && p.text ? p.text : '').join('');
+      return '';
+    }
+    let d = ''; try { d = (await res.text()).slice(0, 220); } catch (e) {}
+    lastErr = "Gemini HTTP " + res.status + " " + redactKeys(d);
+    // On ne réessaie un autre modèle que si le modèle est introuvable/non disponible (404).
+    if (res.status !== 404) throw new Error(lastErr);
+  }
+  throw new Error(lastErr || 'Gemini : aucun modèle disponible.');
 }
 
 // Sonde de disponibilité : GET /api/chat -> {ok, configured, provider, keys}
