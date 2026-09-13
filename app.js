@@ -368,9 +368,9 @@
   async function callVision(text,dataUrl){
     try{ dataUrl=await agEnhanceImage(dataUrl); }catch(e){}
     var meth=' Procède ainsi : 1) lis attentivement l\'énoncé sur la photo et reformule ce qui est demandé ; 2) identifie les données et la méthode ; 3) résous étape par étape en justifiant chaque calcul (formules en LaTeX $ … $) ; 4) vérifie ton résultat final (recalcule, teste un cas simple) ; 5) donne la réponse finale encadrée. Si c\'est un cours ou un schéma, explique-le clairement.';
-    var q=(text?text+'.':'Résous cet exercice photographié.')+meth;
+    var q=(text?text+'.':'Résous cet exercice photographié.')+meth+' /no_think';
     var draft='';
-    // Premium : IA vision puissante (Groq Llama 4 Scout) via /api/chat
+    // Premium : IA vision puissante (Groq Qwen vision) via /api/chat
     try{ if(window.PB_isPremium && window.PB_isPremium()){
       var pmsgs=[{role:'system',content:sysText()},{role:'user',content:[{type:'text',text:q},{type:'image_url',image_url:{url:dataUrl}}]}];
       var pr=await callPremiumAI(pmsgs); if(pr){ draft=pr; try{ window.PB_LAST_AI='premium'; }catch(_){} }

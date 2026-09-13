@@ -72,14 +72,25 @@ export async function onRequestPost(context) {
   const maxTokens = hasImage ? (Number(env.AI_VISION_MAXTOK) || 900) : (Number(env.AI_MAXTOK) || 1800);
 
   try {
-    const reply = isGemini
+    let reply = isGemini
       ? await callGemini(env, trimmed, model, maxTokens)
       : await callOpenAICompat(env, base, trimmed, model, maxTokens);
+    reply = stripThink(reply);
     if (!reply) return bad(502, "L'IA n'a rien renvoyé.");
     return new Response(JSON.stringify({ reply }), { status: 200, headers: cors });
   } catch (e) {
     return bad(502, (e && e.message) ? e.message : "Le service d'IA a renvoyé une erreur.");
   }
+}
+
+/* ---------- Retire le raisonnement interne <think>…</think> des modèles "reasoning" ---------- */
+function stripThink(s) {
+  if (!s) return s;
+  s = String(s);
+  s = s.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();   // bloc complet
+  s = s.replace(/<think>[\s\S]*$/i, '').trim();             // bloc ouvert non fermé (réponse tronquée)
+  s = s.replace(/^[\s\S]*?<\/think>/i, '').trim();          // fin de bloc sans début
+  return s;
 }
 
 /* ---------- Masque toute clé API dans un texte d'erreur (sécurité) ---------- */
