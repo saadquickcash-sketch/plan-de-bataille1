@@ -72,12 +72,16 @@
     if(user){
       if(forms) forms.hidden=true; if(profile) profile.hidden=false; if(setup) setup.hidden=true;
       var nm=user.displayName||(user.email?user.email.split('@')[0]:'Élève');
-      window.PB_USERNAME=nm;
+      window.PB_USERNAME=(nm.split(' ')[0]||nm);
       var initial=(nm[0]||'E').toUpperCase();
+      var photo=user.photoURL||'';
+      function setAv(el){ if(!el) return; el.classList.add('on');
+        if(photo){ el.textContent=''; el.innerHTML='<img src="'+photo+'" alt="" referrerpolicy="no-referrer" style="width:100%;height:100%;border-radius:50%;object-fit:cover;display:block">'; }
+        else { el.innerHTML=''; el.textContent=initial; } }
       var pn=document.getElementById('profName'); if(pn) pn.textContent=nm;
       var pe=document.getElementById('profEmail'); if(pe) pe.textContent=user.email||'';
-      var pa=document.getElementById('profAv'); if(pa) pa.textContent=initial;
-      var av=document.getElementById('acctAv'); if(av){ av.textContent=initial; av.classList.add('on'); }
+      setAv(document.getElementById('profAv'));
+      setAv(document.getElementById('acctAv'));
       var lbl=document.getElementById('acctLabel'); if(lbl) lbl.textContent=nm.split(' ')[0];
       var cfu=document.getElementById('cfUser'); if(cfu) cfu.textContent=nm+' · connecté';
       var isAdmin=(user.email||'').toLowerCase()===ADMIN_EMAIL;
@@ -111,7 +115,8 @@
     } else {
       window.PB_onChatChange=null; window.PB_onPagesChange=null; window.PB_onProfileChange=null; window.PB_onCustomChange=null; window.PB_onPlanChange=null; window.PB_USERNAME=null;
       if(forms) forms.hidden=false; if(profile) profile.hidden=true; if(setup) setup.hidden=true;
-      var av=document.getElementById('acctAv'); if(av){ av.textContent='\u{1F464}'; av.classList.remove('on'); }
+      var av=document.getElementById('acctAv'); if(av){ av.innerHTML=''; av.textContent='\u{1F464}'; av.classList.remove('on'); }
+      var pa2=document.getElementById('profAv'); if(pa2){ pa2.innerHTML=''; pa2.textContent='\u{1F464}'; }
       var lbl=document.getElementById('acctLabel'); if(lbl) lbl.textContent='Compte';
       var adm=document.getElementById('authAdmin'); if(adm) adm.hidden=true;
       try{ window.dispatchEvent(new CustomEvent('pb-admin')); }catch(e){}
