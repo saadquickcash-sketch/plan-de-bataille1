@@ -234,6 +234,40 @@
     try{ if(typeof firebase!=='undefined' && firebase.auth && firebase.auth().currentUser){ return await firebase.auth().currentUser.getIdToken(); } }catch(e){}
     return '';
   }
+  /* Génère un TITRE court et clair pour la conversation à partir du 1er message
+     (comme ChatGPT). Utilise l'IA gratuite -> ne consomme PAS le quota de l'élève
+     ni les clés premium. Repli sur le début du message si indisponible. */
+  async function pbTitleAI(userText){
+    var base=String(userText||'').replace(/\s+/g,' ').trim();
+    var fallback=base.slice(0,42);
+    if(base.length<2) return fallback;
+    try{
+      var prompt='Propose UNIQUEMENT un titre très court (3 à 6 mots) qui résume le sujet, en français, '
+        +'sans guillemets, sans point final, sans le mot "titre". Message : "'+base.slice(0,300)+'"';
+      var res=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({model:'openai',messages:[{role:'user',content:prompt}]})});
+      var t='';
+      if(res.ok){ var ct=res.headers.get('content-type')||'';
+        if(ct.indexOf('json')>=0){ var j=await res.json(); t=extract(j)||''; } else { t=await res.text()||''; } }
+      t=String(t).split('\n')[0].replace(/["'«»`]/g,'').replace(/^\s*(titre|sujet)\s*[:\-–]\s*/i,'').replace(/[\s.:;–-]+$/,'').replace(/\s+/g,' ').trim();
+      if(t && t.length>=2 && t.length<=64) return t;
+    }catch(e){}
+    return fallback;
+  }
+  function pbMaybeTitle(c, firstText){
+    try{
+      if(!c || c._titled) return;
+      var userCount=c.msgs.filter(function(m){return m.role==='user';}).length;
+      if(userCount!==1) return;              // seulement au tout premier échange
+      c._titled=true;
+      pbTitleAI(firstText).then(function(tt){
+        if(!tt) return;
+        c.title=tt; try{ save(); }catch(_){} try{ renderList(); }catch(_){}
+        try{ if(cfTitle && cur() && cur().id===c.id) cfTitle.textContent=tt; }catch(_){}
+        try{ if(window.PB_onChatChange) window.PB_onChatChange(strip(convos)); }catch(_){}
+      });
+    }catch(e){}
+  }
   async function callPremiumAI(msgs){
     var ep=(window.PB_AI_ENDPOINT||'/api/chat');
     var tok=await pbIdToken();
@@ -298,6 +332,7 @@
       if(clean && clean.trim()){ try{ await typeReveal(clean); }catch(_){} }
       c.msgs.push({role:'assistant',content:clean});
       c.t=Date.now(); save(); renderMsgs(); renderList();
+      try{ pbMaybeTitle(c, text); }catch(_){}
       var madePage=false;
       if(hasAct){ pr.actions.forEach(function(a){ try{ if(agRun(a, clean)){ var tn=(a.outil||a.tool||'').toString().toLowerCase(); if(tn.indexOf('page')>=0||tn.indexOf('onglet')>=0) madePage=true; } }catch(_){} }); }
       if(pendingForcePage && !madePage){ try{ agCreatePage({titre:pendingForcePage}, clean); }catch(_){} }
