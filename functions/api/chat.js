@@ -48,11 +48,15 @@ export async function onRequestPost(context) {
      En attendant, protège la route par un « Rate limiting » Cloudflare.
   ---------------------------------------------------------------------- */
 
-  // borne la taille pour maîtriser le coût
-  const trimmed = messages.slice(-18).map(m => ({
-    role: (m.role === 'system' || m.role === 'assistant' || m.role === 'user') ? m.role : 'user',
-    content: String(m.content == null ? '' : m.content).slice(0, 8000)
-  }));
+  // borne la taille pour maîtriser le coût ; garde le contenu "vision" (tableau texte+image) tel quel
+  const trimmed = messages.slice(-18).map(m => {
+    const role = (m.role === 'system' || m.role === 'assistant' || m.role === 'user') ? m.role : 'user';
+    if (Array.isArray(m.content)) return { role, content: m.content }; // message avec image (vision)
+    return { role, content: String(m.content == null ? '' : m.content).slice(0, 8000) };
+  });
+
+  // Y a-t-il une image dans la requête ? (analyse de photo)
+  const hasImage = trimmed.some(m => Array.isArray(m.content) && m.content.some(p => p && p.type === 'image_url'));
 
   // Détection du fournisseur
   const base = env.AI_BASE || 'https://api.openai.com/v1/chat/completions';
@@ -60,10 +64,15 @@ export async function onRequestPost(context) {
     String(env.AI_PROVIDER || '').toLowerCase() === 'gemini' ||
     /generativelanguage\.googleapis\.com/i.test(base);
 
+  // Modèle : un modèle "vision" quand il y a une image, sinon le modèle texte habituel
+  const visionModel = env.AI_VISION_MODEL || 'meta-llama/llama-4-scout-17b-16e-instruct';
+  const textModel = env.AI_MODEL || (isGemini ? 'gemini-2.5-flash' : 'gpt-4o');
+  const model = hasImage ? visionModel : textModel;
+
   try {
     const reply = isGemini
-      ? await callGemini(env, trimmed)
-      : await callOpenAICompat(env, base, trimmed);
+      ? await callGemini(env, trimmed, model)
+      : await callOpenAICompat(env, base, trimmed, model);
     if (!reply) return bad(502, "L'IA n'a rien renvoyé.");
     return new Response(JSON.stringify({ reply }), { status: 200, headers: cors });
   } catch (e) {
@@ -82,12 +91,12 @@ function redactKeys(s) {
 }
 
 /* ---------- Fournisseur « compatible OpenAI » (OpenAI, Groq, OpenRouter…) ---------- */
-async function callOpenAICompat(env, base, trimmed) {
-  const model = env.AI_MODEL || 'gpt-4o';
+async function callOpenAICompat(env, base, trimmed, modelOverride) {
+  const model = modelOverride || env.AI_MODEL || 'gpt-4o';
   const res = await fetch(base, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + env.AI_API_KEY },
-    body: JSON.stringify({ model, messages: trimmed, temperature: 0.6, max_tokens: 1600 })
+    body: JSON.stringify({ model, messages: trimmed, temperature: 0.6, max_tokens: 1800 })
   });
   if (!res.ok) { let d = ''; try { d = (await res.text()).slice(0, 200); } catch (e) {} throw new Error("Erreur IA (" + res.status + "). " + redactKeys(d)); }
   const data = await res.json();
@@ -96,13 +105,27 @@ async function callOpenAICompat(env, base, trimmed) {
 }
 
 /* ---------- Google Gemini (endpoint NATIF — marche avec les clés AQ.… et AIza…) ---------- */
-async function callGemini(env, trimmed) {
-  const model = env.AI_MODEL || 'gemini-2.5-flash';
+async function callGemini(env, trimmed, modelOverride) {
+  const model = modelOverride || env.AI_MODEL || 'gemini-2.5-flash';
   // systemInstruction = tous les messages "system" réunis ; le reste en user/model
-  const sysText = trimmed.filter(m => m.role === 'system').map(m => m.content).join('\n\n');
+  const sysText = trimmed.filter(m => m.role === 'system').map(m => (typeof m.content === 'string' ? m.content : '')).join('\n\n');
+  const toParts = (content) => {
+    if (Array.isArray(content)) {
+      const parts = [];
+      for (const p of content) {
+        if (p && p.type === 'text') parts.push({ text: p.text || '' });
+        else if (p && p.type === 'image_url' && p.image_url && p.image_url.url) {
+          const mm = /^data:([^;]+);base64,(.*)$/.exec(p.image_url.url);
+          if (mm) parts.push({ inline_data: { mime_type: mm[1], data: mm[2] } });
+        }
+      }
+      return parts.length ? parts : [{ text: '' }];
+    }
+    return [{ text: String(content == null ? '' : content) }];
+  };
   const contents = trimmed
     .filter(m => m.role !== 'system')
-    .map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }));
+    .map(m => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: toParts(m.content) }));
   const payload = {
     contents,
     generationConfig: { temperature: 0.6, maxOutputTokens: 1600 }
