@@ -245,13 +245,41 @@ async function callGemini(backend, trimmed, modelOverride, maxTokens) {
 }
 
 // Sonde de disponibilité : GET /api/chat -> {ok, configured, provider, keys}
+// Diagnostic par clé : GET /api/chat?selftest=1 -> teste CHAQUE clé une par une
+//   et renvoie pour chacune si elle répond, sans jamais dévoiler la clé.
 export async function onRequestGet(context) {
   const env = context.env || {};
+  const url = new URL(context.request.url);
   const backends = buildBackends(env);
   const configured = backends.length > 0;
   const first = backends[0];
   const provider = first ? (first.isGemini ? 'gemini' : (env.AI_BASE ? 'openai-compatible' : 'openai')) : 'none';
-  return new Response(JSON.stringify({ ok: true, configured, provider, keys: backends.length }), {
-    headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
-  });
+  const headers = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' };
+
+  if (url.searchParams.get('selftest') === '1') {
+    const ping = [{ role: 'user', content: 'ping' }];
+    const results = [];
+    for (const b of backends) {
+      const t0 = Date.now();
+      let ok = false, info = '';
+      try {
+        const rep = b.isGemini ? await callGemini(b, ping, b.model, 20)
+                               : await callOpenAICompat(b, ping, b.model, 20);
+        ok = !!(rep && String(rep).trim());
+        info = ok ? 'OK' : 'réponse vide';
+      } catch (e) { info = (e && e.message) ? e.message : 'erreur'; }
+      results.push({
+        cle: b.idx,
+        fournisseur: b.isGemini ? 'gemini' : b.base.replace(/^https?:\/\//, '').split('/')[0],
+        modele: b.model,
+        role: b.role,
+        ok,
+        info: redactKeys(info).slice(0, 160),
+        ms: Date.now() - t0
+      });
+    }
+    return new Response(JSON.stringify({ ok: true, keys: backends.length, selftest: results }, null, 2), { headers });
+  }
+
+  return new Response(JSON.stringify({ ok: true, configured, provider, keys: backends.length }), { headers });
 }
