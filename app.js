@@ -234,24 +234,47 @@
     try{ if(typeof firebase!=='undefined' && firebase.auth && firebase.auth().currentUser){ return await firebase.auth().currentUser.getIdToken(); } }catch(e){}
     return '';
   }
+  /* Nettoie/raccourcit une réponse d'IA en un vrai titre court (3-6 mots). */
+  function pbCleanTitle(t){
+    t=String(t||'').split('\n').filter(function(l){return l.trim();})[0]||'';
+    t=t.replace(/["'«»`*]/g,'')
+       .replace(/^\s*(voici|bien sûr|bien sur|d'accord)[^:]*:\s*/i,'')
+       .replace(/^\s*(titre|sujet|thème|theme)\s*[:\-–]\s*/i,'')
+       .replace(/[\s.:;,–-]+$/,'')
+       .replace(/\s+/g,' ').trim();
+    // borne la longueur : max ~7 mots / 56 caractères
+    var words=t.split(' ');
+    if(words.length>7) t=words.slice(0,7).join(' ');
+    if(t.length>56) t=t.slice(0,56).replace(/\s+\S*$/,'').trim();
+    return t;
+  }
   /* Génère un TITRE court et clair pour la conversation à partir du 1er message
-     (comme ChatGPT). Utilise l'IA gratuite -> ne consomme PAS le quota de l'élève
-     ni les clés premium. Repli sur le début du message si indisponible. */
+     (comme ChatGPT). Utilise le backend premium (fiable, minuscule coût) pour les
+     élèves connectés, avec repli sur l'IA gratuite puis sur le début du message.
+     Ne consomme PAS le quota quotidien de l'élève (pas d'appel à PB_quota.inc). */
   async function pbTitleAI(userText){
     var base=String(userText||'').replace(/\s+/g,' ').trim();
     var fallback=base.slice(0,42);
     if(base.length<2) return fallback;
+    var prompt='Donne UNIQUEMENT un titre court de 3 à 6 mots, en français, qui résume ce sujet. '
+      +'Pas de phrase, pas de guillemets, pas de ponctuation finale, ne commence pas par « Titre ». Sujet : '+base.slice(0,240);
+    // 1) Backend premium (fiable) — marche pour tout élève connecté
     try{
-      var prompt='Propose UNIQUEMENT un titre très court (3 à 6 mots) qui résume le sujet, en français, '
-        +'sans guillemets, sans point final, sans le mot "titre". Message : "'+base.slice(0,300)+'"';
+      var r1=await callPremiumAI([{role:'user',content:prompt}]);
+      var t1=pbCleanTitle(r1);
+      if(t1 && t1.length>=2) return t1;
+    }catch(e1){}
+    // 2) Repli : IA gratuite (pollinations)
+    try{
       var res=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({model:'openai',messages:[{role:'user',content:prompt}]})});
       var t='';
       if(res.ok){ var ct=res.headers.get('content-type')||'';
         if(ct.indexOf('json')>=0){ var j=await res.json(); t=extract(j)||''; } else { t=await res.text()||''; } }
-      t=String(t).split('\n')[0].replace(/["'«»`]/g,'').replace(/^\s*(titre|sujet)\s*[:\-–]\s*/i,'').replace(/[\s.:;–-]+$/,'').replace(/\s+/g,' ').trim();
-      if(t && t.length>=2 && t.length<=64) return t;
-    }catch(e){}
+      var t2=pbCleanTitle(t);
+      if(t2 && t2.length>=2) return t2;
+    }catch(e2){}
+    // 3) Repli local : début du message
     return fallback;
   }
   function pbMaybeTitle(c, firstText){
