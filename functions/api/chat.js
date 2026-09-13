@@ -71,6 +71,16 @@ export async function onRequestPost(context) {
   }
 }
 
+/* ---------- Masque toute clé API dans un texte d'erreur (sécurité) ---------- */
+function redactKeys(s) {
+  return String(s == null ? '' : s)
+    .replace(/AQ\.[A-Za-z0-9._\-]+/g, '[clé masquée]')
+    .replace(/AIza[A-Za-z0-9._\-]+/g, '[clé masquée]')
+    .replace(/gsk_[A-Za-z0-9._\-]+/g, '[clé masquée]')
+    .replace(/sk-[A-Za-z0-9._\-]+/g, '[clé masquée]')
+    .replace(/api[_-]?key["'\s:=]+[A-Za-z0-9._\-]+/gi, 'api_key:[masquée]');
+}
+
 /* ---------- Fournisseur « compatible OpenAI » (OpenAI, Groq, OpenRouter…) ---------- */
 async function callOpenAICompat(env, base, trimmed) {
   const model = env.AI_MODEL || 'gpt-4o';
@@ -79,7 +89,7 @@ async function callOpenAICompat(env, base, trimmed) {
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + env.AI_API_KEY },
     body: JSON.stringify({ model, messages: trimmed, temperature: 0.6, max_tokens: 1600 })
   });
-  if (!res.ok) { let d = ''; try { d = (await res.text()).slice(0, 200); } catch (e) {} throw new Error("Erreur IA (" + res.status + "). " + d); }
+  if (!res.ok) { let d = ''; try { d = (await res.text()).slice(0, 200); } catch (e) {} throw new Error("Erreur IA (" + res.status + "). " + redactKeys(d)); }
   const data = await res.json();
   return (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) ||
          (data && data.content && Array.isArray(data.content) && data.content[0] && data.content[0].text) || '';
@@ -106,7 +116,7 @@ async function callGemini(env, trimmed) {
     headers: { 'Content-Type': 'application/json', 'x-goog-api-key': env.AI_API_KEY },
     body: JSON.stringify(payload)
   });
-  if (!res.ok) { let d = ''; try { d = (await res.text()).slice(0, 220); } catch (e) {} throw new Error("Erreur Gemini (" + res.status + "). " + d); }
+  if (!res.ok) { let d = ''; try { d = (await res.text()).slice(0, 220); } catch (e) {} throw new Error("Erreur Gemini (" + res.status + "). " + redactKeys(d)); }
   const data = await res.json();
   const cand = data && data.candidates && data.candidates[0];
   const parts = cand && cand.content && cand.content.parts;

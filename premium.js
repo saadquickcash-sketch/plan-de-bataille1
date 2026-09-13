@@ -236,10 +236,10 @@ if(typeof module!=='undefined' && require.main===module){
 (function(){
   if(typeof window==='undefined' || typeof document==='undefined') return;
   function label(){
-    if(window.PB_LAST_AI==='premium') return {t:'⚡ IA Premium (Gemini)', ok:true};
+    if(window.PB_LAST_AI==='premium') return {t:'⚡ IA Premium (avancée)', ok:true};
     if(window.PB_LAST_AI==='free') return {t:'💬 IA gratuite', ok:false};
     var prem=false; try{ prem=!!(window.PB_isPremium && window.PB_isPremium()); }catch(e){}
-    return prem ? {t:'⚡ IA Premium (Gemini)', ok:true} : {t:'💬 IA gratuite', ok:false};
+    return prem ? {t:'⚡ IA Premium (avancée)', ok:true} : {t:'💬 IA gratuite', ok:false};
   }
   function paint(){
     try{
