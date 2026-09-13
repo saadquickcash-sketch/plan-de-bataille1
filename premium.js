@@ -2,7 +2,7 @@
 /* Fichier autonome : définit window.PB_plan, window.PB_quota, window.PB_redeemCode,
    window.PB_isPremium, window.PB_showUpsell, window.PB_premiumGate. Chargé avant app.js. */
 (function(){
-  var FREE_LIMIT = (typeof window!=='undefined' && window.PB_FREE_LIMIT) ? window.PB_FREE_LIMIT : 10; // messages IA / jour (gratuit)
+  var FREE_LIMIT = (typeof window!=='undefined' && window.PB_FREE_LIMIT) ? window.PB_FREE_LIMIT : 3; // messages IA / jour (gratuit)
   var PRICE = (typeof window!=='undefined' && window.PB_PRICE) ? window.PB_PRICE : '39 DH / mois';
 
   /* ---------- utilitaires purs (testables) ---------- */

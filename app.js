@@ -230,9 +230,14 @@
     try{ var lastU=''; for(var i=c.msgs.length-1;i>=0;i--){ if(c.msgs[i].role==='user'){ lastU=c.msgs[i].content||''; break; } }
       var g=agRetrieve(lastU); if(g){ base.push({role:'system',content:g}); } }catch(e){}
     return base.concat(c.msgs.slice(-16)); }
+  async function pbIdToken(){
+    try{ if(typeof firebase!=='undefined' && firebase.auth && firebase.auth().currentUser){ return await firebase.auth().currentUser.getIdToken(); } }catch(e){}
+    return '';
+  }
   async function callPremiumAI(msgs){
     var ep=(window.PB_AI_ENDPOINT||'/api/chat');
-    var res=await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:msgs})});
+    var tok=await pbIdToken();
+    var res=await fetch(ep,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:msgs, idToken:tok})});
     if(!res.ok) throw new Error('premium '+res.status);
     var j=await res.json(); if(j&&j.reply&&String(j.reply).trim()) return String(j.reply).trim();
     throw new Error('premium empty'); }

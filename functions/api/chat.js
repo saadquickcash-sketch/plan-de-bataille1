@@ -34,6 +34,28 @@
 
 const SLOTS = ['', '2', '3', '4', '5', '6'];           // AI_API_KEY, AI_API_KEY2 … AI_API_KEY6
 const REQUEST_TIMEOUT_MS = 40000;                       // au-delà, on bascule vers la clé suivante
+// Clé PUBLIQUE Firebase (déjà présente dans firebase-config.js du site) — sert à VÉRIFIER
+// les jetons de connexion, jamais à écrire. Surchargeable par la variable AUTH_API_KEY.
+const FIREBASE_API_KEY = 'AIzaSyB_Y5zr_G-BdPP81Hj4IhY2i22hhIPQVLg';
+const ADMIN_EMAIL = 'saad.quickcash@gmail.com';
+
+// Vérifie un jeton d'identité Firebase auprès de Google (pas de secret nécessaire).
+// Renvoie {uid, email, emailVerified} si valide, sinon null.
+async function verifyFirebaseToken(env, idToken) {
+  if (!idToken || typeof idToken !== 'string' || idToken.length < 20) return null;
+  const key = (env && env.AUTH_API_KEY) || FIREBASE_API_KEY;
+  try {
+    const res = await fetchWithTimeout(
+      'https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=' + encodeURIComponent(key),
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ idToken }) }
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    const u = data && data.users && data.users[0];
+    if (!u || !u.localId) return null;
+    return { uid: u.localId, email: (u.email || '').toLowerCase(), emailVerified: !!u.emailVerified };
+  } catch (e) { return null; }
+}
 
 export async function onRequestPost(context) {
   const { request, env } = context;
@@ -51,6 +73,14 @@ export async function onRequestPost(context) {
 
   let body;
   try { body = await request.json(); } catch (e) { return bad(400, 'Requête invalide.'); }
+
+  // ---- SÉCURITÉ : seuls les élèves CONNECTÉS (jeton Firebase valide) peuvent appeler l'IA ----
+  // Empêche n'importe qui de vider tes quotas d'IA sans compte.
+  const authUser = await verifyFirebaseToken(env, body && body.idToken);
+  if (!authUser) {
+    return bad(401, "Connecte-toi à ton compte pour utiliser l'IA.");
+  }
+
   const messages = Array.isArray(body && body.messages) ? body.messages : null;
   if (!messages || !messages.length) return bad(400, 'Aucun message.');
 
@@ -257,6 +287,12 @@ export async function onRequestGet(context) {
   const headers = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' };
 
   if (url.searchParams.get('selftest') === '1') {
+    // Diagnostic réservé à l'administrateur (il consomme un peu de quota par clé).
+    const tok = (context.request.headers.get('Authorization') || '').replace(/^Bearer\s+/i, '');
+    const who = await verifyFirebaseToken(env, tok);
+    if (!who || who.email !== ADMIN_EMAIL) {
+      return new Response(JSON.stringify({ error: "Diagnostic réservé à l'administrateur." }), { status: 403, headers });
+    }
     const ping = [{ role: 'user', content: 'ping' }];
     const results = [];
     for (const b of backends) {
