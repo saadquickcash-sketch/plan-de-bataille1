@@ -107,10 +107,26 @@ function buildBackends(env) {
     if (!key) continue;
     // Chaque variable numérotée hérite de la variable de base si elle n'est pas définie
     const base = env['AI_BASE' + s] || env.AI_BASE || dflBase;
-    const provider = String(env['AI_PROVIDER' + s] || env.AI_PROVIDER || '').toLowerCase();
-    const isGemini = provider === 'gemini' || /generativelanguage\.googleapis\.com/i.test(base);
-    const model = env['AI_MODEL' + s] || env.AI_MODEL || (isGemini ? 'gemini-2.5-flash' : 'gpt-4o');
-    const visionModel = env['AI_VISION_MODEL' + s] || env.AI_VISION_MODEL || (isGemini ? model : 'qwen/qwen3.6-27b');
+    // Une clé Google (AIza… / AQ.…) est reconnue AUTOMATIQUEMENT comme Gemini,
+    // même si AI_PROVIDER{n} n'a pas été renseigné — évite l'erreur « Invalid API Key ».
+    const looksGemini = /^AIza[\w\-]{20,}$/.test(key) || /^AQ\.[\w\-.]{10,}$/.test(key);
+    const slotProv = env['AI_PROVIDER' + s];                 // fournisseur défini pour CETTE clé (ou rien)
+    let isGemini;
+    if (slotProv) {
+      isGemini = String(slotProv).toLowerCase() === 'gemini';
+    } else {
+      isGemini = String(env.AI_PROVIDER || '').toLowerCase() === 'gemini'
+        || /generativelanguage\.googleapis\.com/i.test(base)
+        || looksGemini;                                      // détection par la forme de la clé
+    }
+    // Modèle : pour Gemini on force un modèle Gemini valide si l'hérité n'en est pas un.
+    let model = env['AI_MODEL' + s] || env.AI_MODEL || '';
+    if (isGemini && !/gemini|gemma/i.test(model)) model = 'gemini-2.5-flash';
+    if (!isGemini && !model) model = 'gpt-4o';
+    // Modèle « vision » : Gemini est multimodal (même modèle) ; sinon modèle vision dédié.
+    let visionModel;
+    if (isGemini) visionModel = env['AI_VISION_MODEL' + s] || model;
+    else visionModel = env['AI_VISION_MODEL' + s] || env.AI_VISION_MODEL || 'qwen/qwen3.6-27b';
     const textMax = Number(env['AI_MAXTOK' + s] || env.AI_MAXTOK) || 1800;
     const visionMax = Number(env['AI_VISION_MAXTOK' + s] || env.AI_VISION_MAXTOK) || 900;
     let role = String(env['AI_ROLE' + s] || 'all').toLowerCase();
