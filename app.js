@@ -502,6 +502,41 @@
     rec.onresult=function(e){ var t=''; for(var i=0;i<e.results.length;i++) t+=e.results[i][0].transcript; ti.value=(base?base+' ':'')+t; if(ti===cfInput) autoGrow(cfInput); };
     rec.onerror=function(){}; rec.onend=function(){ b.classList.remove('rec'); rec=null; if(ti) ti.focus(); };
     try{ rec.start(); }catch(e){ b.classList.remove('rec'); rec=null; } }); });
+  /* ===== Mode vocal : conversation mains-libres façon Gemini ===== */
+  var VOICE_ON=false, vrec=null;
+  function voiceCleanTTS(t){ t=String(t||'');
+    t=t.replace(/```[\s\S]*?```/g,' . ');
+    t=t.replace(/\$\$([\s\S]*?)\$\$/g,' . ').replace(/\$[^$\n]*\$/g,' ');
+    t=t.replace(/\\[a-zA-Z]+/g,' ').replace(/[{}\\^_~#>*`|]/g,' ');
+    t=t.replace(/\s+/g,' ').trim(); return t.slice(0,700); }
+  function voiceCss(){ if(document.getElementById('pbVoiceCss')) return; var s=document.createElement('style'); s.id='pbVoiceCss';
+    s.textContent='#pbVoiceBar{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);z-index:100001;display:none;align-items:center;gap:12px;background:linear-gradient(135deg,#7c5cff,#4b3fa7);color:#fff;padding:12px 18px;border-radius:30px;box-shadow:0 12px 40px rgba(80,60,180,.45);font:600 14px system-ui,-apple-system,sans-serif}'
+      +'#pbVoiceBar .pbv-dot{width:12px;height:12px;border-radius:50%;background:#fff;animation:pbvP 1s infinite}'
+      +'@keyframes pbvP{0%,100%{opacity:.4;transform:scale(.75)}50%{opacity:1;transform:scale(1.35)}}'
+      +'#pbVoiceBar.speak .pbv-dot{animation:none;background:#ffe08a}#pbVoiceBar.think .pbv-dot{background:#d7d0ff}'
+      +'#pbVoiceBar .pbv-stop{border:0;background:rgba(255,255,255,.22);color:#fff;font-weight:700;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:13px}'
+      +'#pbVoiceBar .pbv-stop:hover{background:rgba(255,255,255,.36)}'
+      +'.voice-mode-btn.on{background:#6c5ce7!important;color:#fff!important}';
+    document.head.appendChild(s); }
+  function voiceBar(){ voiceCss(); var el=document.getElementById('pbVoiceBar'); if(!el){ el=document.createElement('div'); el.id='pbVoiceBar'; el.innerHTML='<span class="pbv-dot"></span><span class="pbv-txt"></span><button class="pbv-stop" type="button">■ Arrêter</button>'; el.querySelector('.pbv-stop').addEventListener('click',voiceStop); document.body.appendChild(el); } return el; }
+  function voiceState(st){ var el=voiceBar(); el.className=st; el.style.display='flex'; el.querySelector('.pbv-txt').textContent= st==='listen'?"🎙️ Je t'écoute…" : (st==='think'?'🤔 Je réfléchis…':'🔊 Je réponds…'); }
+  function voiceSpeak(text,cb){ try{ var syn=window.speechSynthesis; if(!syn){ cb&&cb(); return; } var c=voiceCleanTTS(text); if(!c){ cb&&cb(); return; } var u=new SpeechSynthesisUtterance(c); u.lang=(/[؀-ۿ]/.test(c)?'ar-SA':'fr-FR'); u.rate=1; try{var vs=syn.getVoices();var v=vs.filter(function(x){return x.lang&&x.lang.slice(0,2)===u.lang.slice(0,2);})[0];if(v)u.voice=v;}catch(_){} u.onend=function(){ cb&&cb(); }; u.onerror=function(){ cb&&cb(); }; syn.cancel(); syn.speak(u); }catch(e){ cb&&cb(); } }
+  function voiceListen(){ if(!VOICE_ON) return; if(!SR){ voiceStop(); return; } try{ vrec=new SR(); }catch(e){ setTimeout(voiceListen,600); return; } vrec.lang='fr-FR'; vrec.interimResults=false; vrec.continuous=false; var got=false; voiceState('listen');
+    vrec.onresult=function(e){ var t=''; for(var i=0;i<e.results.length;i++) t+=e.results[i][0].transcript; t=t.trim(); if(t){ got=true; voiceHandle(t); } };
+    vrec.onerror=function(){};
+    vrec.onend=function(){ vrec=null; if(VOICE_ON && !got) setTimeout(voiceListen,400); };
+    try{ vrec.start(); }catch(e){ setTimeout(voiceListen,700); } }
+  async function voiceHandle(text){ voiceState('think'); var ai=activeInput(); if(ai) ai.value='';
+    var before=(cur().msgs||[]).filter(function(m){return m.role==='assistant';}).length;
+    try{ await ask(text); }catch(e){}
+    if(!VOICE_ON) return;
+    var am=(cur().msgs||[]).filter(function(m){return m.role==='assistant';});
+    var reply = am.length>before ? am[am.length-1].content : '';
+    voiceState('speak');
+    voiceSpeak(reply||"Je n'ai pas pu répondre, réessaie.", function(){ if(VOICE_ON) voiceListen(); }); }
+  function voiceStart(){ if(!SR){ try{ toast('Le mode vocal fonctionne sur Chrome (ordi ou Android).'); }catch(_){} return; } if(VOICE_ON){ voiceStop(); return; } VOICE_ON=true; try{ openPanel(); }catch(_){} document.querySelectorAll('.voice-mode-btn').forEach(function(b){ b.classList.add('on'); }); voiceListen(); }
+  function voiceStop(){ VOICE_ON=false; try{ if(vrec) vrec.stop(); }catch(_){} vrec=null; try{ window.speechSynthesis.cancel(); }catch(_){} var el=document.getElementById('pbVoiceBar'); if(el) el.style.display='none'; document.querySelectorAll('.voice-mode-btn').forEach(function(b){ b.classList.remove('on'); }); }
+  if(SR){ document.querySelectorAll('.mic-btn').forEach(function(mic){ if(!mic.parentNode || mic.parentNode.querySelector('.voice-mode-btn')) return; var vb=document.createElement('button'); vb.type='button'; vb.className='io-btn voice-mode-btn'; vb.title='Mode vocal — parle avec l\'IA (mains-libres)'; vb.innerHTML='🎧'; vb.addEventListener('click',voiceStart); mic.parentNode.insertBefore(vb, mic.nextSibling); }); }
   document.querySelectorAll('.gen-btn').forEach(function(b){ b.addEventListener('click',function(){ var ti=activeInput(); var v=(ti&&ti.value.trim())||''; if(!v){ openPanel(); var t2=activeInput(); if(t2){ t2.placeholder='Décris l\'image à créer, puis reclique 🎨'; t2.focus(); } return; } genImage(v); }); });
   var cfMenu=document.getElementById('cfMenu'); if(cfMenu&&full) cfMenu.addEventListener('click',function(e){ e.stopPropagation(); full.classList.toggle('side-open'); });
   if(cfList) cfList.addEventListener('click',function(){ if(full) full.classList.remove('side-open'); });
