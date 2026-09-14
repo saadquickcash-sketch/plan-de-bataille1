@@ -300,8 +300,12 @@
     throw new Error('premium empty'); }
   async function callAI(c){
     var msgs=msgsForAPI(c);
-    try{ window.PB_LAST_AI='free'; }catch(_){}
-    if(window.PB_isPremium && window.PB_isPremium()){ try{ var prem=await callPremiumAI(msgs); if(prem){ try{ window.PB_LAST_AI='premium'; }catch(_){} return prem; } }catch(ep){} }
+    var _isPrem=false; try{ _isPrem=!!(window.PB_isPremium && window.PB_isPremium()); }catch(_){}
+    // Badge « avancée » dès le départ pour un abonné (pas de clignotement « gratuite »
+    // pendant l'attente) ; on ne repasse en « gratuite » que si l'IA premium échoue vraiment.
+    try{ window.PB_LAST_AI=_isPrem?'premium':'free'; if(window.PB_paintAiBadge) window.PB_paintAiBadge(); }catch(_){}
+    if(_isPrem){ try{ var prem=await callPremiumAI(msgs); if(prem){ try{ window.PB_LAST_AI='premium'; }catch(_){} return prem; } }catch(ep){} }
+    try{ window.PB_LAST_AI='free'; if(window.PB_paintAiBadge) window.PB_paintAiBadge(); }catch(_){}
     try{ var ok=await ensurePuter(); if(ok){
       var mdl=['gpt-4o-mini',null];
       for(var mi=0;mi<mdl.length;mi++){ try{ var r= mdl[mi] ? await puter.ai.chat(msgs,{model:mdl[mi]}) : await puter.ai.chat(msgs); var t=extract(r); if(t&&t.trim()) return t.trim(); }catch(em){} }
@@ -433,11 +437,14 @@
     var meth=' Procède ainsi : 1) lis attentivement l\'énoncé sur la photo et reformule ce qui est demandé ; 2) identifie les données et la méthode ; 3) résous étape par étape en justifiant chaque calcul (formules en LaTeX $ … $) ; 4) vérifie ton résultat final (recalcule, teste un cas simple) ; 5) donne la réponse finale encadrée. Si c\'est un cours ou un schéma, explique-le clairement.';
     var q=(text?text+'.':'Résous cet exercice photographié.')+meth+' /no_think';
     var draft='';
+    var _isPrem=false; try{ _isPrem=!!(window.PB_isPremium && window.PB_isPremium()); }catch(_){}
+    try{ window.PB_LAST_AI=_isPrem?'premium':'free'; if(window.PB_paintAiBadge) window.PB_paintAiBadge(); }catch(_){}
     // Premium : IA vision puissante (Groq Qwen vision) via /api/chat
-    try{ if(window.PB_isPremium && window.PB_isPremium()){
+    try{ if(_isPrem){
       var pmsgs=[{role:'system',content:sysText()},{role:'user',content:[{type:'text',text:q},{type:'image_url',image_url:{url:dataUrl}}]}];
       var pr=await callPremiumAI(pmsgs); if(pr){ draft=pr; try{ window.PB_LAST_AI='premium'; }catch(_){} }
     } }catch(e){}
+    if(!draft){ try{ window.PB_LAST_AI='free'; if(window.PB_paintAiBadge) window.PB_paintAiBadge(); }catch(_){} }
     if(!draft){ try{ var ok=await ensurePuter(); if(ok){ var r=await puter.ai.chat(q,dataUrl); var t=extract(r); if(t&&t.trim()){ draft=t.trim(); try{ window.PB_LAST_AI='free'; }catch(_){} } } }catch(e){} }
     if(!draft){ try{ var msgs=[{role:'system',content:sysText()},{role:'user',content:[{type:'text',text:q},{type:'image_url',image_url:{url:dataUrl}}]}];
       var res=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:msgs})});
