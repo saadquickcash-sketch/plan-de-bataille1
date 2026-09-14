@@ -176,7 +176,38 @@
       }
     return d; }
   function fillBox(box,c){ if(!box)return; box.innerHTML='';
-    if(!c.msgs.length){ var w=document.createElement('div'); w.className='cp-empty'; w.textContent='Pose ta question, dicte-la 🎤 ou prends une photo 📎 d\'un exercice.'; box.appendChild(w); }
+    if(!c.msgs.length){
+      if(!document.getElementById('pbHelloCss')){
+        var _hs=document.createElement('style'); _hs.id='pbHelloCss';
+        _hs.textContent='.cf-hello{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;min-height:56vh;padding:24px 16px;gap:4px;box-sizing:border-box}'
+          +'.cf-hello-h{font-family:Newsreader,serif;font-size:clamp(1.55rem,3.4vw,2.35rem);font-weight:600;line-height:1.15}'
+          +'.cf-hello-p{opacity:.68;font-size:1rem;margin:4px 0 16px}'
+          +'.cf-sugg{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;width:100%;max-width:580px}'
+          +'.cf-sugg button{border:1px solid rgba(140,130,210,.4);background:rgba(140,130,210,.08);color:inherit;border-radius:15px;padding:12px 16px;font-size:.92rem;font-family:inherit;font-weight:600;cursor:pointer;transition:.13s}'
+          +'.cf-sugg button:hover{border-color:#6c5ce7;background:rgba(140,130,210,.18);transform:translateY(-1px)}'
+          +'.cp-msgs .cf-hello{min-height:34vh;padding:14px 8px}'
+          +'.cp-msgs .cf-hello-h{font-size:1.3rem}'
+          +'.cp-msgs .cf-sugg{gap:7px}'
+          +'.cp-msgs .cf-sugg button{font-size:.82rem;padding:9px 12px;border-radius:12px}'
+          +'.cf-inwrap .cf-in{border-radius:26px}.cp-in{border-radius:22px}';
+        document.head.appendChild(_hs);
+      }
+      var nm=(window.PB_USERNAME||'').trim();
+      var w=document.createElement('div'); w.className='cf-hello';
+      w.innerHTML='<div class="cf-hello-h">Bonjour'+(nm?' '+esc(nm):'')+' 👋</div>'
+        +'<div class="cf-hello-p">Par quoi commence-t-on aujourd’hui&nbsp;?</div>'
+        +'<div class="cf-sugg">'
+        +'<button type="button" data-s="Explique-moi ce chapitre clairement, étape par étape, avec un exemple et 2 exercices corrigés : ">📘 Expliquer un cours</button>'
+        +'<button type="button" data-s="Donne-moi une série de 5 exercices progressifs avec correction détaillée sur : ">✍️ Exercices corrigés</button>'
+        +'<button type="button" data-s="Fais-moi passer un QCM interactif de 6 questions (je clique mes réponses, tu corriges) sur : ">🧭 Me tester (QCM)</button>'
+        +'<button type="button" data-s="Corrige mon exercice et note-le : voici ce que j’ai fait — ">📸 Corriger ma copie</button>'
+        +'</div>';
+      box.appendChild(w);
+      Array.prototype.forEach.call(w.querySelectorAll('.cf-sugg button'),function(bt){
+        bt.addEventListener('click',function(){ var inp=activeInput(); if(inp){ inp.value=bt.getAttribute('data-s'); inp.focus(); try{ autoGrow(inp); }catch(_){} } });
+      });
+      return;
+    }
     c.msgs.forEach(function(m){ box.appendChild(bubbleEl(m.role==='assistant'?'ai':'user',m.content,m.img)); }); box.scrollTop=box.scrollHeight; }
   function renderMsgs(){ var c=cur(); fillBox(msgsEl,c); fillBox(cfMsgs,c); if(cfTitle) cfTitle.textContent=c.title||'Tuteur IA'; }
   function renderList(){ if(!cfList)return; cfList.innerHTML=''; convos.slice().sort(function(a,b){return b.t-a.t;}).forEach(function(c){
@@ -704,7 +735,22 @@ var PBCHAT_CSS=''
 + '.qzc-exp.b{background:rgba(214,69,69,.09);border-color:rgba(214,69,69,.35)}'
 + '.qzc-next{margin-top:10px;padding:8px 15px;border:0;background:var(--accent,#6c5ce7);color:#fff;border-radius:9px;font-weight:700;font-size:.86rem;cursor:pointer}'
 + '.qzc-next:hover{filter:brightness(1.06)}'
-+ '.qzc-final{font-size:1rem;margin:6px 0}';
++ '.qzc-final{font-size:1rem;margin:6px 0}'
+/* ===== Accueil du chat façon Gemini : mot de bienvenue centré + suggestions ===== */
++ '.cf-hello{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center!important;width:100%;min-height:56vh;padding:24px 16px;gap:4px;box-sizing:border-box}'
++ '.cf-hello-h{font-family:Newsreader,serif;font-size:clamp(1.55rem,3.4vw,2.35rem);font-weight:600;color:var(--text,#1f2340);line-height:1.15;text-align:center}'
++ '.cf-hello-p{color:var(--muted,#8a86a0);font-size:1rem;margin:4px 0 16px;text-align:center}'
++ '.cf-sugg{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;width:100%;max-width:580px}'
++ '.cf-sugg button{border:1px solid rgba(140,130,210,.38);background:rgba(140,130,210,.06);color:inherit;border-radius:15px;padding:12px 16px;font-size:.92rem;font-family:inherit;font-weight:600;cursor:pointer;transition:.13s}'
++ '.cf-sugg button:hover{border-color:var(--accent,#6c5ce7);background:rgba(140,130,210,.16);transform:translateY(-1px)}'
++ '.cp-msgs .cf-hello{min-height:38vh;padding:16px 8px}'
++ '.cp-msgs .cf-hello-h{font-size:1.3rem}'
++ '.cp-msgs .cf-hello-p{font-size:.9rem;margin-bottom:12px}'
++ '.cp-msgs .cf-sugg{gap:7px}'
++ '.cp-msgs .cf-sugg button{font-size:.82rem;padding:9px 12px;border-radius:12px}'
+/* Barre de saisie plus douce et arrondie (façon Gemini) */
++ '.cf-inwrap .cf-in{border-radius:26px;box-shadow:0 6px 22px rgba(80,60,180,.10)}'
++ '.cp-in{border-radius:22px}';
 function ensureChatCss(){ if(document.getElementById('pbChatCss')) return; var s=document.createElement('style'); s.id='pbChatCss'; s.textContent=PBCHAT_CSS; document.head.appendChild(s); }
 function fmtInlineLight(s){ var h=esc(s); h=h.replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>'); h=h.replace(/`([^`]+)`/g,'<code>$1</code>'); h=h.replace(/\n/g,'<br>'); return h; }
 function fmtChat(s){
@@ -1111,8 +1157,30 @@ function agEvalNum(expr){ try{
 function agVerifyArithmetic(text){ return text; }
 /* Normalise les maths pour un rendu fiable : \[ \] -> $$, \( \) -> $, et met chaque bloc $$..$$ sur une seule ligne */
 function agMathNormalize(s){ if(!s) return s; s=String(s);
+  // 1) Délimiteurs LaTeX standard -> $ / $$
   s=s.split('\\[').join('$$').split('\\]').join('$$').split('\\(').join('$').split('\\)').join('$');
+  // 2) En-têtes markdown avalés dans des maths ($### x$ ou $$### x$$) -> vrai titre sur sa ligne
+  s=s.replace(/\${1,2}\s*(#{1,6}\s+[^$\n]*?)\s*\${1,2}/g, '\n$1\n');
+  // 2b) En-tête ### collé au milieu d'une ligne -> passe à la ligne
+  s=s.replace(/([^\n#])\s+(#{2,6}\s+)/g, '$1\n$2');
+  // 3) Réunit les $$…$$ sur une seule ligne
   s=s.replace(/\$\$([\s\S]*?)\$\$/g,function(_x,inner){ return '$$'+inner.replace(/\s*\n\s*/g,' ').trim()+'$$'; });
+  // 4) Encadre automatiquement les lignes de maths « nues » (LaTeX écrit sans $)
+  var TEX=/\\(?:d?frac|sqrt|lim|sum|prod|int|iint|boxed|left|right|begin|end|cdot|times|div|pm|mp|approx|sim|simeq|equiv|geq|leq|neq|ll|gg|infty|partial|nabla|vec|overrightarrow|overline|underline|widehat|hat|bar|dot|ddot|alpha|beta|gamma|delta|theta|vartheta|kappa|lambda|mu|nu|xi|rho|sigma|tau|phi|varphi|chi|psi|omega|Gamma|Delta|Theta|Lambda|Sigma|Phi|Psi|Omega|quad|qquad|to|mapsto|rightarrow|leftarrow|Rightarrow|Leftrightarrow|implies|iff|forall|exists|in|notin|subset|subseteq|supset|cup|cap|emptyset|mathbb|mathcal|mathrm|text|binom|choose|log|ln|exp|sin|cos|tan|cot|sec|csc|arcsin|arccos|arctan|sinh|cosh|tanh|deg|bmod|pmod)\b|\^\s*\{|_\s*\{|\^\s*\d|_\s*\d/;
+  s=s.split('\n').map(function(line){
+    var t=line.trim();
+    if(!t) return line;
+    if(t.indexOf('$')>=0) return line;                               // déjà délimité
+    if(/^(#{1,6}\s|[-*•]\s|\d+[.)]\s|>|\||```)/.test(t)) return line; // titre / liste / citation / code
+    if(TEX.test(t)){
+      var lead=line.slice(0, line.length-line.trimStart().length);
+      return lead+'$$'+t+'$$';
+    }
+    return line;
+  }).join('\n');
+  // 5) Sécurité : supprime un $ solitaire final (formule tronquée) pour éviter un rendu cassé
+  var dollars=(s.match(/(?<!\\)\$/g)||[]).length;
+  if(dollars%2===1){ s=s.replace(/\s*\$\s*$/,''); }
   return s;
 }
 
