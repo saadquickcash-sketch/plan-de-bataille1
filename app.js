@@ -498,12 +498,17 @@
   var SR=window.SpeechRecognition||window.webkitSpeechRecognition, rec=null;
   if(!SR){ document.querySelectorAll('.mic-btn').forEach(function(b){ b.style.display='none'; }); }
   document.querySelectorAll('.mic-btn').forEach(function(b){ b.addEventListener('click',function(){ if(!SR) return; var ti=activeInput(); if(rec){ rec.stop(); return; }
-    rec=new SR(); rec.lang='fr-FR'; rec.interimResults=true; rec.continuous=false; var base=ti.value; b.classList.add('rec');
+    rec=new SR(); try{ rec.lang=getVoiceLang(); }catch(_){ rec.lang='fr-FR'; } rec.interimResults=true; rec.continuous=false; var base=ti.value; b.classList.add('rec');
     rec.onresult=function(e){ var t=''; for(var i=0;i<e.results.length;i++) t+=e.results[i][0].transcript; ti.value=(base?base+' ':'')+t; if(ti===cfInput) autoGrow(cfInput); };
     rec.onerror=function(){}; rec.onend=function(){ b.classList.remove('rec'); rec=null; if(ti) ti.focus(); };
     try{ rec.start(); }catch(e){ b.classList.remove('rec'); rec=null; } }); });
-  /* ===== Mode vocal : conversation mains-libres façon Gemini ===== */
+  /* ===== Mode vocal : conversation mains-libres façon Gemini (FR / arabe / darija) ===== */
   var VOICE_ON=false, vrec=null;
+  var VLANGS=[{c:'fr-FR',n:'FR'},{c:'ar-MA',n:'الدارجة'},{c:'ar-SA',n:'العربية'}];
+  function getVoiceLang(){ try{ var v=localStorage.getItem('pb_voice_lang'); return (v&&/^(fr-FR|ar-MA|ar-SA)$/.test(v))?v:'fr-FR'; }catch(e){ return 'fr-FR'; } }
+  function setVoiceLang(l){ try{ localStorage.setItem('pb_voice_lang',l); }catch(e){} }
+  function voiceLangName(){ var c=getVoiceLang(); for(var i=0;i<VLANGS.length;i++){ if(VLANGS[i].c===c) return VLANGS[i].n; } return 'FR'; }
+  function cycleVoiceLang(){ var c=getVoiceLang(), i=0; for(var k=0;k<VLANGS.length;k++){ if(VLANGS[k].c===c){ i=k; break; } } var nx=VLANGS[(i+1)%VLANGS.length]; setVoiceLang(nx.c); return nx; }
   function voiceCleanTTS(t){ t=String(t||'');
     t=t.replace(/```[\s\S]*?```/g,' . ');
     t=t.replace(/\$\$([\s\S]*?)\$\$/g,' . ').replace(/\$[^$\n]*\$/g,' ');
@@ -514,14 +519,25 @@
       +'#pbVoiceBar .pbv-dot{width:12px;height:12px;border-radius:50%;background:#fff;animation:pbvP 1s infinite}'
       +'@keyframes pbvP{0%,100%{opacity:.4;transform:scale(.75)}50%{opacity:1;transform:scale(1.35)}}'
       +'#pbVoiceBar.speak .pbv-dot{animation:none;background:#ffe08a}#pbVoiceBar.think .pbv-dot{background:#d7d0ff}'
+      +'#pbVoiceBar .pbv-lang{border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.14);color:#fff;font-weight:700;padding:5px 11px;border-radius:20px;cursor:pointer;font-size:12.5px}'
+      +'#pbVoiceBar .pbv-lang:hover{background:rgba(255,255,255,.3)}'
       +'#pbVoiceBar .pbv-stop{border:0;background:rgba(255,255,255,.22);color:#fff;font-weight:700;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:13px}'
       +'#pbVoiceBar .pbv-stop:hover{background:rgba(255,255,255,.36)}'
       +'.voice-mode-btn.on{background:#6c5ce7!important;color:#fff!important}';
     document.head.appendChild(s); }
-  function voiceBar(){ voiceCss(); var el=document.getElementById('pbVoiceBar'); if(!el){ el=document.createElement('div'); el.id='pbVoiceBar'; el.innerHTML='<span class="pbv-dot"></span><span class="pbv-txt"></span><button class="pbv-stop" type="button">■ Arrêter</button>'; el.querySelector('.pbv-stop').addEventListener('click',voiceStop); document.body.appendChild(el); } return el; }
-  function voiceState(st){ var el=voiceBar(); el.className=st; el.style.display='flex'; el.querySelector('.pbv-txt').textContent= st==='listen'?"🎙️ Je t'écoute…" : (st==='think'?'🤔 Je réfléchis…':'🔊 Je réponds…'); }
+  function voiceBar(){ voiceCss(); var el=document.getElementById('pbVoiceBar'); if(!el){ el=document.createElement('div'); el.id='pbVoiceBar'; el.innerHTML='<span class="pbv-dot"></span><span class="pbv-txt"></span><button class="pbv-lang" type="button" title="Changer la langue (Français / الدارجة / العربية)"></button><button class="pbv-stop" type="button">■ Arrêter</button>';
+      el.querySelector('.pbv-stop').addEventListener('click',voiceStop);
+      el.querySelector('.pbv-lang').addEventListener('click',function(){ var nx=cycleVoiceLang(); this.textContent=nx.n; if(VOICE_ON){ try{ if(vrec) vrec.stop(); }catch(_){} try{ voiceState('listen'); }catch(_){} } });
+      document.body.appendChild(el); }
+    var lb=el.querySelector('.pbv-lang'); if(lb) lb.textContent=voiceLangName();
+    return el; }
+  function voiceState(st){ var el=voiceBar(); el.className=st; el.style.display='flex'; var ar=/^ar/.test(getVoiceLang());
+    var txt = st==='listen' ? (ar?"🎙️ أنا أستمع…":"🎙️ Je t'écoute…")
+            : st==='think'  ? (ar?"🤔 أفكّر…":'🤔 Je réfléchis…')
+            :                  (ar?"🔊 أُجيب…":'🔊 Je réponds…');
+    el.querySelector('.pbv-txt').textContent=txt; }
   function voiceSpeak(text,cb){ try{ var syn=window.speechSynthesis; if(!syn){ cb&&cb(); return; } var c=voiceCleanTTS(text); if(!c){ cb&&cb(); return; } var u=new SpeechSynthesisUtterance(c); u.lang=(/[؀-ۿ]/.test(c)?'ar-SA':'fr-FR'); u.rate=1; try{var vs=syn.getVoices();var v=vs.filter(function(x){return x.lang&&x.lang.slice(0,2)===u.lang.slice(0,2);})[0];if(v)u.voice=v;}catch(_){} u.onend=function(){ cb&&cb(); }; u.onerror=function(){ cb&&cb(); }; syn.cancel(); syn.speak(u); }catch(e){ cb&&cb(); } }
-  function voiceListen(){ if(!VOICE_ON) return; if(!SR){ voiceStop(); return; } try{ vrec=new SR(); }catch(e){ setTimeout(voiceListen,600); return; } vrec.lang='fr-FR'; vrec.interimResults=false; vrec.continuous=false; var got=false; voiceState('listen');
+  function voiceListen(){ if(!VOICE_ON) return; if(!SR){ voiceStop(); return; } try{ vrec=new SR(); }catch(e){ setTimeout(voiceListen,600); return; } vrec.lang=getVoiceLang(); vrec.interimResults=false; vrec.continuous=false; var got=false; voiceState('listen');
     vrec.onresult=function(e){ var t=''; for(var i=0;i<e.results.length;i++) t+=e.results[i][0].transcript; t=t.trim(); if(t){ got=true; voiceHandle(t); } };
     vrec.onerror=function(){};
     vrec.onend=function(){ vrec=null; if(VOICE_ON && !got) setTimeout(voiceListen,400); };
