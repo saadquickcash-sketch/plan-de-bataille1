@@ -148,7 +148,11 @@
     if(role==='ai'){ try{ agEnhanceCode(d); }catch(_){} }
     if(role==='ai'){ var spoken=text; var bar=document.createElement('div'); bar.className='msg-bar';
       var sp=document.createElement('button'); sp.className='msg-ic'; sp.title='Écouter'; sp.innerHTML='&#128266;';
-      sp.addEventListener('click',function(e){ e.stopPropagation(); try{ var syn=window.speechSynthesis; if(!syn)return; if(syn.speaking){ syn.cancel(); return; } var u=new SpeechSynthesisUtterance(spoken); u.lang=(/[\u0600-\u06FF]/.test(spoken)?'ar-SA':'fr-FR'); u.rate=.98; syn.cancel(); syn.speak(u); }catch(_){} });
+      sp.addEventListener('click',function(e){ e.stopPropagation(); try{ var syn=window.speechSynthesis; if(!syn)return; if(syn.speaking){ syn.cancel(); return; }
+        var lang=(/[\u0600-\u06FF]/.test(spoken)?'ar-SA':'fr-FR');
+        var doSpeak=function(){ try{ var u=new SpeechSynthesisUtterance(spoken); u.lang=lang; u.rate=.98; try{ var v=voicePick(lang); if(v){ u.voice=v; u.lang=v.lang; } }catch(_){} syn.cancel(); syn.speak(u); }catch(_){} };
+        if((syn.getVoices()||[]).length) doSpeak(); else { try{ syn.onvoiceschanged=doSpeak; }catch(_){} setTimeout(doSpeak,350); }
+      }catch(_){} });
       bar.appendChild(sp);
       var dl=document.createElement('button'); dl.className='msg-ic'; dl.title='Télécharger (.md)'; dl.innerHTML='&#8681;';
       dl.addEventListener('click',function(e){ e.stopPropagation(); try{ var blob=new Blob([spoken],{type:'text/markdown;charset=utf-8'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='tuteur-ia.md'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1200); }catch(_){} });
@@ -504,8 +508,8 @@
     try{ rec.start(); }catch(e){ b.classList.remove('rec'); rec=null; } }); });
   /* ===== Mode vocal : conversation mains-libres façon Gemini (FR / arabe / darija) ===== */
   var VOICE_ON=false, vrec=null;
-  var VLANGS=[{c:'fr-FR',n:'FR'},{c:'ar-MA',n:'الدارجة'},{c:'ar-SA',n:'العربية'}];
-  function getVoiceLang(){ try{ var v=localStorage.getItem('pb_voice_lang'); return (v&&/^(fr-FR|ar-MA|ar-SA)$/.test(v))?v:'fr-FR'; }catch(e){ return 'fr-FR'; } }
+  var VLANGS=[{c:'fr-FR',n:'FR'},{c:'ar-SA',n:'العربية'}];
+  function getVoiceLang(){ try{ var v=localStorage.getItem('pb_voice_lang'); if(v==='ar-MA') v='ar-SA'; return (v&&/^(fr-FR|ar-SA)$/.test(v))?v:'fr-FR'; }catch(e){ return 'fr-FR'; } }
   function setVoiceLang(l){ try{ localStorage.setItem('pb_voice_lang',l); }catch(e){} }
   function voiceLangName(){ var c=getVoiceLang(); for(var i=0;i<VLANGS.length;i++){ if(VLANGS[i].c===c) return VLANGS[i].n; } return 'FR'; }
   function cycleVoiceLang(){ var c=getVoiceLang(), i=0; for(var k=0;k<VLANGS.length;k++){ if(VLANGS[k].c===c){ i=k; break; } } var nx=VLANGS[(i+1)%VLANGS.length]; setVoiceLang(nx.c); return nx; }
@@ -536,7 +540,34 @@
             : st==='think'  ? (ar?"🤔 أفكّر…":'🤔 Je réfléchis…')
             :                  (ar?"🔊 أُجيب…":'🔊 Je réponds…');
     el.querySelector('.pbv-txt').textContent=txt; }
-  function voiceSpeak(text,cb){ try{ var syn=window.speechSynthesis; if(!syn){ cb&&cb(); return; } var c=voiceCleanTTS(text); if(!c){ cb&&cb(); return; } var u=new SpeechSynthesisUtterance(c); u.lang=(/[؀-ۿ]/.test(c)?'ar-SA':'fr-FR'); u.rate=1; try{var vs=syn.getVoices();var v=vs.filter(function(x){return x.lang&&x.lang.slice(0,2)===u.lang.slice(0,2);})[0];if(v)u.voice=v;}catch(_){} u.onend=function(){ cb&&cb(); }; u.onerror=function(){ cb&&cb(); }; syn.cancel(); syn.speak(u); }catch(e){ cb&&cb(); } }
+  function voicePick(lang){ try{ var vs=window.speechSynthesis.getVoices()||[]; var p=lang.slice(0,2).toLowerCase();
+    var same=vs.filter(function(v){ return v.lang && v.lang.toLowerCase().indexOf(p)===0; });
+    // pour l'arabe, préfère une voix Google (en ligne, souvent la seule qui lit vraiment l'arabe)
+    var g=same.filter(function(v){ return /google/i.test(v.name||''); })[0];
+    return g||same[0]||null; }catch(e){ return null; } }
+  function voiceSpeak(text,cb){
+    var syn=window.speechSynthesis; if(!syn){ cb&&cb(); return; }
+    var c=voiceCleanTTS(text); if(!c){ cb&&cb(); return; }
+    var lang=(/[؀-ۿ]/.test(c)?'ar-SA':'fr-FR');
+    function go(){ try{
+      var u=new SpeechSynthesisUtterance(c); u.lang=lang; u.rate=1; u.pitch=1;
+      var v=voicePick(lang); if(v){ u.voice=v; u.lang=v.lang; }
+      var done=false; function fin(){ if(done) return; done=true; try{ cb&&cb(); }catch(_){} }
+      u.onend=fin; u.onerror=fin;
+      try{ syn.cancel(); }catch(_){}
+      syn.speak(u);
+      // filet de sécurité : si la synthèse ne démarre pas (aucune voix pour la langue), on n'attend pas indéfiniment
+      setTimeout(function(){ if(!done && !syn.speaking && !syn.pending){ fin(); } }, 1400);
+    }catch(e){ cb&&cb(); } }
+    // s'assure que la liste des voix est chargée (sinon la voix arabe n'est pas trouvée -> aucun son)
+    var vs=syn.getVoices();
+    if(vs && vs.length){ go(); }
+    else {
+      var started=false; var start=function(){ if(started) return; started=true; go(); };
+      try{ syn.onvoiceschanged=start; }catch(_){}
+      var t0=Date.now(); var iv=setInterval(function(){ if((syn.getVoices()||[]).length || Date.now()-t0>1600){ clearInterval(iv); start(); } },150);
+    }
+  }
   function voiceListen(){ if(!VOICE_ON) return; if(!SR){ voiceStop(); return; } try{ vrec=new SR(); }catch(e){ setTimeout(voiceListen,600); return; } vrec.lang=getVoiceLang(); vrec.interimResults=false; vrec.continuous=false; var got=false; voiceState('listen');
     vrec.onresult=function(e){ var t=''; for(var i=0;i<e.results.length;i++) t+=e.results[i][0].transcript; t=t.trim(); if(t){ got=true; voiceHandle(t); } };
     vrec.onerror=function(){};
