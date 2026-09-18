@@ -156,7 +156,7 @@ function buildBackends(env) {
     // Modèle « vision » : Gemini est multimodal (même modèle) ; sinon modèle vision dédié.
     let visionModel;
     if (isGemini) visionModel = env['AI_VISION_MODEL' + s] || model;
-    else visionModel = env['AI_VISION_MODEL' + s] || env.AI_VISION_MODEL || 'qwen/qwen3.6-27b';
+    else visionModel = env['AI_VISION_MODEL' + s] || env.AI_VISION_MODEL || 'meta-llama/llama-4-scout-17b-16e-instruct';
     const textMax = Number(env['AI_MAXTOK' + s] || env.AI_MAXTOK) || 1800;
     const visionMax = Number(env['AI_VISION_MAXTOK' + s] || env.AI_VISION_MAXTOK) || 900;
     let role = String(env['AI_ROLE' + s] || 'all').toLowerCase();
@@ -218,7 +218,7 @@ async function callOpenAICompat(backend, trimmed, modelOverride, maxTokens) {
    Auto-guérison : si le modèle demandé n'existe plus (404), on réessaie
    automatiquement avec des alias Gemini valides, pour résister aux
    changements de nom de modèle côté Google. */
-const GEMINI_FALLBACK_MODELS = ['gemini-flash-latest', 'gemini-3.5-flash', 'gemini-2.0-flash'];
+const GEMINI_FALLBACK_MODELS = ['gemini-flash-latest', 'gemini-2.0-flash', 'gemini-flash-lite-latest', 'gemini-2.0-flash-lite'];
 
 async function callGemini(backend, trimmed, modelOverride, maxTokens) {
   const wanted = modelOverride || backend.model || 'gemini-flash-latest';
@@ -268,8 +268,12 @@ async function callGemini(backend, trimmed, modelOverride, maxTokens) {
     }
     let d = ''; try { d = (await res.text()).slice(0, 220); } catch (e) {}
     lastErr = "Gemini HTTP " + res.status + " " + redactKeys(d);
-    // On ne réessaie un autre modèle que si le modèle est introuvable/non disponible (404).
-    if (res.status !== 404) throw new Error(lastErr);
+    // On réessaie un AUTRE modèle Gemini si le modèle est introuvable (404) OU si le
+    // service est momentanément surchargé/indisponible (429/500/503) — un modèle « lite »
+    // ou une autre version est souvent disponible quand le modèle par défaut est saturé.
+    if (res.status !== 404 && res.status !== 429 && res.status !== 500 && res.status !== 503) throw new Error(lastErr);
+    // petite pause avant de tenter le modèle suivant en cas de surcharge transitoire
+    if (res.status === 503 || res.status === 500 || res.status === 429) { try { await new Promise(r => setTimeout(r, 350)); } catch (e) {} }
   }
   throw new Error(lastErr || 'Gemini : aucun modèle disponible.');
 }
