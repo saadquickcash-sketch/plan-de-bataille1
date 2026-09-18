@@ -207,11 +207,12 @@
         +'<button type="button" data-s="Explique-moi ce chapitre clairement, étape par étape, avec un exemple et 2 exercices corrigés : ">📘 Expliquer un cours</button>'
         +'<button type="button" data-s="Donne-moi une série de 5 exercices progressifs avec correction détaillée sur : ">✍️ Exercices corrigés</button>'
         +'<button type="button" data-s="Fais-moi passer un QCM interactif de 6 questions (je clique mes réponses, tu corriges) sur : ">🧭 Me tester (QCM)</button>'
-        +'<button type="button" data-s="Corrige mon exercice et note-le : voici ce que j’ai fait — ">📸 Corriger ma copie</button>'
+        +'<button type="button" data-photo="1" data-s="Corrige et note ma copie sur 20 (photos ci-dessus).">📸 Corriger ma copie /20</button>'
         +'</div>';
       box.appendChild(w);
       Array.prototype.forEach.call(w.querySelectorAll('.cf-sugg button'),function(bt){
-        bt.addEventListener('click',function(){ var inp=activeInput(); if(inp){ inp.value=bt.getAttribute('data-s'); inp.focus(); try{ autoGrow(inp); }catch(_){} } });
+        bt.addEventListener('click',function(){ var inp=activeInput(); if(inp){ inp.value=bt.getAttribute('data-s'); inp.focus(); try{ autoGrow(inp); }catch(_){} }
+          if(bt.getAttribute('data-photo')){ try{ if(fileInput) fileInput.click(); }catch(_){} } });
       });
       return;
     }
@@ -247,7 +248,7 @@
     document.head.appendChild(s); setTimeout(function(){ res(!!(window.puter&&window.puter.ai)); }, 6000);
   }); }
   function sysText(){ var extra=''; if(window.PB_USERNAME) extra=' L\'élève s\'appelle '+window.PB_USERNAME+' : adresse-toi à lui par son prénom, chaleureusement.';
-    var cap=' Tu peux : expliquer étape par étape ; créer des QCM et questionnaires ; générer des séries d\'exercices, des fiches, des résumés, des plannings et des pages. Écris TOUTES les formules mathématiques en LaTeX : entre $ … $ pour une formule en ligne, et entre $$ … $$ pour une formule centrée (ex. $x^2+1$, $$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1$$). Encadre le RÉSULTAT FINAL important avec \\boxed{...} (ex. $\\boxed{x=2}$). IMPORTANT (format des maths) : écris les mathématiques UNIQUEMENT entre $ … $ (en ligne) et $$ … $$ (centré), jamais aucun autre délimiteur (surtout pas les crochets à barre oblique), et garde chaque formule $$ … $$ sur UNE SEULE ligne. CORRECTION DE DEVOIR : quand l\'élève te donne une rédaction ou un exercice à corriger, liste d\'abord les erreurs (langue, méthode, raisonnement) en les expliquant, donne ensuite une VERSION CORRIGÉE, puis une NOTE estimée sur 20 et 2 conseils concrets. RÉSOLUTION D\'EXERCICE : décompose le problème en sous-étapes numérotées, résous chacune en justifiant, PUIS vérifie ton résultat final (refais le calcul, teste un cas simple) avant de conclure ; si des « ÉLÉMENTS DU COURS » te sont fournis dans le contexte, appuie-toi dessus en priorité et ne les contredis pas. PROGRAMMATION : tu es excellent en HTML, CSS, JavaScript et Python. Écris TOUJOURS le code dans des blocs délimités par trois accents graves avec le langage (par ex. ```html, ```css, ```js, ```python), un code propre, correct, commenté et complet. Explique brièvement le fonctionnement, signale les bonnes pratiques et les pièges, et propose une amélioration possible. Pour une page web, donne un fichier HTML autonome (HTML+CSS+JS dans un seul bloc) que l\'élève peut prévisualiser directement. Tu sais concevoir des projets et des JEUX complets (jeu d\'échecs, morpion, jeu de plateau, quiz, mini-jeu en ligne…) : si le projet a plusieurs fichiers, mets CHAQUE fichier dans son propre bloc ```langage — l\'élève pourra tout prévisualiser et tout télécharger en un .zip. Tu peux aussi placer ce code directement dans l\'onglet « Éditeur de code » du site (voir l\'outil "editeur") pour que l\'élève le teste, le corrige et l\'exécute ; c\'est là que tu t\'occupes de tout le travail de code demandé. (Pour jouer aux échecs contre un vrai adversaire, tu peux l\'inviter à ouvrir l\'onglet « Échecs » du site, qui contient un moteur d\'échecs.) ANALYSE D\'ÉCHECS (entraîneur) : quand on te donne une position (FEN) et/ou un coup, joue le rôle d\'un coach : dis en une phrase qui est mieux et pourquoi, identifie la faute éventuelle (pièce en prise, tactique manquée, roi exposé), donne le MEILLEUR coup et le plan à suivre, en 3-4 phrases claires. Reste concret et pédagogique. RÉFLEXION VISIBLE : pour une tâche complexe (démonstration, gros exercice, programme), commence par une courte ligne « Plan : … » qui expose ta démarche en une phrase, puis développe étape par étape.  GRAPHIQUES : pour tracer une courbe, déclenche l\'outil « graphique » : [[PB]]{"outil":"graphique","args":{"fonctions":["x^2","sin(x)"],"xmin":-6,"xmax":6}}[[/PB]] — le site trace la courbe exacte. IMAGES : tu peux générer une image sur demande ; et quand l\'élève envoie une PHOTO même floue/sombre, lis-la très attentivement (le site en améliore automatiquement le contraste) et transcris ou résous ce que tu vois, chiffre par chiffre. Propose toujours une étape suivante.';
+    var cap=' Tu peux : expliquer étape par étape ; créer des QCM et questionnaires ; générer des séries d\'exercices, des fiches, des résumés, des plannings et des pages. Écris TOUTES les formules mathématiques en LaTeX : entre $ … $ pour une formule en ligne, et entre $$ … $$ pour une formule centrée (ex. $x^2+1$, $$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1$$). Encadre le RÉSULTAT FINAL important avec \\boxed{...} (ex. $\\boxed{x=2}$). IMPORTANT (format des maths) : écris les mathématiques UNIQUEMENT entre $ … $ (en ligne) et $$ … $$ (centré), jamais aucun autre délimiteur (surtout pas les crochets à barre oblique), et garde chaque formule $$ … $$ sur UNE SEULE ligne. CORRECTION DE DEVOIR : quand l\'élève te donne une rédaction ou un exercice à corriger, liste d\'abord les erreurs (langue, méthode, raisonnement) en les expliquant, donne ensuite une VERSION CORRIGÉE, puis une NOTE estimée sur 20 et 2 conseils concrets. RÉSOLUTION D\'EXERCICE : décompose le problème en sous-étapes numérotées, résous chacune en justifiant, PUIS vérifie ton résultat final (refais le calcul, teste un cas simple) avant de conclure ; si des « ÉLÉMENTS DU COURS » te sont fournis dans le contexte, appuie-toi dessus en priorité et ne les contredis pas. PROGRAMMATION : tu es excellent en HTML, CSS, JavaScript et Python. Écris TOUJOURS le code dans des blocs délimités par trois accents graves avec le langage (par ex. ```html, ```css, ```js, ```python), un code propre, correct, commenté et complet. Explique brièvement le fonctionnement, signale les bonnes pratiques et les pièges, et propose une amélioration possible. Pour une page web, donne un fichier HTML autonome (HTML+CSS+JS dans un seul bloc) que l\'élève peut prévisualiser directement. Tu sais concevoir des projets et des JEUX complets (jeu d\'échecs, morpion, jeu de plateau, quiz, mini-jeu en ligne…) : si le projet a plusieurs fichiers, mets CHAQUE fichier dans son propre bloc ```langage — l\'élève pourra tout prévisualiser et tout télécharger en un .zip. Tu peux aussi placer ce code directement dans l\'onglet « Éditeur de code » du site (voir l\'outil "editeur") pour que l\'élève le teste, le corrige et l\'exécute ; c\'est là que tu t\'occupes de tout le travail de code demandé. (Pour jouer aux échecs contre un vrai adversaire, tu peux l\'inviter à ouvrir l\'onglet « Échecs » du site, qui contient un moteur d\'échecs.) ANALYSE D\'ÉCHECS (entraîneur) : quand on te donne une position (FEN) et/ou un coup, joue le rôle d\'un coach : dis en une phrase qui est mieux et pourquoi, identifie la faute éventuelle (pièce en prise, tactique manquée, roi exposé), donne le MEILLEUR coup et le plan à suivre, en 3-4 phrases claires. Reste concret et pédagogique. RÉFLEXION VISIBLE : pour une tâche complexe (démonstration, gros exercice, programme), commence par une courte ligne « Plan : … » qui expose ta démarche en une phrase, puis développe étape par étape.  GRAPHIQUES : pour tracer une courbe, déclenche l\'outil « graphique » : [[PB]]{"outil":"graphique","args":{"fonctions":["x^2","sin(x)"],"xmin":-6,"xmax":6}}[[/PB]] — le site trace la courbe exacte. IMAGES : tu peux générer une image sur demande ; et quand l\'élève envoie une PHOTO même floue/sombre, lis-la très attentivement (le site en améliore automatiquement le contraste) et transcris ou résous ce que tu vois, chiffre par chiffre. PLUSIEURS PHOTOS : l\'élève peut envoyer plusieurs photos à la fois (les pages d\'une même copie) — lis-les TOUTES, dans l\'ordre, avant de répondre. CORRECTION DE COPIE (note /20) : quand on te demande de corriger/noter une copie, agis comme un professeur du Bac marocain : transcris ce que l\'élève a écrit, reprends chaque exercice (juste/faux, erreur exacte, solution correcte), dresse un petit tableau de barème, donne la NOTE FINALE encadrée $\\boxed{XX/20}$, puis 2-3 conseils bienveillants. WEB (recherche & liens) : le site peut te fournir, sous le titre « CONTEXTE WEB », le contenu d\'un lien que l\'élève a collé ou des résultats de recherche récupérés en direct — quand ce contexte est présent, appuie-toi dessus en priorité, cite la source par son URL, résume clairement, et signale honnêtement si une information paraît incertaine. Si l\'élève te donne un lien mais qu\'aucun contenu n\'apparaît, dis-le simplement. QUALITÉ & CLARTÉ : réponds toujours de façon claire, structurée et compréhensible ; aère avec des titres (##), des listes et du **gras** ; écris CHAQUE expression scientifique en LaTeX correct (jamais de LaTeX à moitié ni de symboles bruts comme \\frac hors des $ … $), et même dans un texte technique, mets les formules entre $ … $. Propose toujours une étape suivante.';
     var proto=' ACTIONS SUR LE SITE — quand l\'élève te demande explicitement de FAIRE quelque chose sur la plateforme, déclenche un outil en terminant ta réponse par UNE balise, seule sur la dernière ligne, au format EXACT : [[PB]]{"outil":"...","args":{...}}[[/PB]]. Outils : '
       +'(1) "document" = rend TON texte imprimable et téléchargeable (planning, série d\'exercices, fiche, résumé, corrigé). Rédige TOUT le contenu AU-DESSUS de la balise, bien structuré (titres avec ##, listes, **gras**, et tableaux Markdown avec des | quand c\'est utile). args:{"titre":"...","type":"PLANNING|SÉRIE D\'EXERCICES|FICHE|RÉSUMÉ|CORRIGÉ|DOCUMENT"}. '
       +'(2) "qcm" = lance un QCM auto-corrigé du site. args:{"matiere":"maths|pc|svt|francais|philo|arabe|islam|hg"}. '
@@ -265,6 +266,7 @@
       +'RÈGLES : utilise la balise UNIQUEMENT si l\'élève veut vraiment l\'action ; UNE seule balise par réponse ; pour un planning ou une série, rédige d\'abord le contenu COMPLET puis ajoute [[PB]]{"outil":"document",...}[[/PB]]. Pour une simple question ou explication, réponds normalement SANS aucune balise.';
     return SYS+extra+cap+proto+agMemText()+' '+pageCtx(); }
   function msgsForAPI(c){ var base=[{role:'system',content:sysText()}];
+    try{ if(_webCtx) base.push({role:'system',content:_webCtx}); }catch(e){}
     try{ var lastU=''; for(var i=c.msgs.length-1;i>=0;i--){ if(c.msgs[i].role==='user'){ lastU=c.msgs[i].content||''; break; } }
       var g=agRetrieve(lastU); if(g){ base.push({role:'system',content:g}); } }catch(e){}
     return base.concat(c.msgs.slice(-16)); }
@@ -359,7 +361,7 @@
   function addTyping(){ var nodes=[]; [msgsEl,cfMsgs].forEach(function(box){ if(!box)return; var t=document.createElement('div'); t.className='cp-msg ai typing'; t.innerHTML='<span></span><span></span><span></span>'; box.appendChild(t); box.scrollTop=box.scrollHeight; nodes.push(t); }); return nodes; }
   function rmTyping(nodes){ nodes.forEach(function(n){ if(n&&n.parentNode) n.parentNode.removeChild(n); }); }
   function activeInput(){ return (full&&!full.hidden)?cfInput:input; }
-  async function ask(text){ text=(text||'').trim(); var img=pendingImg; if((!text&&!img)||busy) return;
+  async function ask(text){ text=(text||'').trim(); var imgs=pendingImgs.slice(); var img=imgs[0]||null; if((!text&&!imgs.length)||busy) return;
     if(!img){
       if(agWantsPlanning(text)){ startPlanningWizard(text); return; }
       var _gx=agWantsPlot(text); if(_gx){ if(input) input.value=''; if(cfInput){ cfInput.value=''; autoGrow(cfInput); } var _gc=cur(); _gc.msgs.push({role:'user',content:text}); if(!_gc.title||_gc.title==='Nouvelle conversation') _gc.title=text.slice(0,42); _gc.msgs.push({role:'assistant',content:'Voici la courbe 📈'}); _gc.t=Date.now(); save(); renderMsgs(); renderList(); setTimeout(function(){ try{ agPlotBubble(_gx,{}); }catch(e){} },80); return; }
@@ -380,10 +382,13 @@
     }
     busy=true;
     if(input) input.value=''; if(cfInput){ cfInput.value=''; autoGrow(cfInput); } setPending(null);
-    var c=cur(); var um={role:'user',content:text||'(photo envoyée)'}; if(img) um.img=img; c.msgs.push(um);
-    if(!c.title||c.title==='Nouvelle conversation') c.title=(text||'Photo — exercice').slice(0,42); c.t=Date.now(); save(); renderMsgs(); renderList();
+    var c=cur(); var um={role:'user',content:text||(imgs.length>1?('📸 '+imgs.length+' photos envoyées'):'(photo envoyée)')}; if(img) um.img=img; c.msgs.push(um);
+    if(!c.title||c.title==='Nouvelle conversation') c.title=(text||(imgs.length>1?'Correction de copie':'Photo — exercice')).slice(0,42); c.t=Date.now(); save(); renderMsgs(); renderList();
     var typ=addTyping();
-    try{ var raw = img ? await callVision(text,img) : await callAI(c); rmTyping(typ);
+    try{ var raw;
+      if(imgs.length){ raw=await callVision(text,imgs); }
+      else { _webCtx=''; try{ _webCtx=await fetchWebContext(text); }catch(_w){ _webCtx=''; } raw=await callAI(c); }
+      rmTyping(typ);
       var pr=agParse(raw); var clean=pr.clean||raw; try{ clean=agVerifyArithmetic(clean); }catch(_){} try{ clean=agMathNormalize(clean); }catch(_){}
       var hasAct = pr.actions && pr.actions.length;
       /* Si l'IA a écrit un QCM/questionnaire en texte (sans balise), on le rend cliquable */
@@ -456,39 +461,110 @@
     selAsk.addEventListener('click',doAsk);
   }
   // ---- Photo (analyse d'image) + dictée vocale ----
-  var pendingImg=null;
-  function setPending(d){ pendingImg=d; [document.getElementById('cpImgPrev'),document.getElementById('cfImgPrev')].forEach(function(box){ if(!box)return; box.innerHTML='';
-    if(d){ var w=document.createElement('div'); w.className='img-prev'; var im=document.createElement('img'); im.src=d; var x=document.createElement('button'); x.className='img-x'; x.innerHTML='&times;'; x.title='Retirer'; x.addEventListener('click',function(){ setPending(null); }); w.appendChild(im); w.appendChild(x); box.appendChild(w); } }); }
+  var pendingImgs=[];
+  var MAX_IMGS=6;
+  function renderPending(){ [document.getElementById('cpImgPrev'),document.getElementById('cfImgPrev')].forEach(function(box){ if(!box)return; box.innerHTML='';
+    pendingImgs.forEach(function(d,idx){ var w=document.createElement('div'); w.className='img-prev'; var im=document.createElement('img'); im.src=d;
+      var x=document.createElement('button'); x.className='img-x'; x.innerHTML='&times;'; x.title='Retirer'; x.addEventListener('click',function(){ pendingImgs.splice(idx,1); renderPending(); }); w.appendChild(im); w.appendChild(x); box.appendChild(w); });
+    if(pendingImgs.length>=1){ var c=document.createElement('button'); c.className='img-add'; c.type='button'; c.title='Ajouter une photo'; c.innerHTML='&#43;'; c.addEventListener('click',function(){ if(fileInput) fileInput.click(); }); box.appendChild(c); }
+  }); }
+  function addPending(d){ if(!d) return; if(pendingImgs.length>=MAX_IMGS){ try{ toast('Maximum '+MAX_IMGS+' photos par message.'); }catch(_){} return; } pendingImgs.push(d); renderPending(); }
+  function setPending(d){ if(d===null||d===undefined){ pendingImgs=[]; renderPending(); return; } addPending(d); }
   function resizeImg(file){ return new Promise(function(res,rej){ var img=new Image(); var url=URL.createObjectURL(file);
     img.onload=function(){ var mx=1024,w=img.width,h=img.height,sc=Math.min(1,mx/Math.max(w,h)); var cw=Math.max(1,Math.round(w*sc)),ch=Math.max(1,Math.round(h*sc));
       var cv=document.createElement('canvas'); cv.width=cw; cv.height=ch; cv.getContext('2d').drawImage(img,0,0,cw,ch); URL.revokeObjectURL(url);
       try{ res(cv.toDataURL('image/jpeg',0.82)); }catch(e){ rej(e); } };
     img.onerror=function(){ URL.revokeObjectURL(url); rej('img'); }; img.src=url; }); }
-  function takeFile(f){ if(!f||f.type.indexOf('image')!==0) return; resizeImg(f).then(function(d){ setPending(d); openPanel(); }).catch(function(){}); }
+  function takeFile(f){ if(!f||f.type.indexOf('image')!==0) return; resizeImg(f).then(function(d){ addPending(d); openPanel(); }).catch(function(){}); }
   var fileInput=document.getElementById('chatFile');
-  if(fileInput) fileInput.addEventListener('change',function(){ takeFile(fileInput.files&&fileInput.files[0]); fileInput.value=''; });
+  if(fileInput){ try{ fileInput.multiple=true; }catch(_){} fileInput.addEventListener('change',function(){ var fs=fileInput.files; if(fs){ for(var i=0;i<fs.length;i++) takeFile(fs[i]); } fileInput.value=''; }); }
   document.querySelectorAll('.attach-btn').forEach(function(b){ b.addEventListener('click',function(){ if(fileInput) fileInput.click(); }); });
   document.addEventListener('paste',function(e){ var open=panel.classList.contains('on')||(full&&!full.hidden); if(!open) return; var it=e.clipboardData&&e.clipboardData.items; if(!it)return; for(var i=0;i<it.length;i++){ if(it[i].type&&it[i].type.indexOf('image')===0){ var f=it[i].getAsFile(); if(f){ takeFile(f); e.preventDefault(); } } } });
-  [panel,full].forEach(function(z){ if(!z)return; z.addEventListener('dragover',function(e){ e.preventDefault(); z.classList.add('drag'); }); z.addEventListener('dragleave',function(){ z.classList.remove('drag'); }); z.addEventListener('drop',function(e){ e.preventDefault(); z.classList.remove('drag'); takeFile(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0]); }); });
-  async function callVision(text,dataUrl){
-    try{ dataUrl=await agEnhanceImage(dataUrl); }catch(e){}
-    var meth=' Procède ainsi : 1) lis attentivement l\'énoncé sur la photo et reformule ce qui est demandé ; 2) identifie les données et la méthode ; 3) résous étape par étape en justifiant chaque calcul (formules en LaTeX $ … $) ; 4) vérifie ton résultat final (recalcule, teste un cas simple) ; 5) donne la réponse finale encadrée. Si c\'est un cours ou un schéma, explique-le clairement.';
-    var q=(text?text+'.':'Résous cet exercice photographié.')+meth+' /no_think';
+  [panel,full].forEach(function(z){ if(!z)return; z.addEventListener('dragover',function(e){ e.preventDefault(); z.classList.add('drag'); }); z.addEventListener('dragleave',function(){ z.classList.remove('drag'); }); z.addEventListener('drop',function(e){ e.preventDefault(); z.classList.remove('drag'); var fs=e.dataTransfer&&e.dataTransfer.files; if(fs){ for(var i=0;i<fs.length;i++) takeFile(fs[i]); } }); });
+  /* ===== Recherche web / analyse de lien (via le serveur du site : /api/fetch, /api/search) ===== */
+  var _webCtx='', webOn=false;
+  function fmtWebOn(){ document.querySelectorAll('.web-btn').forEach(function(b){ b.classList.toggle('on',webOn); b.title=webOn?'Recherche web : activée':'Recherche web (Google) — activer'; }); }
+  function injectWebBtn(){
+    ['chatMic','cfMic'].forEach(function(id){ var mic=document.getElementById(id); if(!mic||mic._webAdded) return; mic._webAdded=1;
+      var b=document.createElement('button'); b.type='button'; b.className='io-btn web-btn'; b.innerHTML='&#127760;'; b.title='Recherche web (Google) — activer';
+      b.addEventListener('click',function(){ webOn=!webOn; fmtWebOn(); try{ toast(webOn?'Recherche web activée 🌐 — je consulte le web pour te répondre.':'Recherche web désactivée.'); }catch(_){} });
+      mic.parentNode.insertBefore(b, mic.nextSibling); });
+    fmtWebOn();
+  }
+  try{ injectWebBtn(); }catch(_){}
+  function pbWebClean(html){ html=String(html||'');
+    html=html.replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ')
+             .replace(/<\/(p|div|li|h[1-6]|br|tr)>/gi,'\n').replace(/<[^>]+>/g,' ')
+             .replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&').replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/&#39;|&apos;/gi,"'").replace(/&quot;/gi,'"')
+             .replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();
+    return html; }
+  async function fetchWebContext(text){
+    var t=String(text||''); var parts=[];
+    var urls=(t.match(/https?:\/\/[^\s<>()"']+/gi)||[]).slice(0,2);
+    for(var i=0;i<urls.length;i++){
+      try{ var r=await fetch('/api/fetch?url='+encodeURIComponent(urls[i]));
+        if(r.ok){ var j=await r.json(); var body=j&&(j.text||j.content)||''; if(!body && j&&j.html){ body=pbWebClean(j.html); }
+          if(body){ parts.push('PAGE : '+(j.title||urls[i])+'\nURL : '+urls[i]+'\nCONTENU :\n'+String(body).slice(0,4500)); } }
+      }catch(e){}
+    }
+    if(webOn){
+      var q=t.replace(/https?:\/\/\S+/g,'').replace(/\s+/g,' ').trim().slice(0,220);
+      if(q){ try{ var s=await fetch('/api/search?q='+encodeURIComponent(q));
+        if(s.ok){ var sj=await s.json(); var rs=sj&&sj.results||[];
+          if(rs.length){ parts.push('RÉSULTATS DE RECHERCHE WEB pour « '+q+' » :\n'+rs.slice(0,5).map(function(x,k){return (k+1)+'. '+(x.title||'')+' — '+(x.url||'')+(x.snippet?'\n   '+x.snippet:'');}).join('\n'));
+            // Enrichit avec le contenu du 1er résultat pertinent
+            if(rs[0]&&rs[0].url){ try{ var r2=await fetch('/api/fetch?url='+encodeURIComponent(rs[0].url)); if(r2.ok){ var j2=await r2.json(); var b2=j2&&(j2.text||j2.content)||''; if(b2) parts.push('EXTRAIT DU 1er RÉSULTAT ('+(j2.title||rs[0].url)+') :\n'+String(b2).slice(0,3000)); } }catch(_){} }
+          } }
+      }catch(e){} }
+    }
+    if(!parts.length) return '';
+    return 'CONTEXTE WEB (récupéré en direct par le site pour cette question — appuie-toi dessus, cite la source par son URL, et préviens l\'élève si une information paraît incertaine ou peu fiable) :\n\n'+parts.join('\n\n———\n\n');
+  }
+  /* Detecte l'intention "corriger/noter une copie" (déclenche le barème /20). */
+  function agWantsGrading(t){ return /corrig|corrige|not[eé]|note\s*\/?\s*20|sur\s*20|bar[eè]me|\bcopie\b|mon\s+devoir|mon\s+travail|mon\s+exercice.*fait|ce\s+que\s+j.?ai\s+fait/i.test(String(t||'')); }
+  // Accepte soit une seule photo (chaîne), soit PLUSIEURS photos (tableau) — copie sur plusieurs pages.
+  async function callVision(text,imgs){
+    if(!Array.isArray(imgs)) imgs=[imgs];
+    imgs=imgs.filter(Boolean);
+    // améliore chaque photo (contraste) en parallèle
+    try{ imgs=await Promise.all(imgs.map(function(u){ return agEnhanceImage(u).catch(function(){ return u; }); })); }catch(e){}
+    var multi=imgs.length>1;
+    var grade=agWantsGrading(text);
+    var meth;
+    if(grade){
+      meth=' TU CORRIGES ET NOTES UNE COPIE D\'ÉLÈVE.'
+        +(multi?(' Les '+imgs.length+' photos forment UNE SEULE copie (pages/exercices dans l\'ordre) : lis-les toutes AVANT de noter, comme un professeur.'):'')
+        +' Procède ainsi et présente ta réponse avec ces titres (en gras) : '
+        +'**1. Ce que je lis** — reformule brièvement le/les exercice(s) et ce que l\'élève a écrit (transcris fidèlement, chiffre par chiffre, même si c\'est manuscrit, flou ou en arabe). '
+        +'**2. Correction détaillée** — reprends CHAQUE exercice/question : dis si c\'est juste ou faux, explique l\'erreur exacte (calcul, méthode, raisonnement, unité, rédaction) et donne la solution correcte, formules en LaTeX $ … $. '
+        +'**3. Barème et note** — un tableau Markdown | Exercice/Question | Points obtenus | Points sur | Commentaire | ; additionne, puis donne la NOTE FINALE clairement, encadrée : $\\boxed{XX/20}$ (ramène toujours sur 20). '
+        +'**4. Conseils** — 2 ou 3 conseils concrets et bienveillants pour progresser. '
+        +'Sois juste, précis et encourageant, comme un vrai correcteur du Bac marocain.';
+    } else {
+      meth=' Procède ainsi : 1) lis attentivement l\'énoncé sur la photo et reformule ce qui est demandé ; 2) identifie les données et la méthode ; 3) résous étape par étape en justifiant chaque calcul (formules en LaTeX $ … $) ; 4) vérifie ton résultat final (recalcule, teste un cas simple) ; 5) donne la réponse finale encadrée. Si c\'est un cours ou un schéma, explique-le clairement.'
+        +(multi?(' Il y a '+imgs.length+' photos : traite-les toutes, dans l\'ordre.'):'');
+    }
+    var q=(text?text+'.':(grade?'Corrige et note ma copie.':(multi?'Résous les exercices photographiés.':'Résous cet exercice photographié.')))+meth+' /no_think';
+    // construit le contenu vision : le texte, puis TOUTES les images
+    function content(){ var arr=[{type:'text',text:q}]; imgs.forEach(function(u){ arr.push({type:'image_url',image_url:{url:u}}); }); return arr; }
     var draft='';
     var _isPrem=false; try{ _isPrem=!!(window.PB_isPremium && window.PB_isPremium()); }catch(_){}
     try{ window.PB_LAST_AI=_isPrem?'premium':'free'; if(window.PB_paintAiBadge) window.PB_paintAiBadge(); }catch(_){}
-    // Premium : IA vision puissante (Groq Qwen vision) via /api/chat
+    // Premium : IA vision puissante via /api/chat (envoie toutes les images)
     try{ if(_isPrem){
-      var pmsgs=[{role:'system',content:sysText()},{role:'user',content:[{type:'text',text:q},{type:'image_url',image_url:{url:dataUrl}}]}];
+      var pmsgs=[{role:'system',content:sysText()},{role:'user',content:content()}];
       var pr=await callPremiumAI(pmsgs); if(pr){ draft=pr; try{ window.PB_LAST_AI='premium'; }catch(_){} }
     } }catch(e){}
     if(!draft){ try{ window.PB_LAST_AI='free'; if(window.PB_paintAiBadge) window.PB_paintAiBadge(); }catch(_){} }
-    if(!draft){ try{ var ok=await ensurePuter(); if(ok){ var r=await puter.ai.chat(q,dataUrl); var t=extract(r); if(t&&t.trim()){ draft=t.trim(); try{ window.PB_LAST_AI='free'; }catch(_){} } } }catch(e){} }
-    if(!draft){ try{ var msgs=[{role:'system',content:sysText()},{role:'user',content:[{type:'text',text:q},{type:'image_url',image_url:{url:dataUrl}}]}];
+    if(!draft){ try{ var ok=await ensurePuter(); if(ok){ var r= imgs.length>1 ? await puter.ai.chat(q,imgs) : await puter.ai.chat(q,imgs[0]); var t=extract(r); if(t&&t.trim()){ draft=t.trim(); try{ window.PB_LAST_AI='free'; }catch(_){} } } }catch(e){} }
+    if(!draft){ try{ var msgs=[{role:'system',content:sysText()},{role:'user',content:content()}];
       var res=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:msgs})});
       if(res.ok){ var j=await res.json(); var t2=extract(j); if(t2&&t2.trim()){ draft=t2.trim(); try{ window.PB_LAST_AI='free'; }catch(_){} } } }catch(e){} }
     if(!draft) throw new Error('vision indisponible');
-    var refined=draft; try{ refined=await agRefineVision(draft); }catch(_){ refined=draft; }
+    // Pour une CORRECTION notée (ou plusieurs photos), on NE ré-écrit PAS le brouillon :
+    // le raffinage texte-seul perdrait le barème/la note ou n'a pas vu les autres images.
+    var refined=draft;
+    if(!grade && !multi){ try{ refined=await agRefineVision(draft); }catch(_){ refined=draft; } }
     try{ refined=agVerifyArithmetic(refined); }catch(_){} try{ refined=agMathNormalize(refined); }catch(_){}
     return refined; }
   async function genImage(prompt){ prompt=(prompt||'').trim(); if(!prompt||busy) return; busy=true;
@@ -1360,8 +1436,20 @@ function cbHtml(pp){ var lang=(pp.lang||'').toLowerCase(); var code=pp.code||'';
 }
 function fmtTextLines(s){ var lines=String(s).replace(/\r/g,'').split('\n'); var out=[]; var i=0;
   function inl(t){ t=esc(t); t=t.replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>'); t=t.replace(/`([^`]+)`/g,'<code>$1</code>'); return t; }
+  function isRow(l){ return typeof l==='string' && l.indexOf('|')>=0 && l.trim(); }
+  function isSep(l){ return typeof l==='string' && /\|/.test(l) && /-/.test(l) && /^[\s|:\-]+$/.test(l); }
+  function splitRow(l){ l=l.trim().replace(/^\|/,'').replace(/\|\s*$/,''); return l.split('|').map(function(c){ return c.trim(); }); }
   while(i<lines.length){ var l=lines[i];
+    // TABLEAU Markdown (| … | … | avec ligne de séparation ---)
+    if(isRow(l) && i+1<lines.length && isSep(lines[i+1])){
+      var header=splitRow(l); i+=2; var rows=[];
+      while(i<lines.length && isRow(lines[i]) && !isSep(lines[i])){ rows.push(splitRow(lines[i])); i++; }
+      var th='<tr>'+header.map(function(c){ return '<th>'+inl(c)+'</th>'; }).join('')+'</tr>';
+      var tb=rows.map(function(r){ return '<tr>'+r.map(function(c){ return '<td>'+inl(c)+'</td>'; }).join('')+'</tr>'; }).join('');
+      out.push('<div class="cb-tablewrap"><table class="cb-table"><thead>'+th+'</thead><tbody>'+tb+'</tbody></table></div>'); continue;
+    }
     var hm=l.match(/^\s*#{1,4}\s+(.*)/); if(hm){ out.push('<div class="cb-h">'+inl(hm[1])+'</div>'); i++; continue; }
+    if(/^\s*>\s?/.test(l)){ var q=''; while(i<lines.length&&/^\s*>\s?/.test(lines[i])){ q+=inl(lines[i].replace(/^\s*>\s?/,''))+' '; i++; } out.push('<blockquote class="cb-q">'+q.trim()+'</blockquote>'); continue; }
     if(/^\s*[-*•]\s+/.test(l)){ var u=''; while(i<lines.length&&/^\s*[-*•]\s+/.test(lines[i])){ u+='<li>'+inl(lines[i].replace(/^\s*[-*•]\s+/,''))+'</li>'; i++; } out.push('<ul class="cb-ul">'+u+'</ul>'); continue; }
     if(/^\s*\d+[.)]\s+/.test(l)){ var o=''; while(i<lines.length&&/^\s*\d+[.)]\s+/.test(lines[i])){ o+='<li>'+inl(lines[i].replace(/^\s*\d+[.)]\s+/,''))+'</li>'; i++; } out.push('<ol class="cb-ol">'+o+'</ol>'); continue; }
     if(/^\s*$/.test(l)){ out.push('<br>'); i++; continue; }
@@ -1983,4 +2071,85 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
     inp.addEventListener('input',function(){ justEval=false; });
   }
   document.querySelectorAll('.scicalc').forEach(initCalc);
+})();
+
+/* ============================================================================
+   Plan de Bataille — Améliorations UI (menu mobile élégant + styles chat/web)
+   Bloc autonome ajouté après coup : n'interfère avec rien d'autre.
+   ========================================================================== */
+(function(){
+  /* --- Styles injectés (menu, tableaux, titres, recherche web) --- */
+  if(!document.getElementById('pbUiCss')){
+    var st=document.createElement('style'); st.id='pbUiCss';
+    st.textContent=[
+      /* Menu mobile : burger + tiroir déroulant */
+      '.nav-burger{display:none;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid var(--border);background:var(--surface-2);border-radius:11px;color:var(--text);font-size:1.2rem;line-height:1;cursor:pointer;flex:none;margin-left:4px}',
+      '.nav-burger:hover{border-color:var(--royal)}',
+      '.pb-navdrop{display:contents}',
+      '@media(max-width:900px){',
+        '.sitenav .in{flex-wrap:nowrap!important;gap:6px}',
+        '.sitenav .brand .t2{display:inline!important}',
+        '.sitenav .sp{flex:1}',
+        '.pb-navdrop{position:absolute;top:100%;left:10px;right:10px;display:none;flex-direction:column;gap:2px;',
+          'background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:8px;margin-top:8px;',
+          'box-shadow:0 20px 54px rgba(0,0,0,.32);max-height:78vh;overflow:auto;z-index:60}',
+        '.sitenav.pb-open .pb-navdrop{display:flex;animation:pbDrop .16s ease}',
+        '@keyframes pbDrop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}',
+        '.pb-navdrop a.lnk{display:block;font-size:1rem;padding:13px 14px;border-radius:11px;width:auto}',
+        '.pb-navdrop a.lnk.active{background:var(--surface-2)}',
+        '.nav-burger{display:inline-flex}',
+        '.theme-btn #themeTxt{display:none}',
+        '.theme-btn{margin-left:auto!important;padding:8px 10px}',
+        '.acct-btn{margin-left:0;padding:4px 10px 4px 5px}',
+        '.acct-btn #acctLabel{max-width:74px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+      '}',
+      '@media(max-width:380px){.sitenav .brand .t2{display:none!important}}',
+      /* Bouton recherche web (état actif) */
+      '.io-btn.web-btn.on{color:#fff;border-color:var(--royal);background:var(--royal)}',
+      ':root[data-theme="dark"] .io-btn.web-btn.on,:root:not([data-theme="light"]) .io-btn.web-btn.on{color:#141019}',
+      /* Tableaux Markdown dans les réponses */
+      '.cb-tablewrap{overflow-x:auto;margin:12px 0;border-radius:10px}',
+      '.cb-table{border-collapse:collapse;width:100%;font-size:.9em}',
+      '.cb-table th,.cb-table td{border:1px solid var(--border);padding:7px 11px;text-align:left;vertical-align:top}',
+      '.cb-table th{background:var(--surface-2);font-weight:700}',
+      '.cb-table tbody tr:nth-child(even){background:color-mix(in srgb,var(--surface-2) 45%,transparent)}',
+      /* Titres, listes, citations dans les réponses IA */
+      '.cp-msg.ai .cb-h{font-family:Newsreader,serif;font-weight:600;font-size:1.06em;margin:14px 0 5px;letter-spacing:-.01em}',
+      '.cp-msg.ai .cb-h:first-child{margin-top:0}',
+      '.cp-msg.ai .cb-ul,.cp-msg.ai .cb-ol{margin:6px 0 8px;padding-left:22px}',
+      '.cp-msg.ai .cb-ul li,.cp-msg.ai .cb-ol li{margin:3px 0}',
+      '.cp-msg.ai .cb-q{border-left:3px solid var(--royal);padding:4px 12px;margin:9px 0;background:var(--surface-2);border-radius:0 9px 9px 0;opacity:.95}',
+      '.cf-msgs .cp-msg.ai .cb-h{font-size:1.18em}',
+      /* Aperçu multi-photos plus aéré */
+      '.cp-imgprev,.cf-imgprev{flex-wrap:wrap;gap:8px;align-items:center}',
+      '.cp-imgprev:empty,.cf-imgprev:empty{display:none}',
+      '.img-add{width:52px;height:52px;border:1.5px dashed var(--border-strong);background:var(--surface);color:var(--muted);border-radius:8px;font-size:1.4rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}',
+      '.img-add:hover{border-color:var(--royal);color:var(--royal)}'
+    ].join('');
+    document.head.appendChild(st);
+  }
+
+  /* --- Construit le menu mobile (burger + tiroir) sur toutes les pages --- */
+  function buildNav(){
+    var bar=document.querySelector('.sitenav .in'); if(!bar) return;
+    if(bar.querySelector('.pb-navdrop')) return;               // déjà fait
+    var links=[].slice.call(bar.querySelectorAll('a.lnk'));
+    if(!links.length) return;
+    var drop=document.createElement('div'); drop.className='pb-navdrop';
+    // insère le tiroir juste avant le séparateur / le bouton thème (garde l'ordre desktop)
+    var anchor=bar.querySelector('.sp')||bar.querySelector('.theme-btn')||bar.querySelector('.acct-btn');
+    if(anchor) bar.insertBefore(drop, anchor); else bar.appendChild(drop);
+    links.forEach(function(a){ drop.appendChild(a); });
+    var burger=document.createElement('button'); burger.type='button'; burger.className='nav-burger'; burger.setAttribute('aria-label','Menu'); burger.setAttribute('aria-expanded','false'); burger.innerHTML='&#9776;';
+    bar.appendChild(burger);
+    var nav=document.querySelector('.sitenav');
+    function close(){ nav.classList.remove('pb-open'); burger.innerHTML='&#9776;'; burger.setAttribute('aria-expanded','false'); }
+    function toggle(e){ if(e){ e.stopPropagation(); } var open=nav.classList.toggle('pb-open'); burger.innerHTML=open?'&times;':'&#9776;'; burger.setAttribute('aria-expanded',open?'true':'false'); }
+    burger.addEventListener('click',toggle);
+    drop.addEventListener('click',function(e){ if(e.target.closest('a')) close(); });
+    document.addEventListener('click',function(e){ if(nav.classList.contains('pb-open') && !e.target.closest('.sitenav')) close(); });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape') close(); });
+    window.addEventListener('resize',function(){ if(window.innerWidth>900) close(); });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',buildNav); else buildNav();
 })();

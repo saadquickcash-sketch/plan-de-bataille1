@@ -170,3 +170,35 @@ function czBytes(files){ var te=new TextEncoder(), chunks=[],cen=[],off=0; funct
   window.PB_codeReload=function(runAfter){ load(); active=0; renderTabs(); loadActive(); if(runAfter!==false) run(); };
   load(); renderTabs(); loadActive(); run();
 })();
+
+/* ============================================================================
+   Plan de Bataille — Résultat du code en PLEIN ÉCRAN (bloc autonome)
+   ========================================================================== */
+(function(){
+  function init(){
+    var right=document.querySelector('.code-right'); if(!right) return;
+    var tb=right.querySelector('.code-tb'); var frame=document.getElementById('codeFrame');
+    if(!tb||!frame||tb.querySelector('.code-fs-btn')) return;
+    if(!document.getElementById('pbCodeFsCss')){
+      var st=document.createElement('style'); st.id='pbCodeFsCss';
+      st.textContent=[
+        '.code-tb{display:flex;align-items:center;gap:8px}',
+        '.code-fs-btn{margin-left:auto;font-size:.74rem;padding:4px 11px;border:1px solid var(--border);background:transparent;color:inherit;border-radius:7px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px}',
+        '.code-fs-btn:hover{border-color:var(--royal,#6c5ce7);color:var(--text)}',
+        '.code-right.pb-cfull{position:fixed;inset:0;z-index:2147483000;margin:0;padding:0;border-radius:0;background:var(--bg,#0d1117);display:flex;flex-direction:column;max-width:none;width:100vw;height:100vh}',
+        '.code-right.pb-cfull .code-tb{padding:12px 16px;border-bottom:1px solid var(--border)}',
+        '.code-right.pb-cfull iframe{flex:1;width:100%;height:auto;border:0;border-radius:0}',
+        'body.pb-code-fs{overflow:hidden}'
+      ].join('');
+      document.head.appendChild(st);
+    }
+    var btn=document.createElement('button'); btn.type='button'; btn.className='code-fs-btn'; btn.innerHTML='&#10530; Plein écran';
+    tb.appendChild(btn);
+    function enter(){ right.classList.add('pb-cfull'); document.body.classList.add('pb-code-fs'); btn.innerHTML='&#10529; Réduire'; try{ if(window.PB_codeReload) window.PB_codeReload(true); }catch(_){} }
+    function exit(){ right.classList.remove('pb-cfull'); document.body.classList.remove('pb-code-fs'); btn.innerHTML='&#10530; Plein écran'; }
+    function toggle(){ right.classList.contains('pb-cfull')?exit():enter(); }
+    btn.addEventListener('click',toggle);
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape' && right.classList.contains('pb-cfull')) exit(); });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
