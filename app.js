@@ -148,9 +148,12 @@
     if(role==='ai'){ try{ agEnhanceCode(d); }catch(_){} }
     if(role==='ai'){ var spoken=text; var bar=document.createElement('div'); bar.className='msg-bar';
       var sp=document.createElement('button'); sp.className='msg-ic'; sp.title='Écouter'; sp.innerHTML='&#128266;';
-      sp.addEventListener('click',function(e){ e.stopPropagation(); try{ var syn=window.speechSynthesis; if(!syn)return; if(syn.speaking){ syn.cancel(); return; }
-        var lang=(/[\u0600-\u06FF]/.test(spoken)?'ar-SA':'fr-FR');
-        var doSpeak=function(){ try{ var u=new SpeechSynthesisUtterance(spoken); u.lang=lang; u.rate=.98; try{ var v=voicePick(lang); if(v){ u.voice=v; u.lang=v.lang; } }catch(_){} syn.cancel(); syn.speak(u); }catch(_){} };
+      sp.addEventListener('click',function(e){ e.stopPropagation(); try{ var syn=window.speechSynthesis;
+        var isAr=/[\u0600-\u06FF]/.test(spoken);
+        // Arabe -> voix en ligne (le navigateur n'a souvent pas de voix arabe)
+        if(isAr){ try{ if(syn) syn.cancel(); }catch(_){} if(_ttsAudio && !_ttsAudio.paused){ try{ _ttsAudio.pause(); }catch(_){} _ttsAudio=null; return; } pbCloudTTS(voiceCleanTTS(spoken),'ar',null,function(){ try{ var u=new SpeechSynthesisUtterance(spoken); u.lang='ar-SA'; u.rate=.98; var v=voicePick('ar-SA'); if(v){u.voice=v;} syn&&syn.speak(u); }catch(_){} }); return; }
+        if(!syn)return; if(syn.speaking){ syn.cancel(); return; }
+        var doSpeak=function(){ try{ var u=new SpeechSynthesisUtterance(spoken); u.lang='fr-FR'; u.rate=.98; try{ var v=voicePick('fr-FR'); if(v){ u.voice=v; u.lang=v.lang; } }catch(_){} syn.cancel(); syn.speak(u); }catch(_){} };
         if((syn.getVoices()||[]).length) doSpeak(); else { try{ syn.onvoiceschanged=doSpeak; }catch(_){} setTimeout(doSpeak,350); }
       }catch(_){} });
       bar.appendChild(sp);
@@ -545,10 +548,31 @@
     // pour l'arabe, préfère une voix Google (en ligne, souvent la seule qui lit vraiment l'arabe)
     var g=same.filter(function(v){ return /google/i.test(v.name||''); })[0];
     return g||same[0]||null; }catch(e){ return null; } }
+  /* Voix en ligne (surtout ARABE) servie par /api/tts — car beaucoup de navigateurs
+     n'ont aucune voix arabe installée. Repli sur la synthèse du navigateur si erreur. */
+  var _ttsAudio=null;
+  function pbCloudTTS(text,lang,cb,fallback){
+    try{ if(_ttsAudio){ try{ _ttsAudio.pause(); }catch(_){} _ttsAudio=null; } }catch(_){}
+    var done=false; function fin(){ if(done) return; done=true; try{ cb&&cb(); }catch(_){} }
+    try{
+      var a=new Audio(); _ttsAudio=a;
+      a.src='/api/tts?lang='+encodeURIComponent(lang)+'&text='+encodeURIComponent(String(text).slice(0,1200));
+      a.onended=fin;
+      a.onerror=function(){ if(done) return; if(fallback){ done=true; fallback(); } else fin(); };
+      var p=a.play();
+      if(p&&p.catch) p.catch(function(){ if(done) return; if(fallback){ done=true; fallback(); } else fin(); });
+    }catch(e){ if(fallback){ fallback(); } else fin(); }
+  }
   function voiceSpeak(text,cb){
-    var syn=window.speechSynthesis; if(!syn){ cb&&cb(); return; }
+    var syn=window.speechSynthesis;
     var c=voiceCleanTTS(text); if(!c){ cb&&cb(); return; }
     var lang=(/[؀-ۿ]/.test(c)?'ar-SA':'fr-FR');
+    // Arabe : on n'a pas de voix locale fiable -> voix en ligne /api/tts (repli sur navigateur si échec)
+    if(lang==='ar-SA'){ pbCloudTTS(c,'ar',cb,function(){ voiceSpeakBrowser(c,lang,cb); }); return; }
+    voiceSpeakBrowser(c,lang,cb);
+  }
+  function voiceSpeakBrowser(c,lang,cb){
+    var syn=window.speechSynthesis; if(!syn){ cb&&cb(); return; }
     function go(){ try{
       var u=new SpeechSynthesisUtterance(c); u.lang=lang; u.rate=1; u.pitch=1;
       var v=voicePick(lang); if(v){ u.voice=v; u.lang=v.lang; }
@@ -582,7 +606,7 @@
     voiceState('speak');
     voiceSpeak(reply||"Je n'ai pas pu répondre, réessaie.", function(){ if(VOICE_ON) voiceListen(); }); }
   function voiceStart(){ if(!SR){ try{ toast('Le mode vocal fonctionne sur Chrome (ordi ou Android).'); }catch(_){} return; } if(VOICE_ON){ voiceStop(); return; } VOICE_ON=true; try{ openPanel(); }catch(_){} document.querySelectorAll('.voice-mode-btn').forEach(function(b){ b.classList.add('on'); }); voiceListen(); }
-  function voiceStop(){ VOICE_ON=false; try{ if(vrec) vrec.stop(); }catch(_){} vrec=null; try{ window.speechSynthesis.cancel(); }catch(_){} var el=document.getElementById('pbVoiceBar'); if(el) el.style.display='none'; document.querySelectorAll('.voice-mode-btn').forEach(function(b){ b.classList.remove('on'); }); }
+  function voiceStop(){ VOICE_ON=false; try{ if(vrec) vrec.stop(); }catch(_){} vrec=null; try{ window.speechSynthesis.cancel(); }catch(_){} try{ if(_ttsAudio){ _ttsAudio.pause(); _ttsAudio=null; } }catch(_){} var el=document.getElementById('pbVoiceBar'); if(el) el.style.display='none'; document.querySelectorAll('.voice-mode-btn').forEach(function(b){ b.classList.remove('on'); }); }
   if(SR){ document.querySelectorAll('.mic-btn').forEach(function(mic){ if(!mic.parentNode || mic.parentNode.querySelector('.voice-mode-btn')) return; var vb=document.createElement('button'); vb.type='button'; vb.className='io-btn voice-mode-btn'; vb.title='Mode vocal — parle avec l\'IA (mains-libres)'; vb.innerHTML='🎧'; vb.addEventListener('click',voiceStart); mic.parentNode.insertBefore(vb, mic.nextSibling); }); }
   document.querySelectorAll('.gen-btn').forEach(function(b){ b.addEventListener('click',function(){ var ti=activeInput(); var v=(ti&&ti.value.trim())||''; if(!v){ openPanel(); var t2=activeInput(); if(t2){ t2.placeholder='Décris l\'image à créer, puis reclique 🎨'; t2.focus(); } return; } genImage(v); }); });
   var cfMenu=document.getElementById('cfMenu'); if(cfMenu&&full) cfMenu.addEventListener('click',function(e){ e.stopPropagation(); full.classList.toggle('side-open'); });
