@@ -2124,7 +2124,44 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
       '.cp-imgprev,.cf-imgprev{flex-wrap:wrap;gap:8px;align-items:center}',
       '.cp-imgprev:empty,.cf-imgprev:empty{display:none}',
       '.img-add{width:52px;height:52px;border:1.5px dashed var(--border-strong);background:var(--surface);color:var(--muted);border-radius:8px;font-size:1.4rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}',
-      '.img-add:hover{border-color:var(--royal);color:var(--royal)}'
+      '.img-add:hover{border-color:var(--royal);color:var(--royal)}',
+
+      /* ===== Message de l'ÉLÈVE : toujours bien lisible (corrige le texte sombre sur fond sombre) ===== */
+      '.cf-msgs .cp-msg.user{color:var(--text);border-radius:16px 16px 4px 16px}',
+      ':root[data-theme="dark"] .cf-msgs .cp-msg.user,:root:not([data-theme="light"]) .cf-msgs .cp-msg.user{color:#f4f2ff;background:color-mix(in srgb,var(--royal) 26%,#241f38);border:1px solid color-mix(in srgb,var(--royal) 45%,transparent)}',
+      ':root[data-theme="light"] .cf-msgs .cp-msg.user{color:#1a1533;background:color-mix(in srgb,var(--royal) 12%,#fff);border:1px solid color-mix(in srgb,var(--royal) 24%,var(--border))}',
+      /* bulle compacte : coin/tail plus doux */
+      '.cp-msg.user{border-radius:15px 15px 4px 15px}',
+
+      /* ===== Barre de saisie : mise en page MOBILE (le texte prend toute la largeur) ===== */
+      '@media(max-width:640px){',
+        '.cp-in,.cf-in{flex-wrap:wrap;align-items:center;row-gap:9px}',
+        '.cp-in textarea,.cf-in textarea{order:-1;flex:1 1 100%;width:100%;min-width:0;box-sizing:border-box}',
+        '.cf-in textarea{padding:9px 4px}',
+        '.cp-in .io-btn,.cf-in .io-btn{order:1}',
+        '.cp-in .send,.cf-in .cf-send{order:2;margin-left:auto}',
+        '.cf-in .io-btn{width:40px;height:40px}',
+      '}',
+
+      /* ===== Finition élégante de la zone de saisie ===== */
+      '.cf-in{border-radius:22px;transition:border-color .15s,box-shadow .15s}',
+      '.cf-in:focus-within{box-shadow:0 0 0 3px color-mix(in srgb,var(--royal) 16%,transparent)}',
+      '.cp-in textarea:focus{border-color:var(--royal);box-shadow:0 0 0 3px color-mix(in srgb,var(--royal) 14%,transparent)}',
+      '.io-btn{transition:border-color .13s,color .13s,background .13s,transform .1s}',
+      '.io-btn:active{transform:scale(.92)}',
+      '.cf-send,.cp-in .send{transition:filter .13s,transform .1s}',
+      '.cf-send:hover,.cp-in .send:hover{filter:brightness(1.08)}',
+      '.cf-send:active,.cp-in .send:active{transform:scale(.94)}',
+
+      /* ===== Réponses de l'IA : lecture plus agréable ===== */
+      '.cf-msgs .cp-msg.ai{line-height:1.7}',
+      '.cf-msgs .cp-msg.ai b,.cf-msgs .cp-msg.ai strong{color:var(--text);font-weight:700}',
+      '.cf-msgs .cp-msg.ai .cb-h{color:var(--text)}',
+      '.cf-msgs .cp-msg.ai>div+div{margin-top:2px}',
+      '.cp-msg.ai .cb-ul li::marker,.cp-msg.ai .cb-ol li::marker{color:var(--royal)}',
+      '.msg-bar{gap:4px}',
+      '.msg-ic{border-radius:8px}',
+      '.cf-msgs .msg-bar{margin-top:10px}'
     ].join('');
     document.head.appendChild(st);
   }
