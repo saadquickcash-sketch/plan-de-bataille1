@@ -2125,6 +2125,10 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
       '.cp-imgprev:empty,.cf-imgprev:empty{display:none}',
       '.img-add{width:52px;height:52px;border:1.5px dashed var(--border-strong);background:var(--surface);color:var(--muted);border-radius:8px;font-size:1.4rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none}',
       '.img-add:hover{border-color:var(--royal);color:var(--royal)}',
+      /* Bouton « Fiche IA » (génération de fiche par le tuteur) */
+      '.btn.fbtn-ai{border-color:color-mix(in srgb,var(--royal) 45%,var(--border));color:var(--royal);font-weight:700}',
+      ':root[data-theme="dark"] .btn.fbtn-ai,:root:not([data-theme="light"]) .btn.fbtn-ai{color:var(--accent)}',
+      '.btn.fbtn-ai:hover{background:color-mix(in srgb,var(--royal) 12%,transparent);border-color:var(--royal)}',
 
       /* ===== Message de l'ÉLÈVE : toujours bien lisible (corrige le texte sombre sur fond sombre) ===== */
       '.cf-msgs .cp-msg.user{color:var(--text);border-radius:16px 16px 4px 16px}',
