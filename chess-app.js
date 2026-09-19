@@ -52,6 +52,7 @@
     var s=document.createElement('style'); s.id='pbChessCss';
     s.textContent=[
       '.chess-wrap-rel{position:relative;display:inline-block;touch-action:none}',
+      '.chess-board{touch-action:none}',
       '.chess-arrows{position:absolute;inset:0;pointer-events:none;z-index:5}',
       '.sq .hi{position:absolute;inset:0;background:rgba(235,97,80,.55);pointer-events:none}',
       '.pc{pointer-events:none;position:relative;z-index:2;transition:transform .06s}',
@@ -156,27 +157,27 @@
   function moveGhost(x,y){ if(dragGhost){ dragGhost.style.left=x+'px'; dragGhost.style.top=y+'px'; } }
   function endGhost(){ if(dragGhost){ dragGhost.remove(); dragGhost=null; } var d=boardEl.querySelector('.pc.drag'); if(d) d.classList.remove('drag'); }
 
-  function onDown(e){ if(reviewMode) { if(e.button===2){ e.preventDefault(); } return; }
-    var pt=(e.touches&&e.touches[0])||e; var sq=sqUnder(pt.clientX,pt.clientY); if(!sq) return;
-    if(e.button===2){ down={sq:sq,btn:2,x:pt.clientX,y:pt.clientY}; e.preventDefault(); return; }
-    // clic gauche : efface flèches/surbrillances de l'élève
+  var reviewStep=function(d){};
+  function onDown(e){ var sq=sqUnder(e.clientX,e.clientY);
+    if(reviewMode){ down={rev:true,x:e.clientX,y:e.clientY}; try{ wrapEl.setPointerCapture(e.pointerId); }catch(_){}; return; }
+    if(e.button===2){ if(sq){ down={sq:sq,btn:2}; } e.preventDefault(); try{ wrapEl.setPointerCapture(e.pointerId); }catch(_){}; return; }
+    // clic/tap gauche : efface flèches/surbrillances de l'élève
     if(userArrows.length||userHi.length){ userArrows=[]; userHi=[]; drawArrows(); render(); }
     if(thinking||over||pendPromo||g.turn()!==human){ return; }
-    down={sq:sq,btn:0,x:pt.clientX,y:pt.clientY,moved:false};
-    var p=pieceAt(sq);
-    if(sel && sq!==sel){ var legal=g.moves({square:sel,verbose:true}).filter(function(m){return m.to===sq;}); if(legal.length){ down.willMove=true; } }
-    if(p&&p.color===human){ sel=sq; render(); }
-    else if(!down.willMove){ sel=null; render(); }
+    if(!sq) return;
+    // NB : on ne change PAS la sélection ici ; le tap est traité au relâchement,
+    // le glisser démarre dès qu'on bouge. Cela évite de sélectionner puis désélectionner.
+    down={sq:sq,btn:0,x:e.clientX,y:e.clientY,moved:false};
+    try{ wrapEl.setPointerCapture(e.pointerId); }catch(_){}
   }
-  function onMove(e){ if(!down||down.btn!==0) return; var pt=(e.touches&&e.touches[0])||e; var dx=pt.clientX-down.x, dy=pt.clientY-down.y;
-    if(!down.moved && (Math.abs(dx)>6||Math.abs(dy)>6)){ var p=pieceAt(down.sq); if(p&&p.color===human){ down.moved=true; startGhost(down.sq,pt.clientX,pt.clientY); } }
-    if(down.moved){ moveGhost(pt.clientX,pt.clientY); if(e.cancelable) e.preventDefault(); } }
-  function onUp(e){ if(!down) return; var pt=(e.changedTouches&&e.changedTouches[0])||e; var upSq=sqUnder(pt.clientX,pt.clientY);
-    if(down.btn===2){ // flèche ou surbrillance
-      if(upSq&&upSq!==down.sq){ toggleArrow(down.sq,upSq); } else if(upSq){ toggleHi(upSq); } down=null; return; }
-    var wasDrag=down.moved; endGhost();
-    if(wasDrag){ if(upSq && sel && upSq!==sel){ tryMove(sel,upSq); } else { render(); } down=null; return; }
-    // simple clic
+  function onMove(e){ if(!down||down.rev||down.btn!==0) return; var dx=e.clientX-down.x, dy=e.clientY-down.y;
+    if(!down.moved && (Math.abs(dx)>5||Math.abs(dy)>5)){ var p=pieceAt(down.sq); if(p&&p.color===human){ down.moved=true; sel=down.sq; render(); startGhost(down.sq,e.clientX,e.clientY); } }
+    if(down.moved){ moveGhost(e.clientX,e.clientY); if(e.cancelable) e.preventDefault(); } }
+  function onUp(e){ if(!down) return; var upSq=sqUnder(e.clientX,e.clientY);
+    if(down.rev){ var dx=e.clientX-down.x, dy=e.clientY-down.y; if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)){ reviewStep(dx<0?1:-1); } down=null; return; }
+    if(down.btn===2){ if(upSq&&upSq!==down.sq){ toggleArrow(down.sq,upSq); } else if(upSq){ toggleHi(upSq); } down=null; return; }
+    var wasDrag=down.moved; var src=down.sq; endGhost();
+    if(wasDrag){ if(upSq && upSq!==src){ tryMove(src,upSq); } else { sel=null; render(); } down=null; return; }
     if(upSq){ clickSquare(upSq); }
     down=null;
   }
@@ -187,10 +188,12 @@
     if(p&&p.color===human){ sel=sq; render(); } }
   function tryMove(from,to){ var legal=g.moves({square:from,verbose:true}).filter(function(m){return m.to===to;}); if(!legal.length){ sel=null; render(); return; } if(legal[0].promotion){ askPromo(from,to); return; } doMove({from:from,to:to}); }
 
-  function bindPointer(){ ensureWrap();
+  function bindPointer(){ ensureWrap(); wrapEl.style.touchAction='none'; boardEl.style.touchAction='none';
     wrapEl.addEventListener('contextmenu',function(e){ e.preventDefault(); });
-    wrapEl.addEventListener('mousedown',onDown); document.addEventListener('mousemove',onMove); document.addEventListener('mouseup',onUp);
-    wrapEl.addEventListener('touchstart',onDown,{passive:false}); document.addEventListener('touchmove',onMove,{passive:false}); document.addEventListener('touchend',onUp);
+    wrapEl.addEventListener('pointerdown',onDown);
+    wrapEl.addEventListener('pointermove',onMove);
+    wrapEl.addEventListener('pointerup',onUp);
+    wrapEl.addEventListener('pointercancel',function(){ endGhost(); down=null; });
   }
 
   /* ---------------- Coups, promotion, IA ---------------- */
@@ -246,7 +249,7 @@
     setReview:function(v){ reviewMode=v; }, isReview:function(){return reviewMode;},
     st:st, movesEl:movesEl,
     get voiceOn(){return voiceOn;}, set voiceOn(v){ voiceOn=v; var o=pref(); o.voice=v; savePref(o); },
-    onReviewHooks:function(o){ offerReview=o.offer; exitReview=o.exit; }
+    onReviewHooks:function(o){ offerReview=o.offer; exitReview=o.exit; if(o.step) reviewStep=o.step; }
   };
 })();
 
@@ -337,11 +340,52 @@
   /* ---- état bilan ---- */
   var rows=[], evalsW=[], curIdx=0, autoTimer=null, realPGN=null;
 
+  /* ---- barre de navigation FIXE (toujours visible, aucun défilement, tous appareils) ---- */
+  (function(){ if(document.getElementById('pbRevCss'))return; var s=document.createElement('style'); s.id='pbRevCss'; s.textContent=[
+    '.rev-fixed{position:fixed;left:0;right:0;bottom:0;z-index:120;background:var(--card,#fff);border-top:1px solid var(--border);box-shadow:0 -8px 26px rgba(0,0,0,.20);padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));display:none}',
+    '.rev-fixed.on{display:block;animation:rfUp .18s ease}',
+    '@keyframes rfUp{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}',
+    '.rev-fixed .rf-in{max-width:640px;margin:0 auto}',
+    '.rf-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}',
+    '.rf-move{font-weight:800;font-size:.95rem;white-space:nowrap}',
+    '.rf-badge{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:20px;color:#fff;font-size:.74rem;font-weight:700;white-space:nowrap}',
+    '.rf-spk{border:1px solid var(--border);background:var(--surface,var(--card));border-radius:9px;height:30px;min-width:38px;padding:0 8px;cursor:pointer;font-size:.9rem;color:inherit;margin-left:auto}',
+    '.rf-spk.on{background:var(--royal);color:#fff;border-color:var(--royal)}',
+    '.rf-cmt{font-size:.84rem;line-height:1.4;color:var(--muted);max-height:2.9em;overflow:hidden;margin-bottom:7px}',
+    '.rf-cmt .best{color:var(--royal);font-weight:700}',
+    '.rf-nav{display:flex;gap:6px;justify-content:center}',
+    '.rf-nav button{flex:1;max-width:96px;height:44px;border:1px solid var(--border);background:var(--surface,var(--card));border-radius:11px;font-size:1.2rem;color:inherit;cursor:pointer}',
+    '.rf-nav button:hover{border-color:var(--royal)}.rf-nav button:active{transform:scale(.95)}',
+    '.rf-nav .rf-play.on{background:var(--royal);color:#fff;border-color:var(--royal)}',
+    '@media(min-width:900px){.rev-fixed{left:auto;right:22px;bottom:22px;width:430px;border:1px solid var(--border);border-radius:16px}}',
+    'body.rev-open{padding-bottom:160px}'
+  ].join(''); document.head.appendChild(s); })();
+  var fixedEl=null;
+  function buildFixedBar(){ if(fixedEl) return; fixedEl=document.createElement('div'); fixedEl.className='rev-fixed';
+    fixedEl.innerHTML='<div class="rf-in"><div class="rf-top"><span class="rf-move" id="rfMove"></span><span class="rf-badge" id="rfBadge"></span><button class="rf-spk" id="rfSpk" title="Voix">🔊</button></div>'
+      +'<div class="rf-cmt" id="rfCmt"></div>'
+      +'<div class="rf-nav"><button data-n="0" title="Début">⇤</button><button data-n="-1" title="Précédent (←)">‹</button><button class="rf-play" id="rfPlay" title="Lecture (espace)">▶</button><button data-n="1" title="Suivant (→)">›</button><button data-n="99999" title="Fin">⇥</button></div></div>';
+    document.body.appendChild(fixedEl); document.body.classList.add('rev-open');
+    fixedEl.querySelectorAll('.rf-nav button[data-n]').forEach(function(b){ b.addEventListener('click',function(){ var d=parseInt(b.getAttribute('data-n'),10); if(d===0) goTo(0); else if(d===99999) goTo(rows.length-1); else goTo(curIdx+d); }); });
+    fixedEl.querySelector('#rfPlay').addEventListener('click',togglePlay);
+    fixedEl.querySelector('#rfSpk').addEventListener('click',function(){ API.voiceOn=!API.voiceOn; if(!API.voiceOn) stopVoice(); updateFixedBar(); if(API.voiceOn&&rows[curIdx]) speak(comment(rows[curIdx])); });
+    setTimeout(function(){ if(fixedEl) fixedEl.classList.add('on'); },10);
+  }
+  function updateFixedBar(){ if(!fixedEl) return; var r=rows[curIdx]; if(!r) return; var num=Math.floor(curIdx/2)+1; var side=(r.mover==='w')?(num+'. '):(num+'… ');
+    fixedEl.querySelector('#rfMove').textContent=side+r.san;
+    var bd=fixedEl.querySelector('#rfBadge'); bd.textContent=r.cl.icon+' '+r.cl.label; bd.style.background=r.cl.col; bd.style.color=(r.cl.key==='inacc'?'#3a2f0b':'#fff');
+    fixedEl.querySelector('#rfCmt').innerHTML=comment(r);
+    var sp=fixedEl.querySelector('#rfSpk'); sp.classList.toggle('on',API.voiceOn);
+    var pl=fixedEl.querySelector('#rfPlay'); pl.classList.toggle('on',!!autoTimer); pl.textContent=autoTimer?'❙❙':'▶';
+  }
+  function removeFixedBar(){ if(fixedEl){ fixedEl.remove(); fixedEl=null; } document.body.classList.remove('rev-open'); }
+  document.addEventListener('keydown',function(e){ if(!API.isReview()||!rows.length) return; if(e.key==='ArrowLeft'){ goTo(curIdx-1); e.preventDefault(); } else if(e.key==='ArrowRight'){ goTo(curIdx+1); e.preventDefault(); } else if(e.key==='Home'){ goTo(0); e.preventDefault(); } else if(e.key==='End'){ goTo(rows.length-1); e.preventDefault(); } else if(e.key===' '){ togglePlay(); e.preventDefault(); } });
+
   function offerReview(){ if(API.isReview()) return; if(document.getElementById('revStart')) return;
     an.innerHTML='<div style="text-align:center;padding:12px"><button id="revStart" class="btn ask" style="font-size:.95rem;padding:10px 18px">✦ Voir le bilan de la partie</button><div class="src-note" style="margin-top:6px">Analyse complète coup par coup, comme sur chess.com.</div></div>';
     document.getElementById('revStart').addEventListener('click',startReview);
   }
-  function exitReview(){ stopVoice(); if(autoTimer){clearInterval(autoTimer);autoTimer=null;} API.setReview(false); API.setAuto([],null); }
+  function exitReview(){ stopVoice(); if(autoTimer){clearInterval(autoTimer);autoTimer=null;} API.setReview(false); API.setAuto([],null); removeFixedBar(); }
 
   function startReview(){
     var g=API.g; var hist=g.history({verbose:true}); if(hist.length<2){ an.innerHTML='<div class="src-note">Joue quelques coups, puis lance le bilan.</div>'; return; }
@@ -381,6 +425,8 @@
       }
       API.setReview(true);
       drawPanel();
+      buildFixedBar();
+      try{ API.boardEl.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){}
       goTo(rows.length-1);
     }
   }
@@ -443,19 +489,22 @@
       document.getElementById('revDeep').addEventListener('click',function(){ var q='Explique ce coup d\'échecs comme un entraîneur professionnel, en 3-4 phrases. Position (FEN) avant le coup : '+r.played._fenBefore+'. Coup joué : '+r.san+(r.bestSan?('. Le moteur préférait : '+r.bestSan):'')+'. Donne l\'idée, l\'erreur éventuelle et le meilleur plan.'; if(window.PB_ASK) window.PB_ASK(q); }); }
     // liste
     var el=document.getElementById('revList'); if(el){ el.querySelectorAll('.mv').forEach(function(b){ b.classList.toggle('on', parseInt(b.getAttribute('data-i'),10)===curIdx); }); var on=el.querySelector('.mv.on'); if(on&&on.scrollIntoView) try{ on.scrollIntoView({block:'nearest'}); }catch(e){} }
-    // voix
+    // barre fixe + voix
+    updateFixedBar();
     speak(comment(r));
   }
-  function togglePlay(){ var btn=document.getElementById('revPlay'); if(autoTimer){ clearInterval(autoTimer); autoTimer=null; btn.classList.remove('on'); btn.textContent='▶'; return; }
-    btn.classList.add('on'); btn.textContent='❙❙';
-    autoTimer=setInterval(function(){ if(curIdx>=rows.length-1){ clearInterval(autoTimer); autoTimer=null; btn.classList.remove('on'); btn.textContent='▶'; return; } goTo(curIdx+1); }, 3400);
+  function setPlayBtn(){ var btn=document.getElementById('revPlay'); if(btn){ btn.classList.toggle('on',!!autoTimer); btn.textContent=autoTimer?'❙❙':'▶'; } updateFixedBar(); }
+  function togglePlay(){ if(autoTimer){ clearInterval(autoTimer); autoTimer=null; setPlayBtn(); return; }
+    if(curIdx>=rows.length-1) curIdx=-1;
+    autoTimer=setInterval(function(){ if(curIdx>=rows.length-1){ clearInterval(autoTimer); autoTimer=null; setPlayBtn(); return; } goTo(curIdx+1); }, 3600);
+    setPlayBtn(); goTo(curIdx+1);
   }
 
   function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
   // bouton "Analyser la partie" existant -> lance le bilan
   var bA=document.getElementById('chessAnalyze'); if(bA){ bA.textContent='✦ Bilan de la partie'; bA.addEventListener('click',startReview); }
-  API.onReviewHooks({offer:offerReview, exit:exitReview});
+  API.onReviewHooks({offer:offerReview, exit:exitReview, step:function(d){ goTo(curIdx+d); }});
   // pré-charge les voix
   try{ if(window.speechSynthesis){ window.speechSynthesis.getVoices(); window.speechSynthesis.onvoiceschanged=function(){}; } }catch(e){}
 })();
