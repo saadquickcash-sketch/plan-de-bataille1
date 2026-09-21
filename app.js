@@ -2304,6 +2304,20 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
         vidéo sur le site) — injecté au chargement, sans dépendre de la régénération. ===== */
 (function pbUniformLessonTools(){
   function esc(s){ return String(s==null?'':s); }
+  // Correctif design : la barre de navigation déborde sur certaines largeurs -> autoriser le retour à la ligne (pas de barre horizontale).
+  try{ if(!document.getElementById('pbNavFix')){ var ns=document.createElement('style'); ns.id='pbNavFix';
+    ns.textContent='.sitenav .in{flex-wrap:wrap;row-gap:6px}'; document.head.appendChild(ns); } }catch(e){}
+  // Étiquettes arabes pour les leçons RTL (arabe, éduc. islamique, philosophie).
+  var AR_LABELS={'Écouter':'استماع','Demander à Claude':'اسأل المُعلّم','Fiche express':'بطاقة مراجعة',
+    'Fiche IA':'بطاقة (ذكاء اصطناعي)','Compris':'فهمت','À revoir':'للمراجعة','Série d\'exercices':'سلسلة تمارين'};
+  function relabelRTL(actions){
+    try{ Array.prototype.forEach.call(actions.querySelectorAll('.btn'),function(b){
+      var t=(b.textContent||'').trim();
+      // sépare un éventuel symbole/emoji de tête du texte
+      var m=t.match(/^([^\p{L}]*)\s*(.+)$/u); var lead=m?m[1].trim():''; var word=m?m[2].trim():t;
+      if(AR_LABELS[word]){ b.textContent=(lead?lead+' ':'')+AR_LABELS[word]; }
+    }); }catch(e){}
+  }
   function run(){
     try{
       var accs=document.querySelectorAll('.lz-acc'); if(!accs.length) return;
@@ -2341,6 +2355,8 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
           var vb=mkBtn('vbtn pb-vx', vlink.innerHTML, pv);
           try{ vlink.parentNode.replaceChild(vb, vlink); }catch(e){}
         }
+        // 4) Cohérence linguistique : étiquettes en arabe sur les leçons RTL
+        if(rtl) relabelRTL(actions);
       });
     }catch(e){}
   }
