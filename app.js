@@ -265,13 +265,19 @@
       +'ACCÈS : tu as accès à tout le site — tu peux enchaîner ces actions pour réaliser en détail ce que l\'élève demande, tout en respectant la présentation existante (n\'invente pas d\'autres balises). Si une action a besoin d\'informations, commence par un "sondage", puis agis avec le résultat. '
       +'RÈGLES : utilise la balise UNIQUEMENT si l\'élève veut vraiment l\'action ; UNE seule balise par réponse ; pour un planning ou une série, rédige d\'abord le contenu COMPLET puis ajoute [[PB]]{"outil":"document",...}[[/PB]]. Pour une simple question ou explication, réponds normalement SANS aucune balise.';
     var teach=' PÉDAGOGIE ADAPTATIVE : évalue la difficulté. Pour une question SIMPLE, réponds directement. Pour une question DIFFICILE (démonstration, gros problème, notion nouvelle), commence par donner UN indice ou une première étape, puis propose « veux-tu la suite / la solution complète, ou tu essaies d\'abord ? » — fais réfléchir l\'élève avant de tout donner. Adapte-toi à son niveau réel (vois la MÉMOIRE DE L\'ÉLÈVE) : reviens sur ses points faibles connus et relie la nouvelle notion à ce qu\'il maîtrise déjà.'
-      +' MÉMOIRE AUTOMATIQUE (très important) : à la FIN de ta réponse, si l\'élève a révélé une difficulté, un point fort, un objectif, une erreur récurrente, ou s\'il a travaillé un chapitre précis, ajoute une balise CACHÉE — jamais de texte visible autour — sur la toute dernière ligne, au format EXACT : [[MEM]]{"chapitre":"…","matiere":"maths|pc|svt|francais|philo|hg|arabe|islam|anglais","faible":"…","fort":"…","objectif":"…","note":"…","maitrise":1-5}[[/MEM]]. Ne mets QUE les champs pertinents (souvent juste "chapitre"+"matiere", ou "faible"). Cette balise peut coexister avec une balise [[PB]]. Elle sert à te souvenir de l\'élève d\'une fois à l\'autre : utilise-la dès que c\'est utile, mais ne l\'annonce jamais.';
+      +' MÉMOIRE AUTOMATIQUE (très important) : à la FIN de ta réponse, si l\'élève a révélé une difficulté, un point fort, un objectif, une erreur récurrente, ou s\'il a travaillé un chapitre précis, ajoute une balise CACHÉE — jamais de texte visible autour — sur la toute dernière ligne, au format EXACT : [[MEM]]{"chapitre":"…","matiere":"maths|pc|svt|francais|philo|hg|arabe|islam|anglais","faible":"…","fort":"…","objectif":"…","note":"…","maitrise":1-5}[[/MEM]]. Ne mets QUE les champs pertinents (souvent juste "chapitre"+"matiere", ou "faible"). Cette balise peut coexister avec une balise [[PB]]. Elle sert à te souvenir de l\'élève d\'une fois à l\'autre : utilise-la dès que c\'est utile, mais ne l\'annonce jamais.'
+      +' RÉVISION CIBLÉE (très important) : quand l\'élève veut revoir ses points faibles, ne traite PAS tous les chapitres — concentre-toi sur UN SEUL chapitre précis à la fois, le plus urgent (le plus faible dans la MÉMOIRE). Pour l\'emmener exactement à ce chapitre, utilise l\'outil "aller" avec le TITRE EXACT du chapitre : [[PB]]{"outil":"aller","args":{"page":"revision","matiere":"maths|pc|svt|...","lecon":"le titre exact du chapitre"}}[[/PB]]. Fais le rappel + des exercices + un QCM sur CE chapitre uniquement, puis propose de passer au chapitre faible suivant. N\'ouvre jamais « tous les chapitres » d\'un coup ; sois précis.'
+      +' PLANNING INTELLIGENT : quand tu crées un planning, sers-toi de la MÉMOIRE DE L\'ÉLÈVE pour le PERSONNALISER — réserve des créneaux PRÉCIS aux chapitres exacts où il est faible (nomme chaque chapitre, et propose de l\'ouvrir avec l\'outil "aller"), équilibre selon les coefficients (Maths, Physique-Chimie d\'abord), rends-le concret (tableau jour par jour) et motivant. Rends-le DIFFÉRENT à chaque fois (structure, conseils, ordre variés) — jamais deux plannings identiques. Termine en proposant de lancer un QCM interactif court pour démarrer.'
+      +' QCM DYNAMIQUE : chaque QCM ou série d\'exercices que tu génères doit contenir des questions NOUVELLES et VARIÉES — change les énoncés, les nombres, l\'ordre, les angles et la difficulté à chaque fois. Ne repose JAMAIS exactement les mêmes questions que la fois précédente.';
     return SYS+extra+cap+proto+teach+agMemText()+' '+pageCtx(); }
   function msgsForAPI(c){ var base=[{role:'system',content:sysText()}];
     try{ if(_webCtx) base.push({role:'system',content:_webCtx}); }catch(e){}
     try{ var lastU=''; for(var i=c.msgs.length-1;i>=0;i--){ if(c.msgs[i].role==='user'){ lastU=c.msgs[i].content||''; break; } }
       var g=agRetrieve(lastU); if(g){ base.push({role:'system',content:g}); }
-      try{ if(window._pbTopChap&&window._pbTopChap.t){ agLogChapter(window._pbTopChap.t, window._pbTopChap.s); } }catch(_){} }catch(e){}
+      try{ if(window._pbTopChap&&window._pbTopChap.t){ agLogChapter(window._pbTopChap.t, window._pbTopChap.s); } }catch(_){}
+      // Variété : jeton changeant pour éviter que les QCM/exercices/plannings se répètent
+      try{ if(/qcm|quiz|test|planning|exercice|s[ée]rie|entra[iî]n|r[ée]vis/i.test(lastU)){ base.push({role:'system',content:'VARIÉTÉ (jeton '+Math.random().toString(36).slice(2,8)+') : propose des questions et exercices NOUVEAUX, différents des fois précédentes ; varie les énoncés, les nombres, l\'ordre et la difficulté. Ne répète jamais exactement le même contenu.'}); } }catch(_){}
+    }catch(e){}
     return base.concat(c.msgs.slice(-16)); }
   async function pbIdToken(){
     try{ if(typeof firebase!=='undefined' && firebase.auth && firebase.auth().currentUser){ return await firebase.auth().currentUser.getIdToken(); } }catch(e){}
@@ -437,17 +443,24 @@
   });
   // ---- Entraînement ciblé : « Réviser mes points faibles » (mémoire + révision espacée) ----
   window.PB_reviseWeak=function(){ try{
-    var p=(typeof agProfileLoad==='function')?agProfileLoad():{};
-    var faibles=(p.faibles||[]).slice(-6);
-    var chaps=(p.chapitres||[]).slice().sort(function(a,b){ return (a.m||0)-(b.m||0) || (a.d||0)-(b.d||0); }).slice(0,3).map(function(x){return x.t;});
+    var p=(window.PB_profile&&window.PB_profile.getAll())||{};
+    // chapitre le plus urgent = plus faible maîtrise, puis le plus ancien (révision espacée)
+    var chaps=(p.chapitres||[]).slice().sort(function(a,b){ return (a.m||0)-(b.m||0) || (a.d||0)-(b.d||0); });
+    var faibles=(p.faibles||[]);
     var q;
-    if(faibles.length||chaps.length){
-      var cible=[].concat(faibles, chaps).filter(function(v,i,a){return v&&a.indexOf(v)===i;}).slice(0,5).join(' ; ');
-      q='Fais-moi réviser mes points faibles. D\'après ma mémoire : '+cible+'. Commence par le plus urgent : un rappel express de la notion, puis 3 exercices corrigés progressifs (facile → difficile), et termine par un court QCM interactif pour vérifier. Un seul point à la fois, et dis-moi ce qu\'on révise ensuite.';
+    openPanel();
+    if(chaps.length){
+      var t=chaps[0]; var sj=t.s||'';
+      q='Fais-moi réviser PRÉCISÉMENT un seul chapitre : « '+t.t+' »'+(sj?(' (matière : '+sj+')'):'')+' — c\'est mon point le plus faible en ce moment. '
+        +'Ouvre exactement ce chapitre du cours (outil "aller", lecon = le titre exact), fais un rappel express de l\'essentiel, 3 exercices corrigés progressifs, puis un QCM interactif de 5 questions NOUVELLES sur CE chapitre uniquement. '
+        +'Reste sur ce seul chapitre, puis propose-moi de passer au chapitre faible suivant.';
+      try{ var pp=window.PB_profile.getAll(); if(pp.chapitres&&pp.chapitres.length){ var k=pp.chapitres.indexOf(pp.chapitres.slice().sort(function(a,b){return (a.m||0)-(b.m||0)||(a.d||0)-(b.d||0);})[0]); if(k>=0){ pp.chapitres[k].d=Date.now(); window.PB_profile.setAll(pp); } } }catch(_){} // rotation
+    } else if(faibles.length){
+      q='Fais-moi réviser mon point faible le plus urgent : « '+faibles.slice(-1)[0]+' ». Ouvre le chapitre exact concerné (outil "aller"), rappel express + 3 exercices corrigés + un QCM interactif de 5 nouvelles questions. Un seul point précis à la fois, puis propose le suivant.';
     } else {
-      q='Je veux réviser mes points faibles mais tu ne les connais pas encore. Fais-moi passer un mini-bilan diagnostique : un QCM interactif de 6 questions couvrant les notions clés de 1ère Bac Sciences Maths (surtout Maths et Physique-Chimie), puis dis-moi sur quoi je dois travailler en priorité.';
+      q='Tu ne connais pas encore mes points faibles. Fais-moi un mini-bilan diagnostique : un QCM interactif de 6 questions variées (Maths et Physique-Chimie, 1ère Bac SM), puis dis-moi le chapitre PRÉCIS sur lequel travailler en priorité.';
     }
-    openPanel(); ask(q);
+    ask(q);
   }catch(e){} };
   (function injectReviseChip(){
     try{ document.querySelectorAll('.preset').forEach(function(row){
@@ -1220,26 +1233,17 @@ function startPlanningWizard(text){
   var box=agActiveBox(); if(box){ box.appendChild(agSurveyBuild(box,'Mes disponibilités',PLANNING_QS,function(vals){ agMakePlanning(vals); })); box.scrollTop=box.scrollHeight; }
 }
 function agMakePlanning(vals){ vals=vals||[];
-  var free=vals[0]||[], night=(vals[1]&&vals[1][0])||'45 min', wknd=(vals[2]&&vals[2][0])||'~1 h',
-      prio=(vals[3]&&vals[3].length?vals[3]:['Maths','Physique-Chimie']), sess=(vals[4]&&vals[4][0])||'45 min', bed=(vals[5]&&vals[5][0])||'23h';
-  var days=['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
-  var p0=prio[0]||'Maths', p1=prio[1]||p0;
-  var md='# 🗓️ Mon planning de la semaine\n\n';
-  md+="## 🎯 Règle d'or\n\nChaque soir, lis le **prochain cours** (surtout **"+prio.join(', ')+"**) avant le prof : en classe, ce sera une révision, pas une découverte. Objectif : moyenne ≥ **17,5**.\n\n";
-  md+='## 📅 Ta semaine type\n\n| Jour | Quand | Ce que tu fais |\n|---|---|---|\n';
-  for(var i=0;i<7;i++){ var d=days[i]; var isW=(i>=5); var isFree=free.indexOf(d)>=0;
-    var quand=isW?('Week-end · '+wknd):('Soir · '+night); if(isFree) quand+=' + après-midi';
-    var focus=(i%2===0)?p0:p1; var task;
-    if(isFree) task='Séance de **'+sess+'** : '+p0+' + '+p1+' (cours + série d\'exercices)';
-    else if(i===2||i===4) task='Retravaille **'+focus+'** + QCM d\'entraînement';
-    else if(isW) task='Consolidation : QCM de la semaine + points faibles';
-    else task='Retravaille **'+focus+'** (cours du jour) + anticipe le prochain cours';
-    md+='| '+d+' | '+quand+' | '+task+' |\n';
-  }
-  md+='\n## 🧪 Objectifs de la semaine (à cocher)\n\n- '+p0+' : cours du jour retravaillé chaque soir\n- '+p0+' : 1 série d\'exercices + correction\n- '+p1+' : cours + vidéo + 1 série\n- Prochains chapitres lus **en avance**\n- QCM de la semaine faits\n- Coucher vers '+bed+' (sommeil régulier)\n\n';
-  md+='## 💡 Méthode\n\nAnticipe, teste-toi (QCM et flashcards plutôt que relire), retravaille le soir même, et priorise **'+prio.join(' puis ')+'**.\n';
-  agCreatePage({titre:'Mon planning de la semaine',emoji:'🗓️'}, md);
-  try{ var c=cur(); c.msgs.push({role:'assistant',content:'✅ C\'est fait — l\'onglet **« Mon planning de la semaine »** est créé (tu le retrouves dans **✦ Créations**). Tu peux l\'imprimer, ou me demander de l\'ajuster.'}); c.t=Date.now(); save(); renderMsgs(); renderList(); }catch(e){}
+  var free=(vals[0]||[]).join(', ')||'quelques soirs', night=(vals[1]&&vals[1][0])||'45 min',
+      wknd=(vals[2]&&vals[2][0])||'~1 h', prio=((vals[3]&&vals[3].length?vals[3]:['Maths','Physique-Chimie'])).join(', '),
+      sess=(vals[4]&&vals[4][0])||'45 min', bed=(vals[5]&&vals[5][0])||'23h';
+  // Planning INTELLIGENT généré par l'IA : personnalisé (mémoire/points faibles) + varié à chaque fois.
+  var q='Crée-moi un PLANNING de révision hebdomadaire personnalisé et intelligent, présenté en tableau jour par jour (Lundi→Dimanche). '
+    +'Mes disponibilités : après-midis libres = '+free+' ; le soir en semaine = '+night+' ; le week-end = '+wknd+' ; séance idéale = '+sess+' ; coucher vers '+bed+'. '
+    +'Priorités : '+prio+' (respecte les coefficients : Maths et Physique-Chimie d\'abord). '
+    +'Sers-toi de MA MÉMOIRE (mes points faibles et mes chapitres à revoir) pour réserver des créneaux PRÉCIS à chaque chapitre exact où je suis faible : nomme le chapitre, et propose de l\'ouvrir directement (outil "aller"). '
+    +'Rends le planning concret, motivant, réaliste et DIFFÉRENT d\'un planning générique. '
+    +'À la fin, rends-le imprimable (outil document), puis propose-moi de lancer tout de suite un QCM interactif de 5 questions NOUVELLES sur mon point le plus faible.';
+  ask(q);
 }
 
 /* -- Conversion automatique : un QCM/questionnaire écrit en TEXTE -> questionnaire cliquable -- */
