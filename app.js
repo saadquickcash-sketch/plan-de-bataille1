@@ -876,11 +876,16 @@ function agApplyHash(){
   var sm=h.match(/[#&]s=([a-z]+)/);
   if(sm){ var tab=document.querySelector('.subject-tab[data-subj="'+sm[1]+'"]'); if(tab){ try{ tab.click(); }catch(e){} try{ tab.scrollIntoView({block:'center'}); }catch(e){} }
     var lm=h.match(/[#&]l=([^&]+)/);
-    if(lm){ var kw=decodeURIComponent(lm[1]).toLowerCase().split(/\s+/).filter(function(w){return w.length>3;});
+    if(lm){ var STOP=['dune','une','des','les','sur','pour','avec','dans','son','ses','aux','par','plan'];
+      var kw=agNorm(decodeURIComponent(lm[1])).replace(/['’]/g,' ').split(/\s+/).filter(function(w){return w.length>=4 && STOP.indexOf(w)<0;});
       setTimeout(function(){ var pan=document.querySelector('.subject-panel[data-panel="'+sm[1]+'"]')||document;
         var heads=pan.querySelectorAll('.lz-head');
-        for(var i=0;i<heads.length;i++){ var tx=(heads[i].textContent||'').toLowerCase(); var hit=kw.some(function(w){return tx.indexOf(w)>=0;});
-          if(hit){ try{ heads[i].click(); heads[i].scrollIntoView({block:'center'}); }catch(e){} break; } } },350); } }
+        // choisit le chapitre qui correspond LE MIEUX (le plus de mots-clés), pas le premier venu
+        var best=null, bestSc=0;
+        for(var i=0;i<heads.length;i++){ var tx=agNorm(heads[i].textContent||''); var sc=0;
+          for(var j=0;j<kw.length;j++){ if(kw[j] && tx.indexOf(kw[j])>=0) sc++; }
+          if(sc>bestSc){ bestSc=sc; best=heads[i]; } }
+        if(best && bestSc>0){ try{ best.click(); best.scrollIntoView({block:'center'}); }catch(e){} } },350); } }
   var qm=h.match(/[#&]qcm=([a-z]+)(?::(\d+))?/);
   if(qm){ var ss=document.getElementById('qzSubj'), cs=document.getElementById('qzCh'), sb=document.getElementById('qzStart');
     if(ss&&sb){ try{ ss.value=qm[1]; ss.dispatchEvent(new Event('change')); }catch(e){} if(qm[2]&&cs){ try{ cs.value=qm[2]; }catch(e){} }
