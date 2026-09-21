@@ -2299,3 +2299,52 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',buildNav); else buildNav();
 })();
+
+/* ===== Fonctionnalités uniformes sur CHAQUE leçon (fiche express, série d'exercices,
+        vidéo sur le site) — injecté au chargement, sans dépendre de la régénération. ===== */
+(function pbUniformLessonTools(){
+  function esc(s){ return String(s==null?'':s); }
+  function run(){
+    try{
+      var accs=document.querySelectorAll('.lz-acc'); if(!accs.length) return;
+      Array.prototype.forEach.call(accs,function(acc){
+        var actions=acc.querySelector('.lz-actions'); if(!actions) return;
+        if(actions.getAttribute('data-pbtools')) return; actions.setAttribute('data-pbtools','1');
+        var titleEl=acc.querySelector('.lz-title'); var title=titleEl?titleEl.textContent.trim():'';
+        if(!title) return;
+        var body=acc.querySelector('.lz-body'); var rtl=!!(body&&body.classList.contains('rtl'));
+        function mkBtn(cls,label,prompt){
+          var b=document.createElement('button'); b.type='button'; b.className='btn '+cls; b.innerHTML=label;
+          b.addEventListener('click',function(){ try{ if(window.PB_ASK) window.PB_ASK(prompt); }catch(e){} });
+          return b;
+        }
+        // 1) Fiche express (si absente) — statique déjà là = .fbtn
+        if(!actions.querySelector('.fbtn') && !actions.querySelector('.pb-fx')){
+          var pf = rtl
+            ? 'أعدّ لي بطاقة مراجعة مركّزة (Fiche express) لدرس « '+title+' »: الأساسي في صفحة واحدة — أهمّ التعاريف والأفكار والقواعد، ثم المنهجية. مختصرة وواضحة وقابلة للطبع.'
+            : 'Fais-moi une fiche express de révision du chapitre « '+title+' » : l\'essentiel sur une seule page — définitions clés, formules/propriétés à retenir et la méthode. Courte, claire et imprimable.';
+          actions.appendChild(mkBtn('fbtn-ai pb-fx','&#128196; Fiche express', pf));
+        }
+        // 2) Série d'exercices (si absente) — statique déjà là = .sbtn
+        if(!actions.querySelector('.sbtn') && !actions.querySelector('.pb-sx')){
+          var ps = rtl
+            ? 'أنشئ لي سلسلة من 5 تمارين متدرّجة (من الأسهل إلى الأصعب) حول درس « '+title+' »، مستوى الأولى باكالوريا علوم رياضية (المنهاج المغربي)، مع التصحيح المفصّل لكلّ تمرين. اختر تمارين نموذجية ومفيدة للامتحان.'
+            : 'Crée-moi une série de 5 exercices progressifs (du plus simple au plus difficile) sur « '+title+' », niveau 1ère Bac Sciences Maths (programme marocain), AVEC la correction détaillée de chaque exercice. Choisis des exercices typiques et formateurs pour le Bac.';
+          actions.appendChild(mkBtn('sbtn pb-sx','&#128221; Série d\'exercices', ps));
+        }
+        // 3) Vidéo : plus de redirection YouTube — leçon vidéo guidée SUR le site
+        var vlink=actions.querySelector('a.vbtn');
+        if(vlink){
+          var pv = rtl
+            ? 'اشرح لي درس « '+title+' » كأنّه درس بالفيديو: خطوة بخطوة، مع النقاط الأساسية وأمثلة وما يجب حفظه، ثمّ تمرين تطبيقي. أريد درساً كاملاً وواضحاً.'
+            : 'Explique-moi le chapitre « '+title+' » comme un cours en vidéo : étape par étape, avec les points clés, des exemples concrets et ce qu\'il faut retenir, puis un exercice d\'application. Je veux une leçon complète et claire.';
+          var vb=mkBtn('vbtn pb-vx', vlink.innerHTML, pv);
+          try{ vlink.parentNode.replaceChild(vb, vlink); }catch(e){}
+        }
+      });
+    }catch(e){}
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run); else run();
+  // relance si le contenu est réinjecté (changement d'onglet matière)
+  try{ document.addEventListener('click',function(e){ if(e.target&&e.target.closest&&e.target.closest('.subject-tab')){ setTimeout(run,400); } }); }catch(e){}
+})();
