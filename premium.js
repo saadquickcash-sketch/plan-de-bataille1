@@ -3,7 +3,7 @@
    window.PB_isPremium, window.PB_showUpsell, window.PB_premiumGate. Chargé avant app.js. */
 (function(){
   var FREE_LIMIT = (typeof window!=='undefined' && window.PB_FREE_LIMIT) ? window.PB_FREE_LIMIT : 3; // messages IA / jour (gratuit)
-  var PRICE = (typeof window!=='undefined' && window.PB_PRICE) ? window.PB_PRICE : '39 DH / mois';
+  var PRICE = (typeof window!=='undefined' && window.PB_PRICE) ? window.PB_PRICE : '49 DH / mois';
 
   /* ---------- utilitaires purs (testables) ---------- */
   function normalizeCode(c){ return String(c==null?'':c).toUpperCase().replace(/[^A-Z0-9]/g,''); }
