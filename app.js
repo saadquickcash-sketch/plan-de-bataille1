@@ -264,11 +264,14 @@
       +'(12) "editeur" = PLACE ton code directement dans l\'onglet « Éditeur de code » (mini-VS Code : coloration syntaxique de nombreux langages, détection d\'erreurs façon VS Code, exécution des projets web) et l\'ouvre pour l\'élève. Utilise-le dès que l\'élève veut écrire, tester, corriger ou exécuter du code, ou dès que tu produis un projet à plusieurs fichiers. Deux façons de fournir les fichiers : soit tu écris chaque fichier dans un bloc ```langage AU-DESSUS de la balise (nomme le fichier juste après le langage, par ex. ```js script.js ou ```python solution.py — sinon un nom est choisi automatiquement) et tu laisses args vide {}, soit tu passes args:{"fichiers":[{"nom":"index.html","contenu":"..."},{"nom":"style.css","contenu":"..."}]}. Chaque fichier va dans son propre onglet ; s\'il y a du HTML, un clic sur « Exécuter » montre le résultat. Écris toujours un code complet, correct et sans erreur de syntaxe (le panneau « Problèmes » signale les erreurs). '
       +'ACCÈS : tu as accès à tout le site — tu peux enchaîner ces actions pour réaliser en détail ce que l\'élève demande, tout en respectant la présentation existante (n\'invente pas d\'autres balises). Si une action a besoin d\'informations, commence par un "sondage", puis agis avec le résultat. '
       +'RÈGLES : utilise la balise UNIQUEMENT si l\'élève veut vraiment l\'action ; UNE seule balise par réponse ; pour un planning ou une série, rédige d\'abord le contenu COMPLET puis ajoute [[PB]]{"outil":"document",...}[[/PB]]. Pour une simple question ou explication, réponds normalement SANS aucune balise.';
-    return SYS+extra+cap+proto+agMemText()+' '+pageCtx(); }
+    var teach=' PÉDAGOGIE ADAPTATIVE : évalue la difficulté. Pour une question SIMPLE, réponds directement. Pour une question DIFFICILE (démonstration, gros problème, notion nouvelle), commence par donner UN indice ou une première étape, puis propose « veux-tu la suite / la solution complète, ou tu essaies d\'abord ? » — fais réfléchir l\'élève avant de tout donner. Adapte-toi à son niveau réel (vois la MÉMOIRE DE L\'ÉLÈVE) : reviens sur ses points faibles connus et relie la nouvelle notion à ce qu\'il maîtrise déjà.'
+      +' MÉMOIRE AUTOMATIQUE (très important) : à la FIN de ta réponse, si l\'élève a révélé une difficulté, un point fort, un objectif, une erreur récurrente, ou s\'il a travaillé un chapitre précis, ajoute une balise CACHÉE — jamais de texte visible autour — sur la toute dernière ligne, au format EXACT : [[MEM]]{"chapitre":"…","matiere":"maths|pc|svt|francais|philo|hg|arabe|islam|anglais","faible":"…","fort":"…","objectif":"…","note":"…","maitrise":1-5}[[/MEM]]. Ne mets QUE les champs pertinents (souvent juste "chapitre"+"matiere", ou "faible"). Cette balise peut coexister avec une balise [[PB]]. Elle sert à te souvenir de l\'élève d\'une fois à l\'autre : utilise-la dès que c\'est utile, mais ne l\'annonce jamais.';
+    return SYS+extra+cap+proto+teach+agMemText()+' '+pageCtx(); }
   function msgsForAPI(c){ var base=[{role:'system',content:sysText()}];
     try{ if(_webCtx) base.push({role:'system',content:_webCtx}); }catch(e){}
     try{ var lastU=''; for(var i=c.msgs.length-1;i>=0;i--){ if(c.msgs[i].role==='user'){ lastU=c.msgs[i].content||''; break; } }
-      var g=agRetrieve(lastU); if(g){ base.push({role:'system',content:g}); } }catch(e){}
+      var g=agRetrieve(lastU); if(g){ base.push({role:'system',content:g}); }
+      try{ if(window._pbTopChap&&window._pbTopChap.t){ agLogChapter(window._pbTopChap.t, window._pbTopChap.s); } }catch(_){} }catch(e){}
     return base.concat(c.msgs.slice(-16)); }
   async function pbIdToken(){
     try{ if(typeof firebase!=='undefined' && firebase.auth && firebase.auth().currentUser){ return await firebase.auth().currentUser.getIdToken(); } }catch(e){}
@@ -402,6 +405,7 @@
       if(clean && clean.trim()){ try{ await typeReveal(clean); }catch(_){} }
       c.msgs.push({role:'assistant',content:clean});
       c.t=Date.now(); save(); renderMsgs(); renderList();
+      try{ agCaptureNote(clean, text); }catch(_){}
       try{ pbMaybeTitle(c, text); }catch(_){}
       var madePage=false;
       if(hasAct){ pr.actions.forEach(function(a){ try{ if(agRun(a, clean)){ var tn=(a.outil||a.tool||'').toString().toLowerCase(); if(tn.indexOf('page')>=0||tn.indexOf('onglet')>=0) madePage=true; } }catch(_){} }); }
@@ -431,6 +435,29 @@
   document.querySelectorAll('.preset button[data-ask]').forEach(function(b){
     b.addEventListener('click',function(){ var p=b.getAttribute('data-ask')||''; openPanel(); if(input){ input.value=p; input.focus(); try{input.setSelectionRange(p.length,p.length);}catch(_){}} });
   });
+  // ---- Entraînement ciblé : « Réviser mes points faibles » (mémoire + révision espacée) ----
+  window.PB_reviseWeak=function(){ try{
+    var p=(typeof agProfileLoad==='function')?agProfileLoad():{};
+    var faibles=(p.faibles||[]).slice(-6);
+    var chaps=(p.chapitres||[]).slice().sort(function(a,b){ return (a.m||0)-(b.m||0) || (a.d||0)-(b.d||0); }).slice(0,3).map(function(x){return x.t;});
+    var q;
+    if(faibles.length||chaps.length){
+      var cible=[].concat(faibles, chaps).filter(function(v,i,a){return v&&a.indexOf(v)===i;}).slice(0,5).join(' ; ');
+      q='Fais-moi réviser mes points faibles. D\'après ma mémoire : '+cible+'. Commence par le plus urgent : un rappel express de la notion, puis 3 exercices corrigés progressifs (facile → difficile), et termine par un court QCM interactif pour vérifier. Un seul point à la fois, et dis-moi ce qu\'on révise ensuite.';
+    } else {
+      q='Je veux réviser mes points faibles mais tu ne les connais pas encore. Fais-moi passer un mini-bilan diagnostique : un QCM interactif de 6 questions couvrant les notions clés de 1ère Bac Sciences Maths (surtout Maths et Physique-Chimie), puis dis-moi sur quoi je dois travailler en priorité.';
+    }
+    openPanel(); ask(q);
+  }catch(e){} };
+  (function injectReviseChip(){
+    try{ document.querySelectorAll('.preset').forEach(function(row){
+      if(row.querySelector('.pb-revise')) return;
+      var b=document.createElement('button'); b.type='button'; b.className='pb-revise';
+      b.textContent='🧠 Réviser mes points faibles';
+      b.addEventListener('click',function(e){ e.preventDefault(); window.PB_reviseWeak(); });
+      row.insertBefore(b, row.firstChild);
+    }); }catch(e){}
+  })();
   // ---- Sélection de texte : « Demander à l'IA » ----
   function closestSel(node,sel){ var el=(node&&node.nodeType===3)?node.parentElement:node; return (el&&el.closest)?el.closest(sel):null; }
   var selShown=false;
@@ -729,6 +756,11 @@ function agJson(s){ s=String(s).trim().replace(/^```(json)?/i,'').replace(/```$/
   return null; }
 function agParse(text){
   text=String(text||''); var actions=[];
+  // Canal MÉMOIRE caché : [[MEM]]{...}[[/MEM]] — appliqué puis retiré du texte visible.
+  try{ var reM=/\[\[MEM\]\]([\s\S]*?)\[\[\/MEM\]\]/g, mm;
+    while((mm=reM.exec(text))){ var mo=agJson(mm[1]); if(mo){ try{ agRememberRich(mo); }catch(_){} } }
+    text=text.replace(reM,'').replace(/\[\[\/?MEM\]\]/g,'').trim();
+  }catch(_){}
   var re=/\[\[PB\]\]([\s\S]*?)\[\[\/PB\]\]/g, m;
   while((m=re.exec(text))){ var a=agJson(m[1]); if(a) actions.push(a); }
   var clean=text.replace(re,'').trim();
@@ -1271,13 +1303,47 @@ function agRemember(args){ if(!args) return false; var p=agProfileLoad();
 function agRecordScore(title,score,total){ try{ var p=agProfileLoad(); p.scores=p.scores||[]; p.scores.push({t:String(title).slice(0,60),s:score,n:total,d:Date.now()}); if(p.scores.length>20) p.scores.shift();
   if(total && (score/total)<0.6){ p.faibles=p.faibles||[]; var tt=String(title).slice(0,60); if(tt && p.faibles.indexOf(tt)<0){ p.faibles.push(tt); if(p.faibles.length>20) p.faibles.shift(); } }
   agProfileSave(p); }catch(e){} }
+/* Mise à jour riche du profil depuis la balise [[MEM]] émise par l'IA. */
+function agRememberRich(o){ if(!o||typeof o!=='object') return false; var p=agProfileLoad();
+  function addTo(key,val){ if(!val) return; p[key]=p[key]||[]; val=String(val).trim().slice(0,80); if(val && p[key].indexOf(val)<0){ p[key].push(val); if(p[key].length>24) p[key].shift(); } }
+  addTo('faibles', o.faible||o.faiblesse||o.difficulte||o.weak);
+  addTo('forts', o.fort||o.force||o.strong);
+  addTo('notes', o.note||o.info||o.souviens||o.remember);
+  if(o.objectif||o.but) p.objectif=String(o.objectif||o.but).slice(0,120);
+  agProfileSave(p); // persiste faibles/forts/notes/objectif AVANT le journal des chapitres
+  var chap=o.chapitre||o.chapter||o.chap; var mat=agSubjKey(o.matiere||o.subject||chap||'');
+  if(chap){ agLogChapter(chap, mat, o.maitrise); } // recharge le profil frais puis sauvegarde
+  return true;
+}
+/* Journalise un chapitre travaillé (mémoire de continuité + révision espacée). */
+function agLogChapter(title, subj, maitrise){ try{ title=String(title||'').replace(/\s+/g,' ').trim().slice(0,70); if(!title) return;
+  var p=agProfileLoad(); p.chapitres=p.chapitres||[];
+  var norm=agNorm(title); var found=null;
+  for(var i=0;i<p.chapitres.length;i++){ if(agNorm(p.chapitres[i].t)===norm){ found=p.chapitres[i]; break; } }
+  var mv=parseInt(maitrise,10); if(isNaN(mv)) mv=0;
+  if(found){ found.d=Date.now(); found.n=(found.n||0)+1; if(mv) found.m=mv; if(subj) found.s=subj; }
+  else { p.chapitres.push({t:title, s:subj||'', d:Date.now(), n:1, m:mv}); }
+  if(p.chapitres.length>40) p.chapitres.shift();
+  p.derniere=Date.now();
+  agProfileSave(p);
+}catch(e){} }
+if(typeof window!=='undefined') window.PB_logChapter=agLogChapter;
+/* Capture une note /20 depuis une correction de copie ($\boxed{XX/20}$). */
+function agCaptureNote(clean, ctx){ try{ var m=String(clean||'').match(/\\boxed\{\s*(\d+(?:[.,]\d+)?)\s*\/\s*20\s*\}/); if(!m) return;
+  var note=parseFloat(m[1].replace(',','.')); if(isNaN(note)) return;
+  var subj=agSubjKey(ctx||clean||''); var label='Copie'+(subj?(' '+subj):'');
+  var p=agProfileLoad(); p.scores=p.scores||[]; p.scores.push({t:label, s:Math.round(note), n:20, d:Date.now()}); if(p.scores.length>24) p.scores.shift();
+  if(note<12){ p.faibles=p.faibles||[]; var w='Copie notée '+Math.round(note)+'/20'+(subj?(' en '+subj):''); if(p.faibles.indexOf(w)<0){ p.faibles.push(w); if(p.faibles.length>24) p.faibles.shift(); } }
+  agProfileSave(p);
+}catch(e){} }
 function agMemText(){ var p=agProfileLoad(); var s='';
   if(p.faibles&&p.faibles.length) s+=' Points faibles connus : '+p.faibles.slice(-6).join(', ')+'.';
   if(p.forts&&p.forts.length) s+=' Points forts : '+p.forts.slice(-4).join(', ')+'.';
   if(p.objectif) s+=' Objectif personnel : '+p.objectif+'.';
-  if(p.scores&&p.scores.length){ var last=p.scores.slice(-3).map(function(x){ return x.t+' '+x.s+'/'+x.n; }).join(' ; '); s+=' Derniers scores QCM : '+last+'.'; }
+  if(p.chapitres&&p.chapitres.length){ var rc=p.chapitres.slice().sort(function(a,b){return (b.d||0)-(a.d||0);}).slice(0,4).map(function(x){ return x.t+(x.m?(' (maîtrise '+x.m+'/5)'):''); }).join(' ; '); s+=' Chapitres récemment travaillés : '+rc+'.'; }
+  if(p.scores&&p.scores.length){ var last=p.scores.slice(-3).map(function(x){ return x.t+' '+x.s+'/'+x.n; }).join(' ; '); s+=' Derniers résultats : '+last+'.'; }
   if(p.notes&&p.notes.length) s+=' À retenir : '+p.notes.slice(-4).join(' ; ')+'.';
-  if(s) s=' MÉMOIRE DE L\'ÉLÈVE (souviens-toi de ces éléments et adapte-toi ; propose de revoir ses points faibles quand c\'est pertinent) :'+s;
+  if(s) s=' MÉMOIRE DE L\'ÉLÈVE (souviens-toi de ces éléments, personnalise, et propose de revoir ses points faibles quand c\'est pertinent) :'+s;
   return s;
 }
 
@@ -1305,6 +1371,7 @@ function agRetrieve(query){ query=agNorm(query); if(query.length<4) return '';
   scored.sort(function(a,b){ return b.sc-a.sc; });
   var maxsc=scored[0].sc; var top=scored.filter(function(x){ return x.sc>=Math.max(2,maxsc-1); }).slice(0,5);
   if(!top.length) top=scored.slice(0,3);
+  try{ if(top[0]&&top[0].e&&top[0].e.title&&maxsc>=3){ window._pbTopChap={t:top[0].e.title, s:top[0].e.subj||''}; } else { window._pbTopChap=null; } }catch(_){}
   var seen={}, lines=[];
   top.forEach(function(x){ var t=x.e.text.replace(/\s+/g,' ').trim(); var key=t.slice(0,40); if(seen[key]) return; seen[key]=1; if(t.length>240) t=t.slice(0,240)+'…'; lines.push('- ('+(x.e.title||x.e.subj)+') '+t); });
   if(!lines.length) return '';
@@ -1336,7 +1403,36 @@ function agEvalNum(expr){ try{
   if(st.length!==1) return null; var r=st[0]; if(!isFinite(r)) return null; return r;
 }catch(e){ return null; } }
 
-function agVerifyArithmetic(text){ return text; }
+function agVerifyArithmetic(text){
+  try{
+    var src=String(text||''); if(!src) return text;
+    // Copie d'analyse : on neutralise les blocs de code, on normalise quelques symboles LaTeX.
+    var scan=src.replace(/```[\s\S]*?```/g,' ').replace(/`[^`]*`/g,' ')
+      .replace(/\\times|\\cdot/g,'×').replace(/\\div/g,'÷')
+      .replace(/\\left|\\right|\\,|\\;|\\!|\$/g,' ');
+    var re=/([0-9][0-9\s.,]*(?:[-+×x*/÷^]\s*[0-9][0-9\s.,()]*)+)\s*=\s*(-?[0-9]+(?:[.,][0-9]+)?)/g;
+    var m, seen={}, notes=[];
+    while((m=re.exec(scan)) && notes.length<3){
+      var lhs=m[1], rhs=m[2];
+      // ignore une simple division type "12/20" (barème/fraction) sans autre opérateur
+      var opsOnly=lhs.replace(/[0-9\s.,()]/g,'');
+      if(opsOnly==='/' ) continue;
+      if(/[a-zA-Zα-ωΑ-Ω\\]/.test(lhs)) continue;
+      var val=agEvalNum(lhs); if(val===null) continue;
+      var given=parseFloat(rhs.replace(',','.')); if(isNaN(given)) continue;
+      // tolérance large si le résultat est un décimal (l'élève a pu arrondir), stricte sinon
+      var isDec=/[.,]/.test(rhs);
+      var tol=isDec ? Math.max(0.05, Math.abs(given)*0.02) : 0.001;
+      if(Math.abs(val-given)>tol){
+        var key=lhs.replace(/\s+/g,'')+'='+rhs; if(seen[key]) continue; seen[key]=1;
+        var corr=Math.round(val*1e6)/1e6;
+        notes.push(lhs.replace(/\s+/g,' ').trim()+' = '+corr+' (et non '+rhs.trim()+')');
+      }
+    }
+    if(notes.length){ src+='\n\n> 🔎 *Vérification : '+notes.join(' ; ')+'.*'; }
+    return src;
+  }catch(e){ return text; }
+}
 /* Normalise les maths pour un rendu fiable : \[ \] -> $$, \( \) -> $, et met chaque bloc $$..$$ sur une seule ligne */
 function agMathNormalize(s){ if(!s) return s; s=String(s);
   // 1) Délimiteurs LaTeX standard -> $ / $$
