@@ -2364,3 +2364,66 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
   // relance si le contenu est réinjecté (changement d'onglet matière)
   try{ document.addEventListener('click',function(e){ if(e.target&&e.target.closest&&e.target.closest('.subject-tab')){ setTimeout(run,400); } }); }catch(e){}
 })();
+
+/* ===== Bouton « Installer l'application » proposé à l'entrée du site (PWA) ===== */
+(function pbInstallPrompt(){
+  try{
+    // Déjà installée ? (mode application) -> ne rien proposer
+    var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone===true;
+    if(standalone) return;
+    var css=document.createElement('style');
+    css.textContent='#pbInstallBar{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;'
+      +'background:linear-gradient(135deg,#7c5cff,#4b3fa7);color:#fff;padding:10px 16px;'
+      +'font:600 14px system-ui,-apple-system,sans-serif;box-shadow:0 3px 14px rgba(0,0,0,.22);position:relative;z-index:5}'
+      +'#pbInstallBar .pbi-ic{font-size:18px}'
+      +'#pbInstallBar .pbi-txt{font-weight:700}'
+      +'#pbInstallBar .pbi-go{background:#fff;color:#4b3fa7;border:0;border-radius:22px;padding:8px 18px;font-weight:800;cursor:pointer;font-size:.9rem}'
+      +'#pbInstallBar .pbi-go:active{transform:scale(.97)}'
+      +'#pbInstallBar .pbi-x{background:transparent;border:0;color:#fff;font-size:22px;line-height:1;cursor:pointer;opacity:.85;padding:0 2px}'
+      +'@media(max-width:520px){#pbInstallBar{font-size:13px;padding:9px 12px}#pbInstallBar .pbi-txt{flex:1 1 100%;text-align:center}}';
+    document.head.appendChild(css);
+
+    var deferred=null, iOS=/iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+
+    function dismissed(){ try{ return sessionStorage.getItem('pb_install_x')==='1'; }catch(e){ return false; } }
+    function setDismissed(){ try{ sessionStorage.setItem('pb_install_x','1'); }catch(e){} }
+
+    function bar(){ return document.getElementById('pbInstallBar'); }
+    function removeBar(){ var b=bar(); if(b) b.remove(); }
+
+    function showBar(mode){
+      if(dismissed() || bar() || !document.body) return;
+      var b=document.createElement('div'); b.id='pbInstallBar';
+      var label='<span class="pbi-ic">📲</span> <span class="pbi-txt">Installe l\'application Plan de Bataille sur ton téléphone</span>';
+      var btn='<button class="pbi-go" id="pbiGo">Installer</button>';
+      if(mode==='ios'){ btn='<button class="pbi-go" id="pbiGo">Comment faire ?</button>'; }
+      b.innerHTML=label+btn+'<button class="pbi-x" id="pbiX" aria-label="Fermer">&times;</button>';
+      document.body.insertBefore(b, document.body.firstChild);
+      document.getElementById('pbiX').addEventListener('click',function(){ removeBar(); setDismissed(); });
+      document.getElementById('pbiGo').addEventListener('click',function(){
+        if(mode==='ios'){ iosHelp(); return; }
+        if(deferred){ deferred.prompt(); deferred.userChoice.then(function(c){ removeBar(); if(c && c.outcome!=='accepted') setDismissed(); }); deferred=null; }
+      });
+    }
+
+    function iosHelp(){
+      var m=document.createElement('div');
+      m.style.cssText='position:fixed;inset:0;z-index:100060;background:rgba(10,8,15,.6);display:flex;align-items:center;justify-content:center;padding:22px';
+      m.innerHTML='<div style="background:#fff;color:#1a1526;max-width:360px;border-radius:16px;padding:20px 22px;font:400 15px system-ui,-apple-system,sans-serif;line-height:1.55">'
+        +'<div style="font-weight:800;font-size:1.05rem;margin-bottom:8px;color:#4b3fa7">📲 Installer sur iPhone</div>'
+        +'1) Appuie sur le bouton <b>Partager</b> ⬆️ (en bas de Safari).<br>2) Choisis <b>« Sur l\'écran d\'accueil »</b>.<br>3) Appuie sur <b>Ajouter</b>.'
+        +'<div style="text-align:right;margin-top:16px"><button id="pbiClose" style="background:#4b3fa7;color:#fff;border:0;border-radius:20px;padding:8px 18px;font-weight:700;cursor:pointer">OK</button></div></div>';
+      m.addEventListener('click',function(e){ if(e.target===m) m.remove(); });
+      document.body.appendChild(m);
+      document.getElementById('pbiClose').addEventListener('click',function(){ m.remove(); });
+    }
+
+    // Chrome/Android/desktop : capte l'événement d'installation
+    window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); deferred=e; showBar('prompt'); });
+    // Déjà installée pendant la session
+    window.addEventListener('appinstalled', function(){ removeBar(); try{ if(window.toast) window.toast('Application installée 🎉'); }catch(_){} });
+
+    // iOS Safari : pas d'événement -> on propose la marche à suivre
+    if(iOS){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){ showBar('ios'); }); else showBar('ios'); }
+  }catch(e){}
+})();
