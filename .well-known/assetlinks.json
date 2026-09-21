@@ -1,0 +1,10 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "dev.pages.plan_de_bataille1.twa",
+      "sha256_cert_fingerprints": ["04:85:08:4F:68:8A:B0:BB:4F:E6:B8:18:BD:36:1F:FE:F9:ED:AD:63:80:21:95:4E:65:DF:A6:55:6B:29:0C:3E"]
+    }
+  }
+]
