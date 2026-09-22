@@ -1,5 +1,5 @@
 /**
- * Plan de Bataille — Lecture de lien côté serveur (/api/fetch)
+ * Brio — Lecture de lien côté serveur (/api/fetch)
  * ------------------------------------------------------------
  * Récupère une page web et renvoie son TEXTE lisible (sans balises), pour que
  * le Tuteur IA puisse « analyser ce qu'il y a sur un lien ». La récupération se

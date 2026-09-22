@@ -114,7 +114,7 @@
     });
   });
   // ===== Tuteur IA — chat intégré (compact + plein écran, multi-conversations) =====
-  var SYS="Tu es « Tuteur IA », le professeur particulier personnel de ton élève, en 1ère année du Baccalauréat Sciences Mathématiques (filière BIOF, programme marocain) au Groupe scolaire Fès City, région Fès-Meknès, Maroc. Objectif de l'élève : une moyenne générale supérieure à 17,5/20. Ton but n'est pas seulement de donner la réponse, mais de la lui faire COMPRENDRE en profondeur. MÉTHODE (à appliquer à chaque fois) : 1) Assure-toi d'avoir compris la question ; si elle est ambiguë, pose UNE courte question de clarification avant de te lancer. 2) Explique étape par étape, du plus simple au plus complexe, en définissant chaque terme ou notion nouvelle. 3) Illustre toujours par un exemple concret, puis propose un petit exercice d'application. 4) Quand c'est utile, guide l'élève par une question (méthode socratique) au lieu de tout donner d'un coup. 5) Termine par un récapitulatif court et une prochaine étape claire. RIGUEUR (très important) : avant de donner un résultat de calcul en maths ou en physique-chimie, REFAIS le calcul mentalement pour le vérifier, contrôle les unités et les cas particuliers. N'invente JAMAIS une formule, une définition, une date, une citation ou une source : si tu n'es pas sûr, dis-le honnêtement plutôt que d'inventer. Reste strictement dans le programme de 1ère Bac SM marocain (n'utilise pas de notions hors-programme). STYLE : réponds en français (ou en arabe si la question est en arabe), avec des paragraphes courts et une mise en forme claire ; écris les formules de façon lisible et mets en évidence le résultat important. Sois chaleureux, encourageant et jamais condescendant. ÉLÉGANCE (écris comme un excellent pédagogue) : commence par l'essentiel, va droit au but, aère ton texte ; n'emploie le gras que pour les points vraiment clés ; préfère des phrases fluides à une accumulation de puces ; une réponse soignée, précise et agréable à lire vaut mieux qu'une réponse longue et brouillonne. Priorité aux Maths (coef 9) et à la Physique-Chimie (coef 7), mais tu maîtrises aussi SVT, français (œuvres au programme : Le Dernier Jour d'un Condamné, La Boîte à Merveilles, Antigone), philosophie, histoire-géographie, arabe, éducation islamique et anglais. RÉFLEXION (ta manière de penser) : avant de répondre, prends un instant pour réfléchir en silence — identifie ce que l'élève sait déjà et où se situe PRÉCISÉMENT sa difficulté, décompose le problème en petites étapes, choisis la voie la plus simple, puis rédige une réponse claire. Anticipe l'erreur classique sur ce point et préviens-la. Si plusieurs méthodes existent, montre la plus efficace pour un élève de ce niveau, et dis pourquoi. PROACTIVITÉ : propose spontanément l'outil du site le plus utile au bon moment — un QCM interactif pour se tester, une fiche ou une série d'exercices imprimable, un planning, ou l'ouverture de la bonne leçon — sans attendre qu'on te le demande, dès que cela aide vraiment l'élève.";
+  var SYS="Tu es « Brio », le professeur particulier personnel et l'assistant IA de ton élève. Ton nom est Brio : présente-toi toujours ainsi, et si on te demande qui tu es, réponds simplement « Je suis Brio, ton professeur particulier ». Ton élève est en 1ère année du Baccalauréat Sciences Mathématiques (filière BIOF, programme marocain) au Groupe scolaire Fès City, région Fès-Meknès, Maroc. Objectif de l'élève : une moyenne générale supérieure à 17,5/20. Ton but n'est pas seulement de donner la réponse, mais de la lui faire COMPRENDRE en profondeur. MÉTHODE (à appliquer à chaque fois) : 1) Assure-toi d'avoir compris la question ; si elle est ambiguë, pose UNE courte question de clarification avant de te lancer. 2) Explique étape par étape, du plus simple au plus complexe, en définissant chaque terme ou notion nouvelle. 3) Illustre toujours par un exemple concret, puis propose un petit exercice d'application. 4) Quand c'est utile, guide l'élève par une question (méthode socratique) au lieu de tout donner d'un coup. 5) Termine par un récapitulatif court et une prochaine étape claire. RIGUEUR (très important) : avant de donner un résultat de calcul en maths ou en physique-chimie, REFAIS le calcul mentalement pour le vérifier, contrôle les unités et les cas particuliers. N'invente JAMAIS une formule, une définition, une date, une citation ou une source : si tu n'es pas sûr, dis-le honnêtement plutôt que d'inventer. Reste strictement dans le programme de 1ère Bac SM marocain (n'utilise pas de notions hors-programme). STYLE : réponds en français (ou en arabe si la question est en arabe), avec des paragraphes courts et une mise en forme claire ; écris les formules de façon lisible et mets en évidence le résultat important. Sois chaleureux, encourageant et jamais condescendant. ÉLÉGANCE (écris comme un excellent pédagogue) : commence par l'essentiel, va droit au but, aère ton texte ; n'emploie le gras que pour les points vraiment clés ; préfère des phrases fluides à une accumulation de puces ; une réponse soignée, précise et agréable à lire vaut mieux qu'une réponse longue et brouillonne. Priorité aux Maths (coef 9) et à la Physique-Chimie (coef 7), mais tu maîtrises aussi SVT, français (œuvres au programme : Le Dernier Jour d'un Condamné, La Boîte à Merveilles, Antigone), philosophie, histoire-géographie, arabe, éducation islamique et anglais. RÉFLEXION (ta manière de penser) : avant de répondre, prends un instant pour réfléchir en silence — identifie ce que l'élève sait déjà et où se situe PRÉCISÉMENT sa difficulté, décompose le problème en petites étapes, choisis la voie la plus simple, puis rédige une réponse claire. Anticipe l'erreur classique sur ce point et préviens-la. Si plusieurs méthodes existent, montre la plus efficace pour un élève de ce niveau, et dis pourquoi. PROACTIVITÉ : propose spontanément l'outil du site le plus utile au bon moment — un QCM interactif pour se tester, une fiche ou une série d'exercices imprimable, un planning, ou l'ouverture de la bonne leçon — sans attendre qu'on te le demande, dès que cela aide vraiment l'élève.";
   var fab=document.getElementById('fab'),panel=document.getElementById('chatpanel');
   if(!fab||!panel) return;
   var msgsEl=document.getElementById('chatMsgs'),input=document.getElementById('chatInput'),send=document.getElementById('chatSend');
@@ -217,7 +217,7 @@
       return;
     }
     c.msgs.forEach(function(m){ box.appendChild(bubbleEl(m.role==='assistant'?'ai':'user',m.content,m.img)); }); box.scrollTop=box.scrollHeight; }
-  function renderMsgs(){ var c=cur(); fillBox(msgsEl,c); fillBox(cfMsgs,c); if(cfTitle) cfTitle.textContent=c.title||'Tuteur IA'; }
+  function renderMsgs(){ var c=cur(); fillBox(msgsEl,c); fillBox(cfMsgs,c); if(cfTitle) cfTitle.textContent=c.title||'Brio'; }
   function renderList(){ if(!cfList)return; cfList.innerHTML=''; convos.slice().sort(function(a,b){return b.t-a.t;}).forEach(function(c){
     var it=document.createElement('div'); it.className='cf-item'+(c.id===curId?' on':'');
     var tt=document.createElement('span'); tt.className='cf-it-t'; tt.textContent=c.title||'Conversation'; it.appendChild(tt);
@@ -231,7 +231,7 @@
   render();
   try{ ensureChatCss(); }catch(e){}
   try{ agApplyHash(); }catch(e){} window.addEventListener('hashchange',function(){ try{ agApplyHash(); }catch(e){} });
-  function pageCtx(){ var p=window.PB_PAGE||{}; var s='CONTEXTE : l\'élève est actuellement sur la page « '+(p.label||'?')+' » du site Plan de Bataille.';
+  function pageCtx(){ var p=window.PB_PAGE||{}; var s='CONTEXTE : l\'élève est actuellement sur la page « '+(p.label||'?')+' » du site Brio.';
     var st=document.querySelector('.subject-tab[aria-selected="true"]'); if(st) s+=' Matière affichée : '+st.textContent.trim().replace(/\s+/g,' ')+'.';
     var op=document.querySelector('.lz-head[aria-expanded="true"] .lz-title'); if(op) s+=' Leçon ouverte : '+op.textContent.trim()+'.';
     return s; }
@@ -367,8 +367,44 @@
     }catch(e){}
     throw new Error('IA indisponible');
   }
-  function addTyping(){ var nodes=[]; [msgsEl,cfMsgs].forEach(function(box){ if(!box)return; var t=document.createElement('div'); t.className='cp-msg ai typing'; t.innerHTML='<span></span><span></span><span></span>'; box.appendChild(t); box.scrollTop=box.scrollHeight; nodes.push(t); }); return nodes; }
-  function rmTyping(nodes){ nodes.forEach(function(n){ if(n&&n.parentNode) n.parentNode.removeChild(n); }); }
+  /* ===== « Brio réfléchit » — sur quoi il réfléchit selon la question ===== */
+  function brioThinkPlan(text, hasImg){
+    var t=(' '+(text||'')+' ').toLowerCase();
+    function h(re){ return re.test(t); }
+    if(hasImg) return {focus:'sur ta photo', steps:['Je regarde attentivement la photo…','Je transcris l\'énoncé…','Je résous étape par étape…','Je vérifie le résultat…']};
+    if(h(/g[ée]n[èe]re une image|dessine|illustration|un sch[ée]ma|🎨/)) return {focus:'sur ton image', steps:['J\'imagine la scène…','Je compose l\'image…','Je peaufine les détails…']};
+    if(h(/planning|programme de r[ée]vision|organise|emploi du temps|r[ée]viser?\b/)) return {focus:'sur ton planning', steps:['Je consulte ta mémoire d\'élève…','Je repère tes chapitres faibles…','J\'équilibre selon les coefficients…','Je construis ton planning…']};
+    if(h(/\bqcm\b|quiz|interrog|teste[- ]?moi|un test\b/)) return {focus:'sur ton QCM', steps:['Je choisis le bon chapitre…','Je prépare des questions variées…','Je rédige les explications…']};
+    if(h(/corrige|correction|\bnote\b|noter|copie|bar[èe]me|mon devoir|ma r[ée]daction/)) return {focus:'sur ta copie', steps:['Je lis ta rédaction…','Je repère les erreurs…','Je corrige et j\'attribue une note…']};
+    if(h(/\bcode\b|html|css|javascript|\bjs\b|python|programme|script|un jeu|d[ée]bogue|debug/)) return {focus:'sur ton code', steps:['Je structure le programme…','J\'écris les fonctions…','Je vérifie la syntaxe…','Je teste le résultat…']};
+    if(h(/limite/)) return {focus:'sur les limites de fonctions', steps:['Je lis l\'énoncé…','Je choisis la bonne méthode…','Je lève l\'indétermination…','Je vérifie le résultat…']};
+    if(h(/d[ée]riv/)) return {focus:'sur la dérivation', steps:['Je lis la fonction…','J\'applique les règles de dérivation…','Je simplifie…','Je vérifie le calcul…']};
+    if(h(/barycentre|vecteur|produit scalaire/)) return {focus:'sur les vecteurs', steps:['Je pose les vecteurs…','Je choisis la relation utile…','Je calcule…','Je vérifie…']};
+    if(h(/probabilit/)) return {focus:'sur les probabilités', steps:['Je décris l\'expérience…','Je dénombre les cas…','Je calcule la probabilité…','Je vérifie…']};
+    if(h(/\bsuite[s]?\b|r[ée]currence|arithm[ée]tique|g[ée]om[ée]trique/)) return {focus:'sur les suites', steps:['Je lis la définition de la suite…','Je choisis la méthode…','Je calcule…','Je vérifie…']};
+    if(h(/trigonom|\bsin\b|\bcos\b|\btan\b|angle/)) return {focus:'sur la trigonométrie', steps:['Je repère les angles…','J\'applique les formules…','Je calcule…','Je vérifie…']};
+    if(h(/[ée]quation|in[ée]quation|polyn[ôo]me|racine|discriminant/)) return {focus:'sur cette équation', steps:['Je mets en forme l\'équation…','Je choisis la méthode de résolution…','Je résous…','Je vérifie les solutions…']};
+    if(h(/physique|chimie|\bforce\b|mouvement|\bmole\b|r[ée]action|[ée]nergie|vitesse|acc[ée]l[ée]ration|circuit|\bonde\b|concentration/)) return {focus:'sur cet exercice de physique-chimie', steps:['J\'analyse la situation…','Je pose les lois utiles…','Je fais les calculs…','Je vérifie les unités…']};
+    if(h(/philo|conscience|inconscient|autrui|\bd[ée]sir\b|libert[ée]|v[ée]rit[ée]|\bnشأة|فلسف|الوعي/)) return {focus:'sur cette notion de philosophie', steps:['Je cerne la notion…','J\'organise les idées…','Je rédige clairement…']};
+    if(h(/dissert|r[ée]dige|paragraphe|argument|\bessai\b|antigone|bo[îi]te à merveilles|dernier jour|\btexte\b/)) return {focus:'sur ta rédaction', steps:['Je cerne le sujet…','Je bâtis le plan…','Je rédige avec soin…']};
+    if(h(/qui es[- ]?tu|c\'est quoi brio|ton nom|comment tu t\'appelles|tu es qui/)) return {focus:'à ma réponse', steps:['Je réfléchis…','Je prépare une réponse claire…']};
+    return {focus:'sur ta question', steps:['Je lis ta question attentivement…','Je réfléchis à la meilleure explication…','Je prépare une réponse claire…']};
+  }
+  function addTyping(text, hasImg){
+    var plan=brioThinkPlan(text, hasImg); var nodes=[];
+    [msgsEl,cfMsgs].forEach(function(box){ if(!box)return;
+      var t=document.createElement('div'); t.className='cp-msg ai brio-think';
+      t.innerHTML='<span class="bt-orb" aria-hidden="true"></span><div class="bt-body"><div class="bt-head">Brio <em class="bt-focus"></em></div><div class="bt-step" aria-live="polite"></div></div>';
+      var fx=t.querySelector('.bt-focus'), st=t.querySelector('.bt-step');
+      if(fx) fx.textContent='réfléchit '+plan.focus;
+      var i=0;
+      function show(){ if(!st) return; st.style.opacity='0'; setTimeout(function(){ st.textContent=plan.steps[i%plan.steps.length]; st.style.opacity='1'; i++; },170); }
+      show(); t._iv=setInterval(show, 1650);
+      box.appendChild(t); box.scrollTop=box.scrollHeight; nodes.push(t);
+    });
+    return nodes;
+  }
+  function rmTyping(nodes){ nodes.forEach(function(n){ if(n){ if(n._iv){ clearInterval(n._iv); n._iv=null; } if(n.parentNode) n.parentNode.removeChild(n); } }); }
   function activeInput(){ return (full&&!full.hidden)?cfInput:input; }
   async function ask(text){ text=(text||'').trim(); var imgs=pendingImgs.slice(); var img=imgs[0]||null; if((!text&&!imgs.length)||busy) return;
     if(!img){
@@ -393,7 +429,7 @@
     if(input) input.value=''; if(cfInput){ cfInput.value=''; autoGrow(cfInput); } setPending(null);
     var c=cur(); var um={role:'user',content:text||(imgs.length>1?('📸 '+imgs.length+' photos envoyées'):'(photo envoyée)')}; if(img) um.img=img; c.msgs.push(um);
     if(!c.title||c.title==='Nouvelle conversation') c.title=(text||(imgs.length>1?'Correction de copie':'Photo — exercice')).slice(0,42); c.t=Date.now(); save(); renderMsgs(); renderList();
-    var typ=addTyping();
+    var typ=addTyping(text, imgs.length);
     try{ var raw;
       if(imgs.length){ raw=await callVision(text,imgs); }
       else { _webCtx=''; try{ _webCtx=await fetchWebContext(text); }catch(_w){ _webCtx=''; } raw=await callAI(c); }
@@ -610,7 +646,7 @@
   async function genImage(prompt){ prompt=(prompt||'').trim(); if(!prompt||busy) return; busy=true;
     if(input) input.value=''; if(cfInput){ cfInput.value=''; autoGrow(cfInput); }
     var c=cur(); c.msgs.push({role:'user',content:'🎨 '+prompt}); if(!c.title||c.title==='Nouvelle conversation') c.title=prompt.slice(0,42); c.t=Date.now(); save(); renderMsgs(); renderList();
-    var typ=addTyping();
+    var typ=addTyping('🎨 '+prompt, false);
     var url='https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt)+'?width=768&height=768&nologo=true&seed='+Math.floor(Math.random()*1e6);
     var okimg=await new Promise(function(res){ var im=new Image(); var done=false; im.onload=function(){ if(!done){done=true;res(true);} }; im.onerror=function(){ if(!done){done=true;res(false);} }; im.src=url; setTimeout(function(){ if(!done){done=true;res(!!(im.complete&&im.naturalWidth>0));} },22000); });
     rmTyping(typ);
@@ -864,9 +900,9 @@ function agModal(){
 function agDocFromText(md, title, kind){
   md=String(md||''); var m=agModal(); m._md=md; m._name=title||agGuessTitle(md);
   var holder=m.querySelector('#agHolder');
-  var head='<div class="ag-head"><div class="ag-brand">&#9822; Plan de <span>Bataille</span></div><div class="ag-kind">'+agEsc(kind||'DOCUMENT')+'</div></div>';
+  var head='<div class="ag-head"><div class="ag-brand"><svg class="brio-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c.45 3.2 1.35 5.4 2.95 7 1.6 1.6 3.8 2.5 7 2.95-3.2.45-5.4 1.35-7 2.95-1.6 1.6-2.5 3.8-2.95 7-.45-3.2-1.35-5.4-2.95-7-1.6-1.6-3.8-2.5-7-2.95 3.2-.45 5.4-1.35 7-2.95 1.6-1.6 2.5-3.8 2.95-7z"/></svg> <span>Brio</span></div><div class="ag-kind">'+agEsc(kind||'DOCUMENT')+'</div></div>';
   var h1=title?('<h1 class="ag-title">'+agEsc(title)+'</h1>'):'';
-  holder.innerHTML=head+h1+'<div class="ag-body">'+agMd(md)+'</div><div class="ag-foot">&#9822; Plan de Bataille &middot; Tuteur IA &middot; document généré pour t\'aider à réviser</div>';
+  holder.innerHTML=head+h1+'<div class="ag-body">'+agMd(md)+'</div><div class="ag-foot"><svg class="brio-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c.45 3.2 1.35 5.4 2.95 7 1.6 1.6 3.8 2.5 7 2.95-3.2.45-5.4 1.35-7 2.95-1.6 1.6-2.5 3.8-2.95 7-.45-3.2-1.35-5.4-2.95-7-1.6-1.6-3.8-2.5-7-2.95 3.2-.45 5.4-1.35 7-2.95 1.6-1.6 2.5-3.8 2.95-7z"/></svg> Brio &middot; ton tuteur IA &middot; document généré pour t\'aider à réviser</div>';
   try{ renderMath(holder); }catch(_){}
   try{ agEnhanceCode(holder); }catch(_){}
   m.hidden=false; document.body.classList.add('noscroll'); holder.scrollTop=0;
@@ -1028,7 +1064,7 @@ function agQuizBuild(box,title,qs){
       wrap.innerHTML='<div class="qzc-head">🏁 '+esc(title)+'</div><div class="qzc-final">Score : <b>'+score+' / '+qs.length+'</b> · '+pct+'%'+(pct>=80?' — excellent ! 🎉':(pct>=50?' — bien, continue 💪':' — on révise et on recommence 👍'))+'</div>';
       var again=document.createElement('button'); again.className='qzc-next'; again.textContent='↻ Recommencer'; again.addEventListener('click',function(){ idx=0; score=0; wrap._a=false; render(); }); wrap.appendChild(again);
       if(pct<70){ var rev=document.createElement('button'); rev.className='qzc-next'; rev.style.marginLeft='8px'; rev.style.background='#9c7522'; rev.textContent='📚 Réviser ce chapitre'; rev.addEventListener('click',function(){ ask('Je viens d\'avoir '+score+'/'+qs.length+' au QCM « '+title+' ». Explique-moi clairement ce chapitre, insiste sur mes erreurs probables, et donne-moi 3 exercices corrigés pour progresser.'); }); wrap.appendChild(rev); }
-      try{ if(window.PB_award) window.PB_award(qs.length*3,'QCM du Tuteur IA',{qcm:qs.length}); }catch(e){}
+      try{ if(window.PB_award) window.PB_award(qs.length*3,'QCM de Brio',{qcm:qs.length}); }catch(e){}
       try{ agRecordScore(title,score,qs.length); }catch(e){}
       if(!summarized){ summarized=true; try{ var c=cur(); c.msgs.push({role:'assistant',content:'✅ QCM « '+title+' » terminé — score '+score+'/'+qs.length+' ('+pct+'%).'}); c.t=Date.now(); save(); }catch(e){} }
       box.scrollTop=box.scrollHeight; return; }
@@ -1093,7 +1129,7 @@ function agOpenPage(id){ var p=agLoadPages().filter(function(x){return x.id===id
 function agPagesModal(){ var m=document.getElementById('pbPagesModal'); if(m) return m;
   var st=document.createElement('style'); st.textContent=PG_CSS; document.head.appendChild(st);
   m=document.createElement('div'); m.id='pbPagesModal'; m.hidden=true;
-  m.innerHTML='<div class="pg-in"><div class="pg-bar"><div class="pg-ttl">&#10022; Mes <span>Créations</span></div><button class="pg-close" id="pgClose" aria-label="Fermer">&times;</button></div><div class="pg-list" id="pgList"></div><div class="pg-note">Pages générées par le Tuteur IA, enregistrées sur cet appareil (et sur ton compte si tu es connecté). Demande-lui : « crée une page sur … ».</div></div>';
+  m.innerHTML='<div class="pg-in"><div class="pg-bar"><div class="pg-ttl">&#10022; Mes <span>Créations</span></div><button class="pg-close" id="pgClose" aria-label="Fermer">&times;</button></div><div class="pg-list" id="pgList"></div><div class="pg-note">Pages générées par Brio, enregistrées sur cet appareil (et sur ton compte si tu es connecté). Demande-lui : « crée une page sur … ».</div></div>';
   document.body.appendChild(m);
   function hide(){ m.hidden=true; document.body.classList.remove('noscroll'); }
   m.querySelector('#pgClose').addEventListener('click',hide);
@@ -1102,7 +1138,7 @@ function agPagesModal(){ var m=document.getElementById('pbPagesModal'); if(m) re
   return m;
 }
 function agOpenPagesList(){ var m=agPagesModal(); var body=m.querySelector('#pgList'); var pages=agLoadPages();
-  if(!pages.length){ body.innerHTML='<div class="pg-empty">Aucune page pour l\'instant.<br>Ouvre le Tuteur IA et écris par exemple :<br><b>« crée une page qui résume le chapitre des limites »</b>.</div>'; }
+  if(!pages.length){ body.innerHTML='<div class="pg-empty">Aucune page pour l\'instant.<br>Ouvre Brio et écris par exemple :<br><b>« crée une page qui résume le chapitre des limites »</b>.</div>'; }
   else { body.innerHTML=''; pages.forEach(function(p){
     var row=document.createElement('div'); row.className='pg-row';
     var op=document.createElement('button'); op.className='pg-open'; op.type='button';
@@ -2179,7 +2215,7 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
 })();
 
 /* ============================================================================
-   Plan de Bataille — Améliorations UI (menu mobile élégant + styles chat/web)
+   Brio — Améliorations UI (menu mobile élégant + styles chat/web)
    Bloc autonome ajouté après coup : n'interfère avec rien d'autre.
    ========================================================================== */
 (function(){
@@ -2308,7 +2344,7 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
   try{ if(!document.getElementById('pbNavFix')){ var ns=document.createElement('style'); ns.id='pbNavFix';
     ns.textContent='.sitenav .in{flex-wrap:wrap;row-gap:6px}'; document.head.appendChild(ns); } }catch(e){}
   // Étiquettes arabes pour les leçons RTL (arabe, éduc. islamique, philosophie).
-  var AR_LABELS={'Écouter':'استماع','Demander à Claude':'اسأل المُعلّم','Fiche express':'بطاقة مراجعة',
+  var AR_LABELS={'Écouter':'استماع','Demander à Brio':'اسأل بريو','Fiche express':'بطاقة مراجعة',
     'Fiche IA':'بطاقة (ذكاء اصطناعي)','Compris':'فهمت','À revoir':'للمراجعة','Série d\'exercices':'سلسلة تمارين'};
   function relabelRTL(actions){
     try{ Array.prototype.forEach.call(actions.querySelectorAll('.btn'),function(b){
@@ -2394,7 +2430,7 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
     function showBar(mode){
       if(dismissed() || bar() || !document.body) return;
       var b=document.createElement('div'); b.id='pbInstallBar';
-      var label='<span class="pbi-ic">📲</span> <span class="pbi-txt">Installe l\'application Plan de Bataille sur ton téléphone</span>';
+      var label='<span class="pbi-ic">📲</span> <span class="pbi-txt">Installe l\'application Brio sur ton téléphone</span>';
       var btn='<button class="pbi-go" id="pbiGo">Installer</button>';
       if(mode==='ios'){ btn='<button class="pbi-go" id="pbiGo">Comment faire ?</button>'; }
       b.innerHTML=label+btn+'<button class="pbi-x" id="pbiX" aria-label="Fermer">&times;</button>';

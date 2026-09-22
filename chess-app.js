@@ -1,5 +1,5 @@
 /* ============================================================================
-   Plan de Bataille — Échecs façon chess.com
+   Brio — Échecs façon chess.com
    Board élégant, glisser-déposer, flèches, et « Bilan de partie » complet
    (analyse Stockfish coup par coup, classification, précision %, commentaire
    professionnel lu à voix haute).  S'appuie sur chess-lib.js (chess.js) + sf.js.

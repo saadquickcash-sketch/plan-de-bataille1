@@ -1,4 +1,4 @@
-/* ===== Plan de Bataille — Moteur Premium (plan, quota, codes, upsell) ===== */
+/* ===== Brio — Moteur Premium (plan, quota, codes, upsell) ===== */
 /* Fichier autonome : définit window.PB_plan, window.PB_quota, window.PB_redeemCode,
    window.PB_isPremium, window.PB_showUpsell, window.PB_premiumGate. Chargé avant app.js. */
 (function(){

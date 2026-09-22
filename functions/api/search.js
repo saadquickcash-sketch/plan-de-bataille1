@@ -1,5 +1,5 @@
 /**
- * Plan de Bataille — Recherche web côté serveur (/api/search)
+ * Brio — Recherche web côté serveur (/api/search)
  * ----------------------------------------------------------
  * Renvoie une liste de résultats web (titre, url, extrait) pour une requête,
  * afin que le Tuteur IA puisse « faire des recherches sur Google » via le site.

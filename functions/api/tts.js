@@ -1,5 +1,5 @@
 /**
- * Plan de Bataille — Voix en ligne (Text-To-Speech), surtout pour l'ARABE
+ * Brio — Voix en ligne (Text-To-Speech), surtout pour l'ARABE
  * -----------------------------------------------------------------------
  * Beaucoup de navigateurs n'ont AUCUNE voix arabe installée : la synthèse
  * intégrée ne peut donc pas lire l'arabe. Cette fonction récupère la voix

@@ -172,7 +172,7 @@ function czBytes(files){ var te=new TextEncoder(), chunks=[],cen=[],off=0; funct
 })();
 
 /* ============================================================================
-   Plan de Bataille — Résultat du code en PLEIN ÉCRAN (bloc autonome)
+   Brio — Résultat du code en PLEIN ÉCRAN (bloc autonome)
    ========================================================================== */
 (function(){
   function init(){

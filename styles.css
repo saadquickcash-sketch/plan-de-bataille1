@@ -381,6 +381,23 @@
 .cp-msg.typing span{width:6px;height:6px;border-radius:50%;background:var(--muted);opacity:.5;animation:cpblink 1s infinite}
 .cp-msg.typing span:nth-child(2){animation-delay:.2s}.cp-msg.typing span:nth-child(3){animation-delay:.4s}
 @keyframes cpblink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+/* ===== Marque Brio (étincelle) ===== */
+.brio-spark{width:1em;height:1em;fill:currentColor;display:inline-block;vertical-align:-.14em}
+.sitenav .brand .m .brio-spark,.auth-brand .m .brio-spark,.cf-brand .m .brio-spark{width:1.15em;height:1.15em}
+/* ===== Brio réfléchit — indicateur élégant et dynamique ===== */
+.cp-msg.brio-think{align-self:flex-start;display:flex;gap:10px;align-items:flex-start;background:var(--surface-2);color:var(--text);border:1px solid var(--border);border-radius:13px;border-bottom-left-radius:4px;padding:10px 13px;max-width:88%}
+.cf-msgs .cp-msg.brio-think{max-width:760px;width:100%;margin:0 auto}
+.bt-orb{flex:0 0 auto;width:22px;height:22px;border-radius:50%;margin-top:1px;position:relative;background:conic-gradient(from 0deg,var(--royal),var(--accent),#c9982f,var(--royal));animation:btspin 2.4s linear infinite,btpulse 1.5s ease-in-out infinite}
+.bt-orb::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--surface-2)}
+.bt-orb::before{content:"";position:absolute;inset:8px;border-radius:50%;background:radial-gradient(circle,var(--accent),transparent 70%);opacity:.9;animation:btcore 1.5s ease-in-out infinite}
+.bt-body{min-width:0;flex:1}
+.bt-head{font-family:'Newsreader',serif;font-weight:700;font-size:.95rem;color:var(--text);line-height:1.25}
+.bt-focus{font-style:normal;font-weight:600;background:linear-gradient(90deg,var(--royal),var(--accent),#c9982f,var(--royal));background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:btshine 2.6s linear infinite}
+.bt-step{margin-top:2px;font-size:.85rem;color:var(--muted);transition:opacity .18s ease;min-height:1.15em}
+@keyframes btspin{to{transform:rotate(360deg)}}
+@keyframes btpulse{0%,100%{box-shadow:0 0 0 0 rgba(120,120,160,.28)}50%{box-shadow:0 0 0 7px rgba(120,120,160,0)}}
+@keyframes btcore{0%,100%{opacity:.55;transform:scale(.85)}50%{opacity:1;transform:scale(1.05)}}
+@keyframes btshine{to{background-position:220% 0}}
 .cp-in{display:flex;gap:8px;align-items:flex-end}
 .cp-in textarea{flex:1;border:1px solid var(--border);border-radius:10px;padding:9px 11px;font-family:inherit;
   font-size:.9rem;background:var(--raised);color:var(--text);resize:none;line-height:1.4}

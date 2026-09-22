@@ -1,5 +1,5 @@
 /**
- * Plan de Bataille — Fonction serverless « IA Premium » (Cloudflare Pages Functions)
+ * Brio — Fonction serverless « IA Premium » (Cloudflare Pages Functions)
  * ------------------------------------------------------------------------------
  * Appelle un modèle IA PUISSANT en gardant la ou les clés SECRÈTES côté serveur.
  * Les clés n'apparaissent JAMAIS dans le site public.
