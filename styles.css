@@ -800,3 +800,5 @@ body.noscroll{overflow:hidden}
   .pbh-kind{background:#1f3a5f!important;color:#fff!important}
   .pbh-tag,.pbh-sub{color:#555!important}
 }
+
+.acct-av.has-photo,#profAv.has-photo{background-color:transparent!important;overflow:hidden;background-repeat:no-repeat}

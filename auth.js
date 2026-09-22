@@ -76,8 +76,10 @@
       var initial=(nm[0]||'E').toUpperCase();
       var pn=document.getElementById('profName'); if(pn) pn.textContent=nm;
       var pe=document.getElementById('profEmail'); if(pe) pe.textContent=user.email||'';
-      var pa=document.getElementById('profAv'); if(pa) pa.textContent=initial;
-      var av=document.getElementById('acctAv'); if(av){ av.textContent=initial; av.classList.add('on'); }
+      var photo=user.photoURL||'';
+      function pbSetAv(el,on){ if(!el) return; if(photo){ el.textContent=''; el.style.backgroundImage='url("'+photo+'")'; el.style.backgroundSize='cover'; el.style.backgroundPosition='center'; el.style.color='transparent'; el.classList.add('has-photo'); } else { el.style.backgroundImage=''; el.style.color=''; el.classList.remove('has-photo'); el.textContent=initial; } if(on) el.classList.add('on'); }
+      pbSetAv(document.getElementById('profAv'),false);
+      pbSetAv(document.getElementById('acctAv'),true);
       var lbl=document.getElementById('acctLabel'); if(lbl) lbl.textContent=nm.split(' ')[0];
       var cfu=document.getElementById('cfUser'); if(cfu) cfu.textContent=nm+' · connecté';
       var isAdmin=(user.email||'').toLowerCase()===ADMIN_EMAIL;
@@ -111,7 +113,7 @@
     } else {
       window.PB_onChatChange=null; window.PB_onPagesChange=null; window.PB_onProfileChange=null; window.PB_onCustomChange=null; window.PB_onPlanChange=null; window.PB_USERNAME=null;
       if(forms) forms.hidden=false; if(profile) profile.hidden=true; if(setup) setup.hidden=true;
-      var av=document.getElementById('acctAv'); if(av){ av.textContent='\u{1F464}'; av.classList.remove('on'); }
+      var av=document.getElementById('acctAv'); if(av){ av.style.backgroundImage=''; av.style.color=''; av.classList.remove('has-photo'); av.textContent='\u{1F464}'; av.classList.remove('on'); }
       var lbl=document.getElementById('acctLabel'); if(lbl) lbl.textContent='Compte';
       var adm=document.getElementById('authAdmin'); if(adm) adm.hidden=true;
       try{ window.dispatchEvent(new CustomEvent('pb-admin')); }catch(e){}
