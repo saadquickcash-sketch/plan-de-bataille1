@@ -277,7 +277,7 @@
       try{ if(window._pbTopChap&&window._pbTopChap.t){ agLogChapter(window._pbTopChap.t, window._pbTopChap.s); } }catch(_){}
       // Variété : jeton changeant pour éviter que les QCM/exercices/plannings se répètent
       try{ if(/qcm|quiz|test|planning|exercice|s[ée]rie|entra[iî]n|r[ée]vis/i.test(lastU)){ base.push({role:'system',content:'VARIÉTÉ (jeton '+Math.random().toString(36).slice(2,8)+') : propose des questions et exercices NOUVEAUX, différents des fois précédentes ; varie les énoncés, les nombres, l\'ordre et la difficulté. Ne répète jamais exactement le même contenu.'}); } }catch(_){}
-      try{ if(pendingForceQuiz){ base.push({role:'system',content:'QCM INTERACTIF (impératif) : l\'élève veut un QCM interactif AFFICHÉ DANS LE CHAT. Réponds UNIQUEMENT par l\'outil quiz, seul sur la dernière ligne, au format EXACT : [[PB]]{"outil":"quiz","titre":"<sujet court>","questions":[{"q":"<question ?>","choix":["choix A","choix B","choix C","choix D"],"correct":<index 0-3 de la bonne réponse>,"explication":"<pourquoi c\'est la bonne>"}]}[[/PB]]. Mets 5 questions NOUVELLES, variées et de difficulté croissante sur le sujet demandé, chacune avec 4 choix, le bon index dans "correct" (0 = premier choix) et une courte "explication". Écris les maths en LaTeX ($ … $). N\'écris AUCUN autre texte avant ou après la balise.'}); } }catch(_){}
+      try{ if(pendingForceQuiz){ base.push({role:'system',content:'QCM INTERACTIF (impératif) : l\'élève veut un QCM interactif AFFICHÉ DANS LE CHAT. Réponds UNIQUEMENT par l\'outil quiz, seul sur la dernière ligne, au format EXACT : [[PB]]{"outil":"quiz","titre":"<sujet court>","questions":[{"q":"<question ?>","choix":["choix A","choix B","choix C","choix D"],"correct":<index 0-3 de la bonne réponse>,"explication":"<pourquoi c\'est la bonne>"}]}[[/PB]]. Mets 5 questions NOUVELLES, variées et de difficulté croissante sur le sujet demandé, chacune avec 4 choix, le bon index dans "correct" (0 = premier choix) et une courte "explication". Écris les maths en TEXTE SIMPLE avec des symboles Unicode (lim, x→0, x², √, ≤, ≥, ∞, π, sin(x)/x…), SANS LaTeX ni antislash « \\ » (un antislash casse la balise). N\'écris AUCUN autre texte avant ou après la balise.'}); } }catch(_){}
     }catch(e){}
     return base.concat(c.msgs.slice(-16)); }
   async function pbIdToken(){
@@ -809,7 +809,10 @@ function agMd(md){
 }
 function agJson(s){ s=String(s).trim().replace(/^```(json)?/i,'').replace(/```$/,'').trim();
   try{ return JSON.parse(s); }catch(e){}
-  var i=s.indexOf('{'), j=s.lastIndexOf('}'); if(i>=0&&j>i){ try{ return JSON.parse(s.slice(i,j+1)); }catch(e2){} }
+  try{ return JSON.parse(s.replace(/\\(?!["\\/u])/g,'\\\\')); }catch(e){}   /* tolère le LaTeX (antislashs non échappés) */
+  var i=s.indexOf('{'), j=s.lastIndexOf('}'); if(i>=0&&j>i){ var sub=s.slice(i,j+1);
+    try{ return JSON.parse(sub); }catch(e2){}
+    try{ return JSON.parse(sub.replace(/\\(?!["\\/u])/g,'\\\\')); }catch(e3){} }
   return null; }
 function agParse(text){
   text=String(text||''); var actions=[];
