@@ -407,9 +407,9 @@
   }
   function rmTyping(nodes){ nodes.forEach(function(n){ if(n){ if(n._iv){ clearInterval(n._iv); n._iv=null; } if(n.parentNode) n.parentNode.removeChild(n); } }); }
   function activeInput(){ return (full&&!full.hidden)?cfInput:input; }
-  async function ask(text){ text=(text||'').trim(); var imgs=pendingImgs.slice(); var img=imgs[0]||null; if((!text&&!imgs.length)||busy) return;
+  async function ask(text, raw){ text=(text||'').trim(); var imgs=pendingImgs.slice(); var img=imgs[0]||null; if((!text&&!imgs.length)||busy) return;
     pendingForceQuiz=false;
-    if(!img){
+    if(!img && !raw){
       if(agWantsPlanning(text)){ startPlanningWizard(text); return; }
       var _gx=agWantsPlot(text); if(_gx){ if(input) input.value=''; if(cfInput){ cfInput.value=''; autoGrow(cfInput); } var _gc=cur(); _gc.msgs.push({role:'user',content:text}); if(!_gc.title||_gc.title==='Nouvelle conversation') _gc.title=text.slice(0,42); _gc.msgs.push({role:'assistant',content:'Voici la courbe 📈'}); _gc.t=Date.now(); save(); renderMsgs(); renderList(); setTimeout(function(){ try{ agPlotBubble(_gx,{}); }catch(e){} },80); return; }
       var _stc=agWantsStyle(text); if(_stc){ if(input) input.value=''; if(cfInput){ cfInput.value=''; autoGrow(cfInput); } var _sc=cur(); _sc.msgs.push({role:'user',content:text}); if(!_sc.title||_sc.title==='Nouvelle conversation') _sc.title=text.slice(0,42); var _r=agDoStyle(_stc); _sc.msgs.push({role:'assistant',content:_r||'Fait 👍'}); _sc.t=Date.now(); save(); renderMsgs(); renderList(); return; }
@@ -1327,13 +1327,13 @@ function agMakePlanning(vals){ vals=vals||[];
       wknd=(vals[2]&&vals[2][0])||'~1 h', prio=((vals[3]&&vals[3].length?vals[3]:['Maths','Physique-Chimie'])).join(', '),
       sess=(vals[4]&&vals[4][0])||'45 min', bed=(vals[5]&&vals[5][0])||'23h';
   // Planning INTELLIGENT généré par l'IA : personnalisé (mémoire/points faibles) + varié à chaque fois.
-  var q='Crée-moi un PLANNING de révision hebdomadaire personnalisé et intelligent, présenté en tableau jour par jour (Lundi→Dimanche). '
+  var q='Crée un PLANNING de révision hebdomadaire personnalisé et intelligent, présenté en TABLEAU jour par jour (Lundi → Dimanche) : pour chaque jour, des créneaux horaires avec la matière et le chapitre précis à réviser. '
     +'Mes disponibilités : après-midis libres = '+free+' ; le soir en semaine = '+night+' ; le week-end = '+wknd+' ; séance idéale = '+sess+' ; coucher vers '+bed+'. '
-    +'Priorités : '+prio+' (respecte les coefficients : Maths et Physique-Chimie d\'abord). '
-    +'Sers-toi de MA MÉMOIRE (mes points faibles et mes chapitres à revoir) pour réserver des créneaux PRÉCIS à chaque chapitre exact où je suis faible : nomme le chapitre, et propose de l\'ouvrir directement (outil "aller"). '
-    +'Rends le planning concret, motivant, réaliste et DIFFÉRENT d\'un planning générique. '
-    +'À la fin, rends-le imprimable (outil document), puis propose-moi de lancer tout de suite un QCM interactif de 5 questions NOUVELLES sur mon point le plus faible.';
-  ask(q);
+    +'Priorités : '+prio+' (respecte les coefficients : Maths (coef 9) et Physique-Chimie (coef 7) en premier). '
+    +'Sers-toi de MA MÉMOIRE (mes points faibles et mes chapitres à revoir) pour réserver des créneaux PRÉCIS aux chapitres exacts où je suis faible : nomme chaque chapitre. '
+    +'Ajoute sous le tableau une courte liste de conseils et une phrase de motivation. Rends-le concret, réaliste et DIFFÉRENT d\'un planning générique. '
+    +'Rédige tout le planning COMPLET, puis enregistre-le comme une PAGE réouvrable dans « Créations » en terminant EXACTEMENT ta réponse par : [[PB]]{"outil":"page","args":{"titre":"Mon planning de révision","emoji":"🗓️"}}[[/PB]]';
+  ask(q, true);
 }
 
 /* -- Conversion automatique : un QCM/questionnaire écrit en TEXTE -> questionnaire cliquable -- */
