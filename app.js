@@ -119,7 +119,7 @@
   if(!fab||!panel) return;
   var msgsEl=document.getElementById('chatMsgs'),input=document.getElementById('chatInput'),send=document.getElementById('chatSend');
   var full=document.getElementById('chatFull'),cfList=document.getElementById('cfList'),cfMsgs=document.getElementById('cfMsgs'),cfInput=document.getElementById('cfInput'),cfSend=document.getElementById('cfSend'),cfTitle=document.getElementById('cfTitle');
-  var selAsk=document.getElementById('selAsk'); var busy=false; var pendingForcePage=null;
+  var selAsk=document.getElementById('selAsk'); var busy=false; var pendingForcePage=null; var pendingForceQuiz=false;
   function uid(){ return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
   var convos=[], curId=null;
   function byId(id){ for(var i=0;i<convos.length;i++) if(convos[i].id===id) return convos[i]; return null; }
@@ -277,6 +277,7 @@
       try{ if(window._pbTopChap&&window._pbTopChap.t){ agLogChapter(window._pbTopChap.t, window._pbTopChap.s); } }catch(_){}
       // Variété : jeton changeant pour éviter que les QCM/exercices/plannings se répètent
       try{ if(/qcm|quiz|test|planning|exercice|s[ée]rie|entra[iî]n|r[ée]vis/i.test(lastU)){ base.push({role:'system',content:'VARIÉTÉ (jeton '+Math.random().toString(36).slice(2,8)+') : propose des questions et exercices NOUVEAUX, différents des fois précédentes ; varie les énoncés, les nombres, l\'ordre et la difficulté. Ne répète jamais exactement le même contenu.'}); } }catch(_){}
+      try{ if(pendingForceQuiz){ base.push({role:'system',content:'QCM INTERACTIF (impératif) : l\'élève veut un QCM interactif AFFICHÉ DANS LE CHAT. Réponds UNIQUEMENT par l\'outil quiz, seul sur la dernière ligne, au format EXACT : [[PB]]{"outil":"quiz","titre":"<sujet court>","questions":[{"q":"<question ?>","choix":["choix A","choix B","choix C","choix D"],"correct":<index 0-3 de la bonne réponse>,"explication":"<pourquoi c\'est la bonne>"}]}[[/PB]]. Mets 5 questions NOUVELLES, variées et de difficulté croissante sur le sujet demandé, chacune avec 4 choix, le bon index dans "correct" (0 = premier choix) et une courte "explication". Écris les maths en LaTeX ($ … $). N\'écris AUCUN autre texte avant ou après la balise.'}); } }catch(_){}
     }catch(e){}
     return base.concat(c.msgs.slice(-16)); }
   async function pbIdToken(){
@@ -407,6 +408,7 @@
   function rmTyping(nodes){ nodes.forEach(function(n){ if(n){ if(n._iv){ clearInterval(n._iv); n._iv=null; } if(n.parentNode) n.parentNode.removeChild(n); } }); }
   function activeInput(){ return (full&&!full.hidden)?cfInput:input; }
   async function ask(text){ text=(text||'').trim(); var imgs=pendingImgs.slice(); var img=imgs[0]||null; if((!text&&!imgs.length)||busy) return;
+    pendingForceQuiz=false;
     if(!img){
       if(agWantsPlanning(text)){ startPlanningWizard(text); return; }
       var _gx=agWantsPlot(text); if(_gx){ if(input) input.value=''; if(cfInput){ cfInput.value=''; autoGrow(cfInput); } var _gc=cur(); _gc.msgs.push({role:'user',content:text}); if(!_gc.title||_gc.title==='Nouvelle conversation') _gc.title=text.slice(0,42); _gc.msgs.push({role:'assistant',content:'Voici la courbe 📈'}); _gc.t=Date.now(); save(); renderMsgs(); renderList(); setTimeout(function(){ try{ agPlotBubble(_gx,{}); }catch(e){} },80); return; }
@@ -418,6 +420,7 @@
       var conf = qc.kind==='qcm' ? 'D\'accord — je lance le QCM 👍' : 'D\'accord — j\'ouvre ça pour toi 👍';
       cq.msgs.push({role:'assistant',content:conf}); cq.t=Date.now(); save(); renderMsgs(); renderList();
       setTimeout(function(){ try{ if(qc.kind==='qcm') agQcm({matiere:qc.subj}); else agGo({page:qc.page?qc.page.replace('.html',''):'',matiere:qc.subj,lecon:qc.lesson}); }catch(e){} },320); return; }
+      pendingForceQuiz=agWantsChatQuiz(text);
       pendingForcePage=agWantsPage(text);
     }
     if(window.PB_isPremium && !window.PB_isPremium() && window.PB_quota){
@@ -436,13 +439,18 @@
       rmTyping(typ);
       var pr=agParse(raw); var clean=pr.clean||raw; try{ clean=agVerifyArithmetic(clean); }catch(_){} try{ clean=agMathNormalize(clean); }catch(_){}
       var hasAct = pr.actions && pr.actions.length;
+      /* QCM interactif forcé : si l'IA a écrit le QCM en texte (sans balise), on le rend en quiz cliquable */
+      if(pendingForceQuiz && !hasAct){ var _qz=agTextToQuiz(clean); if(_qz && _qz.questions.length>=2){
+        c.msgs.push({role:'assistant',content:'Voici ton QCM interactif 👇'}); c.t=Date.now(); save(); renderMsgs(); renderList();
+        var _bq=agActiveBox(); if(_bq){ _bq.appendChild(agQuizBuild(_bq, _qz.title||'QCM', _qz.questions)); _bq.scrollTop=_bq.scrollHeight; }
+        pendingForcePage=null; pendingForceQuiz=false; busy=false; var _aiq=activeInput(); if(_aiq) _aiq.focus(); return; } }
       /* Si l'IA a écrit un QCM/questionnaire en texte (sans balise), on le rend cliquable */
-      var conv = (!hasAct && !pendingForcePage) ? agTextToSurvey(clean) : null;
+      var conv = (!hasAct && !pendingForcePage && !pendingForceQuiz) ? agTextToSurvey(clean) : null;
       if(conv && conv.questions.length){
         var intro=(conv.intro&&conv.intro.trim())?conv.intro.trim():'Voici ton questionnaire — coche tes réponses puis clique « Envoyer ».';
         c.msgs.push({role:'assistant',content:intro}); c.t=Date.now(); save(); renderMsgs(); renderList();
         var boxc=agActiveBox(); if(boxc){ boxc.appendChild(agSurveyBuild(boxc,conv.title||'Questionnaire',conv.questions)); boxc.scrollTop=boxc.scrollHeight; }
-        pendingForcePage=null; busy=false; var aic=activeInput(); if(aic) aic.focus(); return;
+        pendingForcePage=null; pendingForceQuiz=false; busy=false; var aic=activeInput(); if(aic) aic.focus(); return;
       }
       if(clean && clean.trim()){ try{ await typeReveal(clean); }catch(_){} }
       c.msgs.push({role:'assistant',content:clean});
@@ -453,7 +461,7 @@
       if(hasAct){ pr.actions.forEach(function(a){ try{ if(agRun(a, clean)){ var tn=(a.outil||a.tool||'').toString().toLowerCase(); if(tn.indexOf('page')>=0||tn.indexOf('onglet')>=0) madePage=true; } }catch(_){} }); }
       if(pendingForcePage && !madePage){ try{ agCreatePage({titre:pendingForcePage}, clean); }catch(_){} }
       else if(!hasAct){ try{ agChips(); }catch(_){} }
-      pendingForcePage=null; busy=false; var ai1=activeInput(); if(ai1) ai1.focus(); return;
+      pendingForcePage=null; pendingForceQuiz=false; busy=false; var ai1=activeInput(); if(ai1) ai1.focus(); return;
     }
     catch(e){ rmTyping(typ); c.msgs.push({role:'assistant',content: img ? 'Je n\'ai pas pu analyser l\'image (service occupé). Réessaie dans un instant, ou décris-moi l\'exercice en texte.' : 'Le service IA gratuit est momentanément indisponible. Réessaie dans un instant, ou reformule ta question.'}); }
     c.t=Date.now(); save(); renderMsgs(); renderList(); busy=false; var ai=activeInput(); if(ai) ai.focus();
@@ -838,6 +846,7 @@ function agPageFile(p){ p=(p||'').toString().toLowerCase();
 function agGuessTitle(md){ var m=String(md).match(/^#{1,3}\s+(.+)$/m); if(m) return m[1].replace(/[*`#]/g,'').trim().slice(0,72);
   var l=(String(md).trim().split('\n')[0]||'Document'); return l.replace(/[*`#>-]/g,'').trim().slice(0,72)||'Document'; }
 function agQuick(t){ var s=(t||'').toLowerCase().trim();
+  if(agWantsChatQuiz(s)) return null;
   var im=s.match(/^(?:g[ée]n[èe]re|cr[ée]{1,2}|dessine|fais|fabrique)\s+(?:moi\s+)?(?:une?\s+|un\s+)?(?:image|dessin|illustration|sch[ée]ma|photo|logo)\s+(?:de\s+|du\s+|des\s+|d'|sur\s+|:)?\s*(.+)/);
   if(!im){ im=s.match(/^image\s*(?:de\s+|d'|:)\s*(.+)/); }
   if(im && im[1] && im[1].length>2){ return {kind:'image', prompt:t.slice(t.length-im[1].length).trim()}; }
@@ -848,6 +857,14 @@ function agQuick(t){ var s=(t||'').toLowerCase().trim();
     if(/qcm|quiz/.test(s)) return {kind:'qcm', subj:agSubjKey(s)};
     return {kind:'nav', page:agPageFile(s), subj:agSubjKey(s), lesson:s}; }
   return null;
+}
+
+/* Détecte une demande de QCM INTERACTIF dans le chat (à ne pas rediriger vers la page QCM) */
+function agWantsChatQuiz(t){ var s=(t||'').toLowerCase();
+  if(/(qcm|quiz)/.test(s) && /(interactif|interactive|je\s+clique|tu\s+corriges|dans\s+le\s+chat|dans\s+la\s+conversation|\bici\b|en\s+direct|bulle)/.test(s)) return true;
+  if(/^(teste?[- ]moi|interroge[- ]moi|questionne[- ]moi|pose[- ]moi\s+(?:des\s+)?questions)\b/.test(s)) return true;
+  if(/(fais|g[ée]n[èe]re|cr[ée]{1,2}|pr[ée]pare|donne)(?:[- ]moi)?\s+(?:un\s+|une\s+)?(?:petit\s+|nouveau\s+|autre\s+)?(qcm|quiz)\b/.test(s)) return true;
+  return false;
 }
 
 /* ---- Couche AGENT : fonctions navigateur (insérées DANS l'IIFE du chat) ---- */
@@ -1326,6 +1343,33 @@ function agTextToSurvey(text){
   qs=qs.filter(function(q){ return q.choix.length>=2; });
   if(!qs.length) return null;
   return {title:'Questionnaire', questions:qs, intro:intro.join(' ').trim()};
+}
+
+/* Convertit un QCM écrit en TEXTE (avec réponses) en quiz interactif cliquable (agQuizBuild) */
+function agTextToQuiz(text){
+  if(!text) return null;
+  var lines=String(text).replace(/\r/g,'').split('\n');
+  var qs=[], curq=null;
+  var ore=/^\s*[-*•]?\s*(?:\*\*)?\s*([A-Ha-h])\s*[).\-–]\s*(.+?)\s*(?:\*\*)?\s*$/;
+  var qnum=/^\s*(?:\*\*)?\s*(?:question\s*)?\d+[.)]\s*(.+)$/i;
+  var ansre=/^\s*(?:\*\*)?\s*(?:bonne\s+r[ée]ponse|r[ée]ponse(?:\s+correcte)?|correct(?:e)?|solution)\s*(?:\*\*)?\s*[:=\-–)]*\s*(?:\*\*)?\s*([A-Ha-h])\b/i;
+  var expre=/^\s*(?:\*\*)?\s*(?:explication|justification|pourquoi)\s*(?:\*\*)?\s*[:=\-–]?\s*(.+)$/i;
+  function pushCur(){ if(curq && curq.choix.length>=2 && curq.correct!=null && curq.correct>=0 && curq.correct<curq.choix.length) qs.push(curq); }
+  for(var i=0;i<lines.length;i++){ var l=lines[i]; if(!l.trim()) continue;
+    var am=l.match(ansre);
+    if(am && curq){ var L='ABCDEFGH'.indexOf(am[1].toUpperCase()); if(L>=0) curq.correct=L; continue; }
+    var em=l.match(expre);
+    if(em && curq){ curq.exp=(curq.exp?curq.exp+' ':'')+em[1].replace(/\*+/g,'').trim(); continue; }
+    var om=l.match(ore);
+    if(om && curq){ curq.choix.push(om[2].trim().replace(/\*+/g,'')); continue; }
+    var qn=l.match(qnum); var qtext=null;
+    if(qn){ qtext=qn[1]; }
+    else if(/\?\s*(\*\*)?\s*$/.test(l) && !om){ qtext=l; }
+    if(qtext){ pushCur(); curq={q:qtext.replace(/\*+/g,'').replace(/^#+\s*/,'').trim(), choix:[], correct:null, exp:''}; }
+  }
+  pushCur();
+  if(qs.length<2) return null;
+  return {title:'QCM', questions:qs.map(function(q){ return {q:q.q, choix:q.choix, correct:q.correct, explication:q.exp}; })};
 }
 
   /* ===== KaTeX + Mémoire + Suivi ===== */
