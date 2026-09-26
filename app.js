@@ -1726,10 +1726,10 @@ function agTexToUnicode(x){
   s=s.replace(/\\(?:widetilde|tilde)\s*\{([^{}]*)\}/g, function(m,a){ return a+'̃'; });
   s=s.replace(/\\ddot\s*\{([^{}]*)\}/g, function(m,a){ return a+'̈'; });
   s=s.replace(/\\dot\s*\{([^{}]*)\}/g, function(m,a){ return a+'̇'; });
-  for(var pf=0;pf<5;pf++){ s=s.replace(/\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g, function(m,a,b){ var wa=/[+\-·×÷\/ ^_]/.test(a)?'('+a+')':a; var wb=/[+\-·×÷\/ ^_]/.test(b)?'('+b+')':b; return wa+'/'+wb; }); }
   s=s.replace(/\\sqrt\s*\[([^\]]*)\]\s*\{([^{}]*)\}/g, function(m,n,a){ return toSup(n)+'√('+a+')'; });
   s=s.replace(/\\sqrt\s*\{([^{}]*)\}/g, function(m,a){ return '√('+a+')'; });
   s=s.replace(/\\sqrt\b\s*/g,'√');
+  for(var pf=0;pf<5;pf++){ s=s.replace(/\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g, function(m,a,b){ var wa=/[+\-·×÷\/ ^_]/.test(a)?'('+a+')':a; var wb=/[+\-·×÷\/ ^_]/.test(b)?'('+b+')':b; return wa+'/'+wb; }); }
   for(var q2=0;q2<3;q2++){
     s=s.replace(/\^\{([^{}]*)\}/g,function(m,t){return toSup(t);});
     s=s.replace(/\^\s*([A-Za-z0-9+\-])/g,function(m,t){return toSup(t);});
@@ -2502,12 +2502,19 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
             : 'Fais-moi une fiche express de révision du chapitre « '+title+' » : l\'essentiel sur une seule page — définitions clés, formules/propriétés à retenir et la méthode. Courte, claire et imprimable.';
           actions.appendChild(mkBtn('fbtn-ai pb-fx','&#128196; Fiche express', pf));
         }
-        // 2) Série d'exercices (si absente) — statique déjà là = .sbtn
-        if(!actions.querySelector('.sbtn') && !actions.querySelector('.pb-sx')){
-          var ps = rtl
+        // 2) Série d'exercices : curatée (fixe, soignée) si disponible, sinon générée par l'IA
+        if(!actions.querySelector('.sbtn') && !actions.querySelector('.pb-sx') && !actions.querySelector('.pb-exos')){
+          var exoKey = (window.PB_findExos ? window.PB_findExos(title) : null);
+          if(exoKey){
+            var be=document.createElement('button'); be.type='button'; be.className='btn sbtn pb-exos'; be.innerHTML='&#128221; Série d\'exercices';
+            be.addEventListener('click',function(){ try{ if(window.PB_openExos) window.PB_openExos(exoKey); }catch(e){} });
+            actions.appendChild(be);
+          } else {
+            var ps = rtl
             ? 'أنشئ لي سلسلة من 5 تمارين متدرّجة (من الأسهل إلى الأصعب) حول درس « '+title+' »، مستوى الأولى باكالوريا علوم رياضية (المنهاج المغربي)، مع التصحيح المفصّل لكلّ تمرين. اختر تمارين نموذجية ومفيدة للامتحان.'
             : 'Crée-moi une série de 6 exercices sur « '+title+' », niveau 1ère Bac Sciences Maths (programme marocain officiel), soigneusement choisis et formateurs pour le Bac : 2 exercices d\'application directe, 2 de niveau moyen, puis 2 exercices « DÉFI » 🧠 qui exigent une VRAIE RÉFLEXION (raisonnement en plusieurs étapes, une astuce, ou un lien entre plusieurs notions). Pour CHAQUE exercice : un énoncé clair, puis un petit INDICE de départ, puis la CORRECTION détaillée pas à pas. Varie les énoncés et rends-les vivants.';
-          actions.appendChild(mkBtn('sbtn pb-sx','&#128221; Série d\'exercices', ps));
+            actions.appendChild(mkBtn('sbtn pb-sx','&#128221; Série d\'exercices', ps));
+          }
         }
         // 3) Vidéo : plus de redirection YouTube — leçon vidéo guidée SUR le site
         var vlink=actions.querySelector('a.vbtn');
@@ -2589,4 +2596,68 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
     // iOS Safari : pas d'événement -> on propose la marche à suivre
     if(iOS){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',function(){ showBar('ios'); }); else showBar('ios'); }
   }catch(e){}
+})();
+
+/* ===== Séries d'exercices curatées — recherche + affichage modal ===== */
+(function(){
+  function norm(s){ return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,' ').trim(); }
+  window.PB_findExos=function(title){
+    try{ var E=window.PB_EXOS; if(!E) return null; if(E[title]) return title;
+      var nt=norm(title); var k;
+      for(k in E){ if(norm(k)===nt) return k; }
+      for(k in E){ var nk=norm(k); if(nk&&(nt.indexOf(nk)>=0||nk.indexOf(nt)>=0)) return k; }
+    }catch(e){} return null;
+  };
+  var CSS=""
+   +".exo-ov{position:fixed;inset:0;z-index:100000;background:rgba(20,18,40,.55);backdrop-filter:blur(3px);display:flex;align-items:flex-start;justify-content:center;padding:22px 12px;overflow:auto}"
+   +".exo-modal{background:var(--surface,#fff);color:var(--text,#111);border:1px solid var(--border,#ddd);border-radius:16px;max-width:760px;width:100%;box-shadow:0 24px 70px rgba(0,0,0,.30)}"
+   +".exo-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border,#eee)}"
+   +".exo-tag{font-weight:700;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:var(--royal,#4A3EA0);background:color-mix(in srgb,var(--royal,#4A3EA0) 12%,transparent);padding:4px 10px;border-radius:20px;white-space:nowrap}"
+   +".exo-chap{font-family:'Newsreader',serif;font-weight:700;font-size:1.05rem;color:var(--text,#111);flex:1;min-width:0}"
+   +".exo-x{margin-left:auto;background:none;border:0;font-size:1.7rem;line-height:1;color:var(--muted,#888);cursor:pointer}"
+   +".exo-note{padding:9px 18px;font-size:.82rem;color:var(--muted,#888);border-bottom:1px solid var(--border,#eee)}"
+   +".exo-body{padding:14px 18px;max-height:68vh;overflow:auto;display:flex;flex-direction:column;gap:14px}"
+   +".exo-item{border:1px solid var(--border,#e6e6ee);border-radius:12px;padding:13px 15px;background:var(--surface-2,rgba(140,130,210,.05))}"
+   +".exo-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}"
+   +".exo-num{font-weight:700;color:var(--royal,#4A3EA0);font-size:.9rem}"
+   +".exo-niv{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;padding:2px 9px;border-radius:20px}"
+   +".exo-niv.na{background:rgba(31,157,85,.15);color:#1f9d55}.exo-niv.nm{background:rgba(201,152,47,.18);color:#a9741f}.exo-niv.nd{background:color-mix(in srgb,var(--royal,#4A3EA0) 16%,transparent);color:var(--royal,#4A3EA0)}"
+   +".exo-en{font-size:.96rem;line-height:1.6;color:var(--text,#111)}"
+   +".exo-d{margin-top:9px;border-radius:9px;overflow:hidden;border:1px solid var(--border,#e6e6ee)}"
+   +".exo-d summary{cursor:pointer;padding:8px 12px;font-weight:600;font-size:.87rem;list-style:none;user-select:none;background:color-mix(in srgb,var(--royal,#4A3EA0) 7%,var(--surface,#fff))}"
+   +".exo-d summary::-webkit-details-marker{display:none}"
+   +".exo-d[open] summary{border-bottom:1px solid var(--border,#e6e6ee)}"
+   +".exo-c{padding:11px 13px;font-size:.92rem;line-height:1.65;color:var(--text,#111)}"
+   +".exo-tab{border-collapse:collapse;margin:6px 0}.exo-tab th,.exo-tab td{border:1px solid var(--border,#ccc);padding:3px 12px;text-align:center;font-size:.9rem}"
+   +".exo-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid var(--border,#eee)}"
+   +".exo-btn{padding:9px 16px;border-radius:10px;font-weight:600;font-size:.87rem;cursor:pointer;border:1px solid var(--border,#ccc);background:var(--surface-2,#f4f4f8);color:var(--text,#111);font-family:inherit}"
+   +".exo-btn.exo-close{background:var(--royal,#4A3EA0);color:#fff;border:0}"
+   +"@media print{.exo-ov{position:static;background:none;padding:0}.exo-modal{box-shadow:none;border:0;max-width:100%}.exo-x,.exo-foot,.exo-note{display:none}.exo-body{max-height:none}}";
+  function ensureCss(){ if(document.getElementById('pbExoCss'))return; var s=document.createElement('style'); s.id='pbExoCss'; s.textContent=CSS; document.head.appendChild(s); }
+  window.PB_openExos=function(key){
+    var list=(window.PB_EXOS||{})[key]; if(!list||!list.length) return;
+    ensureCss();
+    var old=document.getElementById('pbExoOv'); if(old) old.remove();
+    var ov=document.createElement('div'); ov.id='pbExoOv'; ov.className='exo-ov';
+    var items=list.map(function(x,i){
+      var niv=x.niv||''; var nc=(niv==='Défi'?'nd':(niv==='Moyen'?'nm':'na'));
+      return '<div class="exo-item"><div class="exo-top"><span class="exo-num">Exercice '+(i+1)+'</span><span class="exo-niv '+nc+'">'+niv+'</span></div>'
+        +'<div class="exo-en">'+(x.en||'')+'</div>'
+        +(x.hint?'<details class="exo-d"><summary>💡 Indice</summary><div class="exo-c">'+x.hint+'</div></details>':'')
+        +(x.sol?'<details class="exo-d"><summary>✅ Voir la correction</summary><div class="exo-c">'+x.sol+'</div></details>':'')
+        +'</div>';
+    }).join('');
+    ov.innerHTML='<div class="exo-modal"><div class="exo-head"><span class="exo-tag">&#10022; Série d\'exercices</span><span class="exo-chap">'+key+'</span><button class="exo-x" aria-label="Fermer">&times;</button></div>'
+      +'<div class="exo-note">'+list.length+' exercices &middot; de l\'application au défi &#129504; &middot; ouvre « Indice » puis « Voir la correction »</div>'
+      +'<div class="exo-body">'+items+'</div>'
+      +'<div class="exo-foot"><button class="exo-btn exo-print">&#128424;&#65039; Imprimer</button><button class="exo-btn exo-close">Fermer</button></div></div>';
+    document.body.appendChild(ov); try{ document.body.classList.add('noscroll'); }catch(e){}
+    function close(){ try{ ov.remove(); document.body.classList.remove('noscroll'); }catch(e){} }
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    ov.querySelector('.exo-x').addEventListener('click',close);
+    ov.querySelector('.exo-close').addEventListener('click',close);
+    ov.querySelector('.exo-print').addEventListener('click',function(){ try{ ov.querySelectorAll('details').forEach(function(d){d.open=true;}); setTimeout(function(){window.print();},60); }catch(e){} });
+    document.addEventListener('keydown',function esc(e){ if(e.key==='Escape'){ close(); document.removeEventListener('keydown',esc);} });
+    try{ if(window.PB_renderMath) window.PB_renderMath(ov.querySelector('.exo-body')); }catch(e){}
+  };
 })();
