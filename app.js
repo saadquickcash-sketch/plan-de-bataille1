@@ -205,7 +205,7 @@
         +'<div class="cf-hello-p">Par quoi commence-t-on aujourd’hui&nbsp;?</div>'
         +'<div class="cf-sugg">'
         +'<button type="button" data-s="Explique-moi ce chapitre clairement, étape par étape, avec un exemple et 2 exercices corrigés : ">📘 Expliquer un cours</button>'
-        +'<button type="button" data-s="Donne-moi une série de 5 exercices progressifs avec correction détaillée sur : ">✍️ Exercices corrigés</button>'
+        +'<button type="button" data-s="Donne-moi une série d\'exercices bien choisis et progressifs (application, niveau moyen, puis 1-2 exercices « défi » qui demandent une vraie réflexion), chacun avec un indice puis la correction détaillée, sur : ">✍️ Exercices corrigés</button>'
         +'<button type="button" data-s="Fais-moi passer un QCM interactif de 6 questions (je clique mes réponses, tu corriges) sur : ">🧭 Me tester (QCM)</button>'
         +'<button type="button" data-photo="1" data-s="Corrige et note ma copie sur 20 (photos ci-dessus).">📸 Corriger ma copie /20</button>'
         +'</div>';
@@ -1113,12 +1113,12 @@ function agQuizBuild(box,title,qs){
           else if(j===i){ x.classList.add('bad'); if(mk) mk.textContent='✗'; }
           else { x.classList.add('dim'); } });
         var ex=document.createElement('div'); ex.className='qzc-exp '+(good?'g':'b'); ex.innerHTML='<b>'+(good?'✅ Bonne réponse':'❌ Pas tout à fait')+'</b>'+fmtChat(q.e);
-        wrap.appendChild(ex);
+        wrap.appendChild(ex); try{ renderMath(ex); }catch(_){}
         var foot=document.createElement('div'); foot.className='qzc-foot';
         var nx=document.createElement('button'); nx.className='qzc-next'; nx.textContent=(idx+1>=qs.length?'Voir mon score →':'Suivant →');
         nx.addEventListener('click',function(){ idx++; render(); }); foot.appendChild(nx); wrap.appendChild(foot); box.scrollTop=box.scrollHeight;
       }); opts.appendChild(b); });
-    wrap.appendChild(opts); box.scrollTop=box.scrollHeight;
+    wrap.appendChild(opts); try{ renderMath(wrap); }catch(_){} box.scrollTop=box.scrollHeight;
   }
   render(); return wrap;
 }
@@ -1255,7 +1255,8 @@ function agSurveyBuild(box,title,qs,onSubmit){
   ensureChatCss(); ensureSvCss();
   var wrap=document.createElement('div'); wrap.className='cp-msg ai qz-w sv-w';
   var state=qs.map(function(){ return []; });
-  wrap.innerHTML='<div class="qzc-head">📝 '+esc(title)+'</div><div class="qzc-q" style="font-weight:500">Choisis tes réponses, puis clique « Envoyer ».</div>';
+  var custom=qs.map(function(){ return ''; });
+  wrap.innerHTML='<div class="qzc-head">📝 '+esc(title)+'</div><div class="qzc-q" style="font-weight:500">Choisis tes réponses (ou écris la tienne), puis clique « Envoyer ».</div>';
   qs.forEach(function(q,qi){ var multi=!!(q.multi||q.multiple||q.plusieurs);
     var qd=document.createElement('div'); qd.className='sv-q'; qd.textContent=(qi+1)+'. '+(q.q||q.question||'');
     var hint=document.createElement('div'); hint.className='sv-hint'; hint.textContent=multi?'Plusieurs réponses possibles':'Une seule réponse';
@@ -1264,16 +1265,26 @@ function agSurveyBuild(box,title,qs,onSubmit){
     ch.forEach(function(c,ci){ var b=document.createElement('button'); b.type='button'; b.className='sv-opt'; b.textContent=String(c);
       b.addEventListener('click',function(){ if(wrap._done) return;
         if(multi){ var k=state[qi].indexOf(ci); if(k>=0){ state[qi].splice(k,1); b.classList.remove('sel'); } else { state[qi].push(ci); b.classList.add('sel'); } }
-        else { state[qi]=[ci]; Array.prototype.forEach.call(opts.children,function(x){ x.classList.remove('sel'); }); b.classList.add('sel'); }
+        else { state[qi]=[ci]; Array.prototype.forEach.call(opts.children,function(x){ if(x.classList&&x.classList.contains('sv-opt')) x.classList.remove('sel'); }); b.classList.add('sel'); }
       }); opts.appendChild(b); });
+    /* Bouton « Autre réponse » (texte libre), comme le sélecteur de Claude */
+    var ob=document.createElement('button'); ob.type='button'; ob.className='sv-opt sv-other'; ob.innerHTML='✍️ Autre réponse'; ob.style.borderStyle='dashed';
+    var oin=document.createElement('input'); oin.type='text'; oin.className='sv-otherin'; oin.placeholder='Écris ta réponse…';
+    oin.style.cssText='display:none;width:100%;margin-top:7px;padding:9px 12px;border:1px solid var(--royal,#4A3EA0);border-radius:10px;font-family:inherit;font-size:.9rem;background:var(--surface,#fff);color:var(--text,#000);box-sizing:border-box';
+    ob.addEventListener('click',function(){ if(wrap._done) return; var show=(oin.style.display==='none'); oin.style.display=show?'block':'none'; ob.classList.toggle('sel',show); if(show){ setTimeout(function(){ oin.focus(); },30); } else { custom[qi]=''; oin.value=''; } });
+    oin.addEventListener('input',function(){ custom[qi]=oin.value; });
+    oin.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); } });
+    opts.appendChild(ob); opts.appendChild(oin);
     wrap.appendChild(qd); wrap.appendChild(hint); wrap.appendChild(opts);
   });
   var submit=document.createElement('button'); submit.type='button'; submit.className='qzc-next sv-submit'; submit.textContent='Envoyer mes réponses ✓';
   submit.addEventListener('click',function(){ if(wrap._done) return;
-    if(!state.some(function(a){ return a.length; })){ agToast('Choisis au moins une réponse.'); return; }
+    var any=state.some(function(a){ return a.length; }) || custom.some(function(c){ return c&&c.trim(); });
+    if(!any){ agToast('Choisis ou écris au moins une réponse.'); return; }
     wrap._done=true; submit.disabled=true; submit.textContent='Réponses envoyées ✓';
     wrap.querySelectorAll('.sv-opt').forEach(function(x){ x.disabled=true; });
-    var vals=qs.map(function(q,qi){ var ch=q.choix||q.choices||q.options||q.reponses||[]; return state[qi].map(function(i){ return ch[i]; }); });
+    wrap.querySelectorAll('.sv-otherin').forEach(function(x){ x.disabled=true; });
+    var vals=qs.map(function(q,qi){ var ch=q.choix||q.choices||q.options||q.reponses||[]; var a=state[qi].map(function(i){ return ch[i]; }); if(custom[qi]&&custom[qi].trim()) a.push(custom[qi].trim()); return a; });
     if(typeof onSubmit==='function'){ setTimeout(function(){ try{ onSubmit(vals,qs); }catch(e){} },120); return; }
     var lines=qs.map(function(q,qi){ return (qi+1)+'. '+(q.q||q.question||'')+' → '+(vals[qi].length?vals[qi].join(', '):'(sans réponse)'); });
     var txt='Voici mes réponses au questionnaire « '+title+' » :\n'+lines.join('\n')+'\n\nTu peux maintenant continuer à partir de ces réponses.';
@@ -1693,6 +1704,56 @@ function agTexFix(s){ return String(s)
   .replace(/Ω/g,'\\Omega ').replace(/Δ/g,'\\Delta ').replace(/σ/g,'\\sigma ').replace(/ρ/g,'\\rho ')
   .replace(/Σ/g,'\\sum ').replace(/∑/g,'\\sum ').replace(/ℝ/g,'\\mathbb{R}').replace(/→/g,'\\to '); }
 
+/* ===== LaTeX -> Unicode lisible (jamais de charabia entre $ … $) ===== */
+function agTexToUnicode(x){
+  var s=String(x==null?'':x);
+  var SUP={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','+':'⁺','-':'⁻','=':'⁼','(':'⁽',')':'⁾','n':'ⁿ','i':'ⁱ','x':'ˣ','a':'ᵃ','b':'ᵇ','c':'ᶜ','d':'ᵈ','k':'ᵏ','m':'ᵐ','p':'ᵖ','t':'ᵗ'};
+  var SUB={'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉','+':'₊','-':'₋','=':'₌','(':'₍',')':'₎','n':'ₙ','x':'ₓ','i':'ᵢ','a':'ₐ','k':'ₖ','m':'ₘ','p':'ₚ','t':'ₜ','o':'ₒ','e':'ₑ','j':'ⱼ'};
+  function toSup(t){ t=String(t).trim(); var o='',ok=t.length>0; for(var i=0;i<t.length;i++){ if(SUP[t[i]]) o+=SUP[t[i]]; else { ok=false; break; } } return ok?o:('^('+t+')'); }
+  function toSub(t){ t=String(t).trim(); var o='',ok=t.length>0; for(var i=0;i<t.length;i++){ if(SUB[t[i]]) o+=SUB[t[i]]; else { ok=false; break; } } return ok?o:('_('+t+')'); }
+  s=s.replace(/\\displaystyle|\\textstyle|\\limits|\\nolimits|\\,|\\;|\\:|\\!|\\quad|\\qquad/g,' ');
+  s=s.replace(/\\left\s*/g,'').replace(/\\right\s*/g,'').replace(/\\big[lr]?|\\Big[lr]?|\\bigg[lr]?/g,'');
+  s=s.replace(/\\(?:text|mathrm|mathbf|mathit|mathsf|operatorname|textbf|textit)\s*\{([^{}]*)\}/g,'$1');
+  s=s.replace(/\\mathbb\s*\{?\s*R\s*\}?/g,'ℝ').replace(/\\mathbb\s*\{?\s*N\s*\}?/g,'ℕ').replace(/\\mathbb\s*\{?\s*Z\s*\}?/g,'ℤ').replace(/\\mathbb\s*\{?\s*Q\s*\}?/g,'ℚ').replace(/\\mathbb\s*\{?\s*C\s*\}?/g,'ℂ');
+  s=s.replace(/\\(arcsin|arccos|arctan|sinh|cosh|tanh|sin|cos|tan|cot|sec|csc|ln|log|exp|lim|min|max|deg|gcd|dim|det|mod)\b/g,'$1');
+  var MAP={ 'times':'×','cdot':'·','div':'÷','pm':'±','mp':'∓','leq':'≤','le':'≤','geqslant':'≥','leqslant':'≤','geq':'≥','ge':'≥','neq':'≠','ne':'≠','approx':'≈','simeq':'≃','equiv':'≡','sim':'∼','propto':'∝','in':'∈','notin':'∉','ni':'∋','subset':'⊂','subseteq':'⊆','supset':'⊃','supseteq':'⊇','cup':'∪','cap':'∩','setminus':'∖','emptyset':'∅','varnothing':'∅','infty':'∞','partial':'∂','nabla':'∇','forall':'∀','exists':'∃','nexists':'∄','neg':'¬','land':'∧','wedge':'∧','lor':'∨','vee':'∨','angle':'∠','perp':'⊥','parallel':'∥','cong':'≅','to':'→','rightarrow':'→','longrightarrow':'→','Rightarrow':'⇒','implies':'⇒','iff':'⇔','Leftrightarrow':'⇔','leftarrow':'←','mapsto':'↦','sum':'∑','prod':'∏','int':'∫','oint':'∮','cdots':'⋯','ldots':'…','dots':'…','vdots':'⋮','prime':'′','circ':'∘','deg':'°','ast':'∗','star':'⋆','bullet':'•','oplus':'⊕','otimes':'⊗',
+    'alpha':'α','beta':'β','gamma':'γ','delta':'δ','epsilon':'ε','varepsilon':'ε','zeta':'ζ','eta':'η','theta':'θ','vartheta':'ϑ','iota':'ι','kappa':'κ','lambda':'λ','mu':'μ','nu':'ν','xi':'ξ','omicron':'ο','pi':'π','rho':'ρ','varrho':'ρ','sigma':'σ','varsigma':'ς','tau':'τ','upsilon':'υ','phi':'φ','varphi':'φ','chi':'χ','psi':'ψ','omega':'ω','Gamma':'Γ','Delta':'Δ','Theta':'Θ','Lambda':'Λ','Xi':'Ξ','Pi':'Π','Sigma':'Σ','Phi':'Φ','Psi':'Ψ','Omega':'Ω' };
+  s=s.replace(/\\([A-Za-z]+)/g, function(m,w){ return MAP.hasOwnProperty(w)? MAP[w] : m; });
+  s=s.replace(/\\(?:vec|overrightarrow|overleftarrow)\s*\{([^{}]*)\}/g, function(m,a){ return a+'⃗'; });
+  s=s.replace(/\\(?:overline|bar)\s*\{([^{}]*)\}/g, function(m,a){ return a+'̅'; });
+  s=s.replace(/\\(?:widehat|hat)\s*\{([^{}]*)\}/g, function(m,a){ return a+'̂'; });
+  s=s.replace(/\\(?:widetilde|tilde)\s*\{([^{}]*)\}/g, function(m,a){ return a+'̃'; });
+  s=s.replace(/\\ddot\s*\{([^{}]*)\}/g, function(m,a){ return a+'̈'; });
+  s=s.replace(/\\dot\s*\{([^{}]*)\}/g, function(m,a){ return a+'̇'; });
+  for(var pf=0;pf<5;pf++){ s=s.replace(/\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g, function(m,a,b){ var wa=/[+\-·×÷\/ ^_]/.test(a)?'('+a+')':a; var wb=/[+\-·×÷\/ ^_]/.test(b)?'('+b+')':b; return wa+'/'+wb; }); }
+  s=s.replace(/\\sqrt\s*\[([^\]]*)\]\s*\{([^{}]*)\}/g, function(m,n,a){ return toSup(n)+'√('+a+')'; });
+  s=s.replace(/\\sqrt\s*\{([^{}]*)\}/g, function(m,a){ return '√('+a+')'; });
+  s=s.replace(/\\sqrt\b\s*/g,'√');
+  for(var q2=0;q2<3;q2++){
+    s=s.replace(/\^\{([^{}]*)\}/g,function(m,t){return toSup(t);});
+    s=s.replace(/\^\s*([A-Za-z0-9+\-])/g,function(m,t){return toSup(t);});
+    s=s.replace(/_\{([^{}]*)\}/g,function(m,t){return toSub(t);});
+    s=s.replace(/_\s*([A-Za-z0-9+\-])/g,function(m,t){return toSub(t);});
+  }
+  s=s.replace(/[{}]/g,'').replace(/\\(?![\\])/g,'').replace(/\\\\/g,' ').replace(/\$/g,'');
+  s=s.replace(/(→|←|⇒|⇔|↦)\s+/g,'$1').replace(/\s+(→|←|⇒|⇔|↦)/g,'$1');
+  s=s.replace(/[ \t]+/g,' ').replace(/\s+([,.;:!?])/g,'$1').trim();
+  return s;
+}
+/* Convertit tout $ … $ / \( … \) restant (non rendu par KaTeX) en Unicode lisible */
+function agMathClean(root){ if(!root||!document.createTreeWalker) return;
+  var w=document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode:function(n){ var v=n.nodeValue; if(!v || (v.indexOf('$')<0 && v.indexOf('\\(')<0 && v.indexOf('\\[')<0)) return NodeFilter.FILTER_REJECT;
+    var p=n.parentNode; while(p && p!==root.parentNode){ if(p.nodeType===1){ var tn=p.nodeName; if(tn==='SCRIPT'||tn==='STYLE'||tn==='TEXTAREA'||tn==='CODE'||tn==='PRE') return NodeFilter.FILTER_REJECT; if(p.classList && p.classList.contains('katex')) return NodeFilter.FILTER_REJECT; } p=p.parentNode; } return NodeFilter.FILTER_ACCEPT; } });
+  var arr=[],nd; while((nd=w.nextNode())) arr.push(nd);
+  arr.forEach(function(n){ var v=n.nodeValue;
+    v=v.replace(/\$\$([\s\S]{1,600}?)\$\$/g,function(m,a){return agTexToUnicode(a);});
+    v=v.replace(/\$([^$\n]{1,320}?)\$/g,function(m,a){return agTexToUnicode(a);});
+    v=v.replace(/\\\(([\s\S]{1,320}?)\\\)/g,function(m,a){return agTexToUnicode(a);});
+    v=v.replace(/\\\[([\s\S]{1,600}?)\\\]/g,function(m,a){return agTexToUnicode(a);});
+    if(v!==n.nodeValue) n.nodeValue=v;
+  });
+}
+
 function agTexSegments(s){ var res=[], i=0, n=s.length, buf='';
   function flush(){ if(buf){ res.push({math:false,val:buf}); buf=''; } }
   while(i<n){ var c=s[i];
@@ -1707,7 +1768,7 @@ function agTexSegments(s){ var res=[], i=0, n=s.length, buf='';
 function agRenderOne(expr,display,span){
   try{ window.katex.render(expr, span, {displayMode:display, throwOnError:true, strict:false}); return true; }catch(e){}
   try{ window.katex.render(agTexFix(expr), span, {displayMode:display, throwOnError:true, strict:false}); return true; }catch(e2){}
-  span.className='tex-raw'; span.textContent=expr; return false;
+  span.className='tex-raw'; span.textContent=agTexToUnicode(expr); return false;
 }
 function agTexWalk(root){ if(!window.katex||!root||!document.createTreeWalker) return;
   var walker=document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode:function(node){
@@ -1722,7 +1783,7 @@ function agTexWalk(root){ if(!window.katex||!root||!document.createTreeWalker) r
   });
 }
 function renderMath(el){ if(!el) return; var t=(el.textContent||''); if(t.indexOf('$')<0 && t.indexOf('\\(')<0 && t.indexOf('\\[')<0) return;
-  ensureKatex().then(function(ok){ if(!ok||!window.katex) return; try{ agTexWalk(el); }catch(e){} });
+  ensureKatex().then(function(ok){ try{ if(ok&&window.katex) agTexWalk(el); }catch(e){} try{ agMathClean(el); }catch(e){} });
 }
 if(typeof window!=='undefined') window.PB_renderMath=function(el){ try{ renderMath(el); }catch(e){} };
 
@@ -2444,7 +2505,7 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
         if(!actions.querySelector('.sbtn') && !actions.querySelector('.pb-sx')){
           var ps = rtl
             ? 'أنشئ لي سلسلة من 5 تمارين متدرّجة (من الأسهل إلى الأصعب) حول درس « '+title+' »، مستوى الأولى باكالوريا علوم رياضية (المنهاج المغربي)، مع التصحيح المفصّل لكلّ تمرين. اختر تمارين نموذجية ومفيدة للامتحان.'
-            : 'Crée-moi une série de 5 exercices progressifs (du plus simple au plus difficile) sur « '+title+' », niveau 1ère Bac Sciences Maths (programme marocain), AVEC la correction détaillée de chaque exercice. Choisis des exercices typiques et formateurs pour le Bac.';
+            : 'Crée-moi une série de 6 exercices sur « '+title+' », niveau 1ère Bac Sciences Maths (programme marocain officiel), soigneusement choisis et formateurs pour le Bac : 2 exercices d\'application directe, 2 de niveau moyen, puis 2 exercices « DÉFI » 🧠 qui exigent une VRAIE RÉFLEXION (raisonnement en plusieurs étapes, une astuce, ou un lien entre plusieurs notions). Pour CHAQUE exercice : un énoncé clair, puis un petit INDICE de départ, puis la CORRECTION détaillée pas à pas. Varie les énoncés et rends-les vivants.';
           actions.appendChild(mkBtn('sbtn pb-sx','&#128221; Série d\'exercices', ps));
         }
         // 3) Vidéo : plus de redirection YouTube — leçon vidéo guidée SUR le site
