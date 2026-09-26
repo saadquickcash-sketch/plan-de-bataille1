@@ -1327,10 +1327,11 @@ function agMakePlanning(vals){ vals=vals||[];
       wknd=(vals[2]&&vals[2][0])||'~1 h', prio=((vals[3]&&vals[3].length?vals[3]:['Maths','Physique-Chimie'])).join(', '),
       sess=(vals[4]&&vals[4][0])||'45 min', bed=(vals[5]&&vals[5][0])||'23h';
   // Planning INTELLIGENT généré par l'IA : personnalisé (mémoire/points faibles) + varié à chaque fois.
-  var q='Crée un PLANNING de révision hebdomadaire personnalisé et intelligent, présenté en TABLEAU jour par jour (Lundi → Dimanche) : pour chaque jour, des créneaux horaires avec la matière et le chapitre précis à réviser. '
+  var q='GÉNÈRE MAINTENANT, directement et en entier, un PLANNING de révision hebdomadaire, SANS poser aucune question et sans rien me redemander. '
+    +'Présente-le en TABLEAU jour par jour (Lundi → Dimanche) : pour chaque jour, des créneaux horaires avec la matière et le chapitre précis à réviser. '
     +'Mes disponibilités : après-midis libres = '+free+' ; le soir en semaine = '+night+' ; le week-end = '+wknd+' ; séance idéale = '+sess+' ; coucher vers '+bed+'. '
     +'Priorités : '+prio+' (respecte les coefficients : Maths (coef 9) et Physique-Chimie (coef 7) en premier). '
-    +'Sers-toi de MA MÉMOIRE (mes points faibles et mes chapitres à revoir) pour réserver des créneaux PRÉCIS aux chapitres exacts où je suis faible : nomme chaque chapitre. '
+    +'Si tu connais déjà mes points faibles (dans ta mémoire), réserve-leur des créneaux précis en nommant les chapitres ; SINON répartis intelligemment les révisions sur mes matières prioritaires et leurs chapitres importants du programme, sans me redemander. '
     +'Ajoute sous le tableau une courte liste de conseils et une phrase de motivation. Rends-le concret, réaliste et DIFFÉRENT d\'un planning générique. '
     +'Rédige tout le planning COMPLET, puis enregistre-le comme une PAGE réouvrable dans « Créations » en terminant EXACTEMENT ta réponse par : [[PB]]{"outil":"page","args":{"titre":"Mon planning de révision","emoji":"🗓️"}}[[/PB]]';
   ask(q, true);
