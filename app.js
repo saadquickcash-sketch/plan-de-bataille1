@@ -988,22 +988,34 @@ var PBCHAT_CSS=''
 + '.cp-chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 2px 8px}'
 + '.cp-chip{border:1px solid rgba(140,130,210,.45);background:rgba(140,130,210,.08);color:inherit;border-radius:16px;padding:5px 11px;font-size:.78rem;cursor:pointer;line-height:1.2}'
 + '.cp-chip:hover{background:rgba(140,130,210,.2)}'
-+ '.qz-w{background:linear-gradient(180deg,rgba(120,110,200,.10),rgba(120,110,200,.03));border:1px solid rgba(120,110,200,.35)!important;border-radius:14px!important;padding:12px 13px!important;max-width:100%!important}'
-+ '.qzc-head{font-weight:800;font-size:.82rem;color:var(--accent,#6c5ce7);letter-spacing:.02em;margin-bottom:6px}'
-+ '.qzc-q{font-weight:600;margin-bottom:9px;line-height:1.45}'
-+ '.qzc-opts{display:flex;flex-direction:column;gap:7px}'
-+ '.qzc-opt{display:flex;align-items:center;gap:9px;text-align:left;width:100%;padding:9px 11px;border:1.5px solid rgba(140,130,210,.4);background:rgba(255,255,255,.55);color:inherit;border-radius:10px;cursor:pointer;font-size:.9rem;line-height:1.35;transition:.12s}'
-+ '.qzc-opt:hover:not(:disabled){border-color:var(--accent,#6c5ce7);background:rgba(140,130,210,.12)}'
-+ '.qzc-opt:disabled{cursor:default;opacity:.92}'
-+ '.qzc-let{flex:none;width:22px;height:22px;border-radius:50%;background:rgba(120,110,200,.18);color:var(--accent,#6c5ce7);font-weight:800;font-size:.78rem;display:flex;align-items:center;justify-content:center}'
-+ '.qzc-opt.ok{border-color:#1f9d55;background:rgba(31,157,85,.16)}.qzc-opt.ok .qzc-let{background:#1f9d55;color:#fff}'
-+ '.qzc-opt.bad{border-color:#d64545;background:rgba(214,69,69,.14)}.qzc-opt.bad .qzc-let{background:#d64545;color:#fff}'
-+ '.qzc-exp{margin-top:9px;font-size:.86rem;line-height:1.5;padding:8px 11px;border-radius:9px;border:1px solid rgba(140,130,210,.3)}'
-+ '.qzc-exp.g{background:rgba(31,157,85,.10);border-color:rgba(31,157,85,.4)}'
-+ '.qzc-exp.b{background:rgba(214,69,69,.09);border-color:rgba(214,69,69,.35)}'
-+ '.qzc-next{margin-top:10px;padding:8px 15px;border:0;background:var(--accent,#6c5ce7);color:#fff;border-radius:9px;font-weight:700;font-size:.86rem;cursor:pointer}'
-+ '.qzc-next:hover{filter:brightness(1.06)}'
-+ '.qzc-final{font-size:1rem;margin:6px 0}'
++ '.qz-w{background:var(--surface,#fff);border:1px solid var(--border,rgba(140,130,210,.28))!important;border-radius:16px!important;padding:15px 16px!important;max-width:100%!important;box-shadow:0 6px 22px rgba(31,58,95,.07)}'
++ '.qzc-top{display:flex;align-items:center;justify-content:space-between;gap:10px}'
++ '.qzc-tag{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:var(--royal,#4A3EA0);background:color-mix(in srgb,var(--royal,#4A3EA0) 12%,transparent);padding:4px 10px;border-radius:20px}'
++ '.qzc-count{font-size:.78rem;font-weight:600;color:var(--muted,#8a86a0)}'
++ '.qzc-bar{height:4px;border-radius:4px;background:color-mix(in srgb,var(--royal,#4A3EA0) 14%,transparent);margin:9px 0 14px;overflow:hidden}'
++ '.qzc-bar>i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--royal,#4A3EA0),var(--accent,#9C7522));transition:width .4s ease}'
++ '.qzc-q{font-weight:600;font-size:1rem;margin-bottom:13px;line-height:1.5;color:var(--text,#1f2340)}'
++ '.qzc-opts{display:flex;flex-direction:column;gap:8px}'
++ '.qzc-opt{display:flex;align-items:center;gap:11px;text-align:left;width:100%;padding:11px 13px;border:1px solid var(--border,rgba(140,130,210,.35));background:var(--surface-2,rgba(140,130,210,.05));color:var(--text,inherit);border-radius:12px;cursor:pointer;font-size:.92rem;line-height:1.4;transition:.14s ease}'
++ '.qzc-opt:hover:not(:disabled){border-color:var(--royal,#4A3EA0);background:color-mix(in srgb,var(--royal,#4A3EA0) 8%,var(--surface-2,#fff));transform:translateY(-1px)}'
++ '.qzc-opt:disabled{cursor:default}'
++ '.qzc-txt{flex:1;min-width:0}'
++ '.qzc-let{flex:none;width:26px;height:26px;border-radius:8px;background:color-mix(in srgb,var(--royal,#4A3EA0) 12%,transparent);color:var(--royal,#4A3EA0);font-weight:700;font-size:.82rem;display:flex;align-items:center;justify-content:center;transition:.14s}'
++ '.qzc-mark{flex:none;font-weight:800;font-size:1.05rem;opacity:0;transition:.14s}'
++ '.qzc-opt.ok{border-color:#1f9d55;background:rgba(31,157,85,.12)}.qzc-opt.ok .qzc-let{background:#1f9d55;color:#fff}.qzc-opt.ok .qzc-mark{opacity:1;color:#1f9d55}'
++ '.qzc-opt.bad{border-color:#d64545;background:rgba(214,69,69,.10)}.qzc-opt.bad .qzc-let{background:#d64545;color:#fff}.qzc-opt.bad .qzc-mark{opacity:1;color:#d64545}'
++ '.qzc-opt.dim{opacity:.5}'
++ '.qzc-exp{margin-top:12px;font-size:.88rem;line-height:1.55;padding:11px 13px 11px 14px;border-radius:10px;border-left:3px solid var(--border);background:var(--surface-2,rgba(140,130,210,.06))}'
++ '.qzc-exp.g{border-left-color:#1f9d55}.qzc-exp.b{border-left-color:#d64545}'
++ '.qzc-exp b{display:block;margin-bottom:3px}'
++ '.qzc-foot{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:14px}'
++ '.qzc-next{padding:9px 17px;border:0;background:var(--royal,#4A3EA0);color:#fff;border-radius:11px;font-weight:600;font-size:.88rem;font-family:inherit;cursor:pointer;transition:.14s}'
++ '.qzc-next:hover{filter:brightness(1.08);transform:translateY(-1px)}'
++ '.qzc-next.ghost{background:transparent;color:var(--royal,#4A3EA0);border:1px solid var(--border,rgba(140,130,210,.4))}'
++ '.qzc-final{text-align:center;padding:8px 0 4px}'
++ '.qzc-score{font-family:Newsreader,serif;font-size:2.1rem;font-weight:700;color:var(--royal,#4A3EA0);line-height:1}'
++ '.qzc-sclab{font-size:.9rem;color:var(--muted,#8a86a0);margin-top:5px}'
++ '.qzc-msg{font-size:.93rem;margin-top:9px;color:var(--text,inherit)}'
 /* ===== Accueil du chat façon Gemini : mot de bienvenue centré + suggestions ===== */
 + '.cf-hello{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center!important;width:100%;min-height:56vh;padding:24px 16px;gap:4px;box-sizing:border-box}'
 + '.cf-hello-h{font-family:Newsreader,serif;font-size:clamp(1.55rem,3.4vw,2.35rem);font-weight:600;color:var(--text,#1f2340);line-height:1.15;text-align:center}'
@@ -1061,24 +1073,30 @@ function agQuizBuild(box,title,qs){
     return {q:(q.q||q.question||''), ch:(q.choix||q.choices||q.options||q.reponses||[]), c:c, e:(q.explication||q.explanation||q.exp||'')}; }
   function render(){
     if(idx>=qs.length){ var pct=Math.round(score/qs.length*100);
-      wrap.innerHTML='<div class="qzc-head">🏁 '+esc(title)+'</div><div class="qzc-final">Score : <b>'+score+' / '+qs.length+'</b> · '+pct+'%'+(pct>=80?' — excellent ! 🎉':(pct>=50?' — bien, continue 💪':' — on révise et on recommence 👍'))+'</div>';
-      var again=document.createElement('button'); again.className='qzc-next'; again.textContent='↻ Recommencer'; again.addEventListener('click',function(){ idx=0; score=0; wrap._a=false; render(); }); wrap.appendChild(again);
-      if(pct<70){ var rev=document.createElement('button'); rev.className='qzc-next'; rev.style.marginLeft='8px'; rev.style.background='#9c7522'; rev.textContent='📚 Réviser ce chapitre'; rev.addEventListener('click',function(){ ask('Je viens d\'avoir '+score+'/'+qs.length+' au QCM « '+title+' ». Explique-moi clairement ce chapitre, insiste sur mes erreurs probables, et donne-moi 3 exercices corrigés pour progresser.'); }); wrap.appendChild(rev); }
+      wrap.innerHTML='<div class="qzc-top"><span class="qzc-tag">🏁 Résultat</span><span class="qzc-count">'+esc(title)+'</span></div><div class="qzc-bar"><i style="width:100%"></i></div><div class="qzc-final"><div class="qzc-score">'+pct+'%</div><div class="qzc-sclab">'+score+' / '+qs.length+' bonnes réponses</div><div class="qzc-msg">'+(pct>=80?'Excellent, tu maîtrises ! 🎉':(pct>=50?'Bien joué, continue comme ça 💪':'On révise et on recommence 👍')+'')+'</div></div>';
+      var foot=document.createElement('div'); foot.className='qzc-foot'; foot.style.justifyContent='center';
+      var again=document.createElement('button'); again.className='qzc-next ghost'; again.textContent='↻ Recommencer'; again.addEventListener('click',function(){ idx=0; score=0; wrap._a=false; render(); }); foot.appendChild(again);
+      if(pct<70){ var rev=document.createElement('button'); rev.className='qzc-next'; rev.textContent='📚 Réviser ce chapitre'; rev.addEventListener('click',function(){ ask('Je viens d\'avoir '+score+'/'+qs.length+' au QCM « '+title+' ». Explique-moi clairement ce chapitre, insiste sur mes erreurs probables, et donne-moi 3 exercices corrigés pour progresser.'); }); foot.appendChild(rev); }
+      wrap.appendChild(foot);
       try{ if(window.PB_award) window.PB_award(qs.length*3,'QCM de Brio',{qcm:qs.length}); }catch(e){}
       try{ agRecordScore(title,score,qs.length); }catch(e){}
       if(!summarized){ summarized=true; try{ var c=cur(); c.msgs.push({role:'assistant',content:'✅ QCM « '+title+' » terminé — score '+score+'/'+qs.length+' ('+pct+'%).'}); c.t=Date.now(); save(); }catch(e){} }
       box.scrollTop=box.scrollHeight; return; }
     var q=norm(qs[idx]);
-    wrap.innerHTML='<div class="qzc-head">❓ '+esc(title)+' · question '+(idx+1)+'/'+qs.length+'</div><div class="qzc-q">'+fmtChat(q.q)+'</div>';
+    wrap.innerHTML='<div class="qzc-top"><span class="qzc-tag">✦ QCM</span><span class="qzc-count">Question '+(idx+1)+' / '+qs.length+'</span></div><div class="qzc-bar"><i style="width:'+Math.round(idx/qs.length*100)+'%"></i></div><div class="qzc-q">'+fmtChat(q.q)+'</div>';
     var opts=document.createElement('div'); opts.className='qzc-opts'; wrap._a=false;
     q.ch.forEach(function(ch,i){ var b=document.createElement('button'); b.className='qzc-opt'; b.type='button';
-      b.innerHTML='<span class="qzc-let">'+('ABCDEFGH'[i]||'?')+'</span><span>'+esc(String(ch))+'</span>';
+      b.innerHTML='<span class="qzc-let">'+('ABCDEFGH'[i]||'?')+'</span><span class="qzc-txt">'+esc(String(ch))+'</span><span class="qzc-mark"></span>';
       b.addEventListener('click',function(){ if(wrap._a) return; wrap._a=true; var good=(i===q.c); if(good) score++;
-        Array.prototype.forEach.call(opts.children,function(x,j){ x.disabled=true; if(j===q.c) x.classList.add('ok'); if(j===i&&!good) x.classList.add('bad'); });
-        var ex=document.createElement('div'); ex.className='qzc-exp '+(good?'g':'b'); ex.innerHTML='<b>'+(good?'✅ Bonne réponse !':'❌ Pas tout à fait.')+'</b> '+fmtChat(q.e);
+        Array.prototype.forEach.call(opts.children,function(x,j){ x.disabled=true; var mk=x.querySelector('.qzc-mark');
+          if(j===q.c){ x.classList.add('ok'); if(mk) mk.textContent='✓'; }
+          else if(j===i){ x.classList.add('bad'); if(mk) mk.textContent='✗'; }
+          else { x.classList.add('dim'); } });
+        var ex=document.createElement('div'); ex.className='qzc-exp '+(good?'g':'b'); ex.innerHTML='<b>'+(good?'✅ Bonne réponse':'❌ Pas tout à fait')+'</b>'+fmtChat(q.e);
         wrap.appendChild(ex);
-        var nx=document.createElement('button'); nx.className='qzc-next'; nx.textContent=(idx+1>=qs.length?'Voir mon score →':'Question suivante →');
-        nx.addEventListener('click',function(){ idx++; render(); }); wrap.appendChild(nx); box.scrollTop=box.scrollHeight;
+        var foot=document.createElement('div'); foot.className='qzc-foot';
+        var nx=document.createElement('button'); nx.className='qzc-next'; nx.textContent=(idx+1>=qs.length?'Voir mon score →':'Suivant →');
+        nx.addEventListener('click',function(){ idx++; render(); }); foot.appendChild(nx); wrap.appendChild(foot); box.scrollTop=box.scrollHeight;
       }); opts.appendChild(b); });
     wrap.appendChild(opts); box.scrollTop=box.scrollHeight;
   }
