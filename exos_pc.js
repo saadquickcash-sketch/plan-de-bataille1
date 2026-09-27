@@ -187,6 +187,52 @@ Object.assign(window.PB_EXOS, {
    en:"🏅 <b>Type olympiades.</b> On dispose d'un volume $V=2{,}24\\ \\text{L}$ de dioxygène $\\text{O}_2$ mesuré dans les CNTP ($V_m=22{,}4\\ \\text{L/mol}$). (a) Calculer la quantité de matière et le nombre de molécules. (b) En déduire la masse de ce gaz ($M(\\text{O}_2)=32\\ \\text{g/mol}$). (c) Ce dioxygène réagit totalement selon $\\text{C}+\\text{O}_2\\rightarrow\\text{CO}_2$. Calculer la masse de carbone consommée ($M(\\text{C})=12$) et la masse de $\\text{CO}_2$ formée ($M(\\text{CO}_2)=44$).",
    hint:"$n=\\dfrac{V}{V_m}$ ; $N=n\\,N_A$ ; la stœchiométrie est $1:1:1$.",
    sol:"(a) $n=\\dfrac{V}{V_m}=\\dfrac{2{,}24}{22{,}4}=0{,}1\\ \\text{mol}$, soit $N=0{,}1\\times6{,}022\\times10^{23}=6{,}022\\times10^{22}$ molécules. (b) $m(\\text{O}_2)=nM=0{,}1\\times32=3{,}2\\ \\text{g}$. (c) D'après $\\text{C}+\\text{O}_2\\rightarrow\\text{CO}_2$ : $n(\\text{C})=n(\\text{O}_2)=0{,}1\\ \\text{mol}\\Rightarrow m(\\text{C})=0{,}1\\times12=1{,}2\\ \\text{g}$ ; $n(\\text{CO}_2)=0{,}1\\ \\text{mol}\\Rightarrow m(\\text{CO}_2)=0{,}1\\times44=4{,}4\\ \\text{g}$." }
+],
+
+"Chimie — La conductance et la conductivité d'une solution": [
+ { niv:"Application",
+   en:"On applique une tension $U=2\\ \\text{V}$ entre les électrodes d'une cellule plongée dans une solution, et on mesure un courant $I=50\\ \\text{mA}$. Calculer la conductance $G$ de la portion de solution.",
+   hint:"$G=\\dfrac{I}{U}$ (en siemens $\\text{S}$).",
+   sol:"$G=\\dfrac{I}{U}=\\dfrac{0{,}050}{2}=0{,}025\\ \\text{S}=25\\ \\text{mS}$." },
+ { niv:"Application",
+   en:"Une cellule conductimétrique a des électrodes de surface $s=1\\ \\text{cm}^2$ distantes de $\\ell=1\\ \\text{cm}$. La conductance mesurée est $G=0{,}02\\ \\text{S}$. Calculer la conductivité $\\sigma$ de la solution.",
+   hint:"$G=\\sigma\\,\\dfrac{s}{\\ell}$, donc $\\sigma=G\\,\\dfrac{\\ell}{s}$ (en unités SI).",
+   sol:"$s=1\\times10^{-4}\\ \\text{m}^2$, $\\ell=1\\times10^{-2}\\ \\text{m}$. $\\sigma=G\\dfrac{\\ell}{s}=0{,}02\\times\\dfrac{10^{-2}}{10^{-4}}=0{,}02\\times100=2\\ \\text{S/m}$." },
+ { niv:"Moyen",
+   en:"La constante d'une cellule est $k=\\dfrac{\\ell}{s}$. Pour une solution, on mesure $G=5{,}0\\ \\text{mS}$ et la conductivité vaut $\\sigma=0{,}25\\ \\text{S/m}$. Déterminer la constante de cellule $k$.",
+   hint:"$\\sigma=G\\times k$, donc $k=\\dfrac{\\sigma}{G}$.",
+   sol:"$k=\\dfrac{\\sigma}{G}=\\dfrac{0{,}25}{5{,}0\\times10^{-3}}=50\\ \\text{m}^{-1}$." },
+ { niv:"Moyen",
+   en:"On considère une solution de chlorure de potassium $\\text{KCl}$ de concentration $C=0{,}010\\ \\text{mol/L}$. Données : $\\lambda(\\text{K}^+)=7{,}35\\times10^{-3}\\ \\text{S·m}^2\\text{/mol}$, $\\lambda(\\text{Cl}^-)=7{,}63\\times10^{-3}\\ \\text{S·m}^2\\text{/mol}$. Calculer la conductivité $\\sigma$ de la solution.",
+   hint:"$\\sigma=\\lambda(\\text{K}^+)\\,[\\text{K}^+]+\\lambda(\\text{Cl}^-)\\,[\\text{Cl}^-]$, avec $[\\text{K}^+]=[\\text{Cl}^-]=C$ exprimée en $\\text{mol/m}^3$.",
+   sol:"$C=0{,}010\\ \\text{mol/L}=10\\ \\text{mol/m}^3$, et $[\\text{K}^+]=[\\text{Cl}^-]=C$. $\\sigma=(\\lambda(\\text{K}^+)+\\lambda(\\text{Cl}^-))\\times C=(7{,}35+7{,}63)\\times10^{-3}\\times10=14{,}98\\times10^{-3}\\times10\\approx0{,}15\\ \\text{S/m}$." },
+ { niv:"Défi",
+   en:"🏅 <b>Type olympiades.</b> Une cellule (électrodes de surface $s=2{,}0\\ \\text{cm}^2$, distantes de $\\ell=1{,}0\\ \\text{cm}$) plongée dans une solution de nitrate d'argent $\\text{AgNO}_3$ donne une conductance $G=3{,}2\\ \\text{mS}$. Données : $\\lambda(\\text{Ag}^+)=6{,}2\\times10^{-3}\\ \\text{S·m}^2\\text{/mol}$, $\\lambda(\\text{NO}_3^-)=7{,}1\\times10^{-3}\\ \\text{S·m}^2\\text{/mol}$. (a) Calculer la conductivité $\\sigma$. (b) En déduire la concentration $C$ de la solution.",
+   hint:"(a) $\\sigma=G\\,\\dfrac{\\ell}{s}$ (bien convertir en unités SI). (b) $\\sigma=(\\lambda(\\text{Ag}^+)+\\lambda(\\text{NO}_3^-))\\,C$ avec $C$ en $\\text{mol/m}^3$, puis convertir en $\\text{mol/L}$.",
+   sol:"(a) $s=2{,}0\\times10^{-4}\\ \\text{m}^2$, $\\ell=1{,}0\\times10^{-2}\\ \\text{m}$. $\\sigma=G\\dfrac{\\ell}{s}=3{,}2\\times10^{-3}\\times\\dfrac{10^{-2}}{2{,}0\\times10^{-4}}=3{,}2\\times10^{-3}\\times50=0{,}16\\ \\text{S/m}$. (b) $[\\text{Ag}^+]=[\\text{NO}_3^-]=C$ donc $\\sigma=(\\lambda(\\text{Ag}^+)+\\lambda(\\text{NO}_3^-))\\,C$. $C=\\dfrac{\\sigma}{\\lambda_{\\text{somme}}}=\\dfrac{0{,}16}{(6{,}2+7{,}1)\\times10^{-3}}=\\dfrac{0{,}16}{13{,}3\\times10^{-3}}\\approx12{,}0\\ \\text{mol/m}^3=1{,}2\\times10^{-2}\\ \\text{mol/L}$." }
+],
+
+"Chimie — Suivi d'une transformation chimique": [
+ { niv:"Application",
+   en:"Pour la transformation $\\text{Zn}+2\\,\\text{H}^+\\rightarrow \\text{Zn}^{2+}+\\text{H}_2$, on part de $n(\\text{Zn})=0{,}10\\ \\text{mol}$ et $n(\\text{H}^+)=0{,}30\\ \\text{mol}$. Exprimer, en fonction de l'avancement $x$, les quantités de matière de chaque espèce.",
+   hint:"Un réactif de coefficient $a$ diminue de $a\\,x$ ; un produit augmente de son coefficient $\\times x$.",
+   sol:"À l'avancement $x$ : $n(\\text{Zn})=0{,}10-x$ ; $n(\\text{H}^+)=0{,}30-2x$ ; $n(\\text{Zn}^{2+})=x$ ; $n(\\text{H}_2)=x$." },
+ { niv:"Application",
+   en:"Même transformation $\\text{Zn}+2\\,\\text{H}^+\\rightarrow \\text{Zn}^{2+}+\\text{H}_2$ avec $n(\\text{Zn})=0{,}10\\ \\text{mol}$ et $n(\\text{H}^+)=0{,}30\\ \\text{mol}$. Déterminer le réactif limitant et l'avancement maximal $x_{\\max}$.",
+   hint:"$x_{\\max}$ est la plus petite valeur de $x$ qui annule l'un des réactifs.",
+   sol:"$\\text{Zn}$ s'annule pour $0{,}10-x=0\\Rightarrow x=0{,}10$. $\\text{H}^+$ s'annule pour $0{,}30-2x=0\\Rightarrow x=0{,}15$. La plus petite valeur est $x_{\\max}=0{,}10\\ \\text{mol}$ : le <b>zinc est le réactif limitant</b>." },
+ { niv:"Moyen",
+   en:"Toujours pour $\\text{Zn}+2\\,\\text{H}^+\\rightarrow \\text{Zn}^{2+}+\\text{H}_2$ avec $x_{\\max}=0{,}10\\ \\text{mol}$. Déterminer les quantités de matière finales de toutes les espèces, puis le volume de dihydrogène dégagé (CNTP, $V_m=22{,}4\\ \\text{L/mol}$).",
+   hint:"Remplace $x$ par $x_{\\max}$ dans chaque expression, puis $V(\\text{H}_2)=n(\\text{H}_2)\\times V_m$.",
+   sol:"À $x_{\\max}=0{,}10$ : $n(\\text{Zn})=0{,}10-0{,}10=0$ ; $n(\\text{H}^+)=0{,}30-0{,}20=0{,}10\\ \\text{mol}$ (en excès) ; $n(\\text{Zn}^{2+})=0{,}10\\ \\text{mol}$ ; $n(\\text{H}_2)=0{,}10\\ \\text{mol}$. Volume : $V(\\text{H}_2)=0{,}10\\times22{,}4=2{,}24\\ \\text{L}$." },
+ { niv:"Moyen",
+   en:"On brûle du propane : $\\text{C}_3\\text{H}_8+5\\,\\text{O}_2\\rightarrow 3\\,\\text{CO}_2+4\\,\\text{H}_2\\text{O}$. On part de $n(\\text{C}_3\\text{H}_8)=2\\ \\text{mol}$ et $n(\\text{O}_2)=8\\ \\text{mol}$. Déterminer le réactif limitant, $x_{\\max}$, et la quantité de $\\text{CO}_2$ formée.",
+   hint:"$\\text{C}_3\\text{H}_8$ s'annule pour $2-x=0$ ; $\\text{O}_2$ pour $8-5x=0$. Le plus petit $x$ l'emporte.",
+   sol:"$\\text{C}_3\\text{H}_8$ : $2-x=0\\Rightarrow x=2$. $\\text{O}_2$ : $8-5x=0\\Rightarrow x=1{,}6$. Donc $x_{\\max}=1{,}6\\ \\text{mol}$ et le <b>dioxygène est limitant</b>. Quantité de $\\text{CO}_2$ : $n(\\text{CO}_2)=3\\,x_{\\max}=3\\times1{,}6=4{,}8\\ \\text{mol}$ (il reste $2-1{,}6=0{,}4\\ \\text{mol}$ de propane)." },
+ { niv:"Défi",
+   en:"🏅 <b>Type olympiades.</b> On introduit une masse $m=5{,}0\\ \\text{g}$ de carbonate de calcium $\\text{CaCO}_3$ ($M=100\\ \\text{g/mol}$) dans $V=100\\ \\text{mL}$ d'acide chlorhydrique de concentration $C=0{,}80\\ \\text{mol/L}$. La réaction est : $\\text{CaCO}_3+2\\,\\text{H}^+\\rightarrow \\text{Ca}^{2+}+\\text{CO}_2+\\text{H}_2\\text{O}$. (a) Calculer les quantités initiales. (b) Déterminer le réactif limitant et $x_{\\max}$. (c) En déduire le volume de $\\text{CO}_2$ dégagé, avec $V_m=24\\ \\text{L/mol}$.",
+   hint:"$n(\\text{CaCO}_3)=\\dfrac{m}{M}$ et $n(\\text{H}^+)=C\\,V$ ; compare $x$ qui annule $\\text{CaCO}_3$ et $x$ qui annule $\\text{H}^+$.",
+   sol:"(a) $n(\\text{CaCO}_3)=\\dfrac{5{,}0}{100}=0{,}050\\ \\text{mol}$ et $n(\\text{H}^+)=C\\,V=0{,}80\\times0{,}100=0{,}080\\ \\text{mol}$. (b) $\\text{CaCO}_3$ : $0{,}050-x=0\\Rightarrow x=0{,}050$ ; $\\text{H}^+$ : $0{,}080-2x=0\\Rightarrow x=0{,}040$. Donc $x_{\\max}=0{,}040\\ \\text{mol}$ et les <b>ions $\\text{H}^+$ sont limitants</b> (il reste $0{,}050-0{,}040=0{,}010\\ \\text{mol}$ de $\\text{CaCO}_3$). (c) $n(\\text{CO}_2)=x_{\\max}=0{,}040\\ \\text{mol}$, donc $V(\\text{CO}_2)=0{,}040\\times24=0{,}96\\ \\text{L}$." }
 ]
 
 });
