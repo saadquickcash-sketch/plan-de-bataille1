@@ -2603,9 +2603,8 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
   function norm(s){ return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,' ').trim(); }
   window.PB_findExos=function(title){
     try{ var E=window.PB_EXOS; if(!E) return null; if(E[title]) return title;
-      var nt=norm(title); var k;
+      var nt=norm(title); if(!nt) return null; var k;
       for(k in E){ if(norm(k)===nt) return k; }
-      for(k in E){ var nk=norm(k); if(nk&&(nt.indexOf(nk)>=0||nk.indexOf(nt)>=0)) return k; }
     }catch(e){} return null;
   };
   var CSS=""
