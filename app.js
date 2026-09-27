@@ -2247,7 +2247,7 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
       var src=body.querySelector(srcClass); if(src) open(src);
     });
   }); }
-  bind('.fbtn','.fiche-src'); bind('.sbtn','.serie-src');
+  bind('.fbtn:not(.pb-exos)','.fiche-src'); bind('.sbtn:not(.pb-exos)','.serie-src');
   var c=document.getElementById('ficheClose'); if(c) c.addEventListener('click',close);
   var p=document.getElementById('fichePrint'); if(p) p.addEventListener('click',function(){ window.print(); });
   modal.addEventListener('click',function(e){ if(e.target===modal) close(); });
@@ -2502,19 +2502,19 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
             : 'Fais-moi une fiche express de révision du chapitre « '+title+' » : l\'essentiel sur une seule page — définitions clés, formules/propriétés à retenir et la méthode. Courte, claire et imprimable.';
           actions.appendChild(mkBtn('fbtn-ai pb-fx','&#128196; Fiche express', pf));
         }
-        // 2) Série d'exercices : curatée (fixe, soignée) si disponible, sinon générée par l'IA
-        if(!actions.querySelector('.sbtn') && !actions.querySelector('.pb-sx') && !actions.querySelector('.pb-exos')){
-          var exoKey = (window.PB_findExos ? window.PB_findExos(title) : null);
-          if(exoKey){
-            var be=document.createElement('button'); be.type='button'; be.className='btn sbtn pb-exos'; be.innerHTML='&#128221; Série d\'exercices';
-            be.addEventListener('click',function(){ try{ if(window.PB_openExos) window.PB_openExos(exoKey); }catch(e){} });
-            actions.appendChild(be);
-          } else {
+        // 2) Série d'exercices : la version curatée (fixe, soignée) est PRIORITAIRE ; sinon générée par l'IA
+        var exoKey = (window.PB_findExos ? window.PB_findExos(title) : null);
+        if(exoKey){
+          var be=document.createElement('button'); be.type='button'; be.className='btn sbtn pb-exos'; be.innerHTML='&#128221; Série d\'exercices';
+          be.addEventListener('click',function(ev){ try{ ev.stopImmediatePropagation(); }catch(_){} try{ if(window.PB_openExos) window.PB_openExos(exoKey); }catch(e){} });
+          var oldS=actions.querySelector('.sbtn:not(.pb-exos), .pb-sx');
+          if(oldS){ oldS.parentNode.replaceChild(be, oldS); }
+          else if(!actions.querySelector('.pb-exos')){ actions.appendChild(be); }
+        } else if(!actions.querySelector('.sbtn') && !actions.querySelector('.pb-sx')){
             var ps = rtl
             ? 'أنشئ لي سلسلة من 5 تمارين متدرّجة (من الأسهل إلى الأصعب) حول درس « '+title+' »، مستوى الأولى باكالوريا علوم رياضية (المنهاج المغربي)، مع التصحيح المفصّل لكلّ تمرين. اختر تمارين نموذجية ومفيدة للامتحان.'
             : 'Crée-moi une série de 6 exercices sur « '+title+' », niveau 1ère Bac Sciences Maths (programme marocain officiel), soigneusement choisis et formateurs pour le Bac : 2 exercices d\'application directe, 2 de niveau moyen, puis 2 exercices « DÉFI » 🧠 qui exigent une VRAIE RÉFLEXION (raisonnement en plusieurs étapes, une astuce, ou un lien entre plusieurs notions). Pour CHAQUE exercice : un énoncé clair, puis un petit INDICE de départ, puis la CORRECTION détaillée pas à pas. Varie les énoncés et rends-les vivants.';
             actions.appendChild(mkBtn('sbtn pb-sx','&#128221; Série d\'exercices', ps));
-          }
         }
         // 3) Vidéo : plus de redirection YouTube — leçon vidéo guidée SUR le site
         var vlink=actions.querySelector('a.vbtn');
