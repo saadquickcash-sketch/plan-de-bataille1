@@ -1,19 +1,8 @@
-# Pages HTML : toujours revalider auprès du serveur (jamais de version figée en cache)
+# Cloudflare Pages COMBINE les règles qui matchent (il ne les remplace pas).
+# On garde donc une seule règle simple : tout est revalidé auprès du serveur.
+# Les scripts/styles sont versionnés via ?v=NN (une nouvelle version = nouvelle URL,
+# donc rechargée automatiquement), et une revalidation renvoie un 304 très léger
+# quand le fichier n'a pas changé. Résultat : les pages sont toujours à jour,
+# sans jamais avoir besoin de vider le cache manuellement.
 /*
-  Cache-Control: no-cache, must-revalidate
-
-# Ressources versionnées via ?v=NN : cache long (une nouvelle version = nouvelle URL)
-/*.js
-  Cache-Control: public, max-age=31536000, immutable
-/*.css
-  Cache-Control: public, max-age=31536000, immutable
-/*.png
-  Cache-Control: public, max-age=31536000, immutable
-/*.svg
-  Cache-Control: public, max-age=31536000, immutable
-
-# Le service worker et le manifeste doivent toujours rester frais
-/sw.js
-  Cache-Control: no-cache, must-revalidate
-/manifest.json
   Cache-Control: no-cache, must-revalidate
