@@ -802,3 +802,9 @@ body.noscroll{overflow:hidden}
 }
 
 .acct-av.has-photo,#profAv.has-photo{background-color:transparent!important;overflow:hidden;background-repeat:no-repeat}
+
+/* Notation vecteur / dérivées : marque au-dessus qui s'affiche dans toutes les polices */
+.vec,.vddot,.vhat{position:relative;display:inline-block;line-height:1.05}
+.vec::after{content:"\2192";position:absolute;left:-.02em;right:-.02em;top:-.60em;text-align:center;font-size:.60em;font-weight:400;pointer-events:none}
+.vddot::after{content:"\A8";position:absolute;left:0;right:0;top:-.70em;text-align:center;font-size:.72em;pointer-events:none}
+.vhat::after{content:"\2C6";position:absolute;left:0;right:0;top:-.58em;text-align:center;font-size:.78em;pointer-events:none}

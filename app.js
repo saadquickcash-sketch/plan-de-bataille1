@@ -141,6 +141,13 @@
     if(window.PB_onChatChange){ try{ window.PB_onChatChange(s); }catch(e){} } }
   load();
   function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+  // Rend les notations vecteur/dérivées (caractères combinants) via des marques CSS affichables partout
+  function vecSpans(h){ h=String(h==null?'':h);
+    h=h.replace(/([A-Za-zÀ-ÿΑ-Ωα-ω℀-⅏0-9]{1,6}(?:&#x27;|&#39;|’|′)?)⃗/g,'<span class="vec">$1</span>');
+    h=h.replace(/([^\s<>&])̈/g,'<span class="vddot">$1</span>');
+    h=h.replace(/([^\s<>&])̂/g,'<span class="vhat">$1</span>');
+    return h; }
+  function vecMk(s){ return vecSpans(esc(String(s==null?'':s))); }
   function fmt(s){ var h=esc(s); h=h.replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>'); h=h.replace(/`([^`]+)`/g,'<code>$1</code>'); h=h.replace(/\n/g,'<br>'); return h; }
   function bubbleEl(role,text,img){ var d=document.createElement('div'); d.className='cp-msg '+role;
     var h=''; if(img) h+='<img class="cp-img" src="'+img+'" alt="image">'; h+=(role==='ai'?fmtChat(text):esc(text)); d.innerHTML=h;
@@ -1103,10 +1110,10 @@ function agQuizBuild(box,title,qs){
       if(!summarized){ summarized=true; try{ var c=cur(); c.msgs.push({role:'assistant',content:'✅ QCM « '+title+' » terminé — score '+score+'/'+qs.length+' ('+pct+'%).'}); c.t=Date.now(); save(); }catch(e){} }
       box.scrollTop=box.scrollHeight; return; }
     var q=norm(qs[idx]);
-    wrap.innerHTML='<div class="qzc-top"><span class="qzc-tag">✦ QCM</span><span class="qzc-count">Question '+(idx+1)+' / '+qs.length+'</span></div><div class="qzc-bar"><i style="width:'+Math.round(idx/qs.length*100)+'%"></i></div><div class="qzc-q">'+fmtChat(q.q)+'</div>';
+    wrap.innerHTML='<div class="qzc-top"><span class="qzc-tag">✦ QCM</span><span class="qzc-count">Question '+(idx+1)+' / '+qs.length+'</span></div><div class="qzc-bar"><i style="width:'+Math.round(idx/qs.length*100)+'%"></i></div><div class="qzc-q">'+vecSpans(fmtChat(q.q))+'</div>';
     var opts=document.createElement('div'); opts.className='qzc-opts'; wrap._a=false;
     q.ch.forEach(function(ch,i){ var b=document.createElement('button'); b.className='qzc-opt'; b.type='button';
-      b.innerHTML='<span class="qzc-let">'+('ABCDEFGH'[i]||'?')+'</span><span class="qzc-txt">'+esc(String(ch))+'</span><span class="qzc-mark"></span>';
+      b.innerHTML='<span class="qzc-let">'+('ABCDEFGH'[i]||'?')+'</span><span class="qzc-txt">'+vecMk(ch)+'</span><span class="qzc-mark"></span>';
       b.addEventListener('click',function(){ if(wrap._a) return; wrap._a=true; var good=(i===q.c); if(good) score++;
         Array.prototype.forEach.call(opts.children,function(x,j){ x.disabled=true; var mk=x.querySelector('.qzc-mark');
           if(j===q.c){ x.classList.add('ok'); if(mk) mk.textContent='✓'; }
@@ -1214,7 +1221,7 @@ function agSurveyBuild(box,title,qs){
     var hint=document.createElement('div'); hint.className='sv-hint'; hint.textContent=multi?'Plusieurs réponses possibles':'Une seule réponse';
     var opts=document.createElement('div'); opts.className='sv-opts';
     var ch=q.choix||q.choices||q.options||q.reponses||[];
-    ch.forEach(function(c,ci){ var b=document.createElement('button'); b.type='button'; b.className='sv-opt'; b.textContent=String(c);
+    ch.forEach(function(c,ci){ var b=document.createElement('button'); b.type='button'; b.className='sv-opt'; b.innerHTML=vecMk(c);
       b.addEventListener('click',function(){ if(wrap._done) return;
         if(multi){ var k=state[qi].indexOf(ci); if(k>=0){ state[qi].splice(k,1); b.classList.remove('sel'); } else { state[qi].push(ci); b.classList.add('sel'); } }
         else { state[qi]=[ci]; Array.prototype.forEach.call(opts.children,function(x){ x.classList.remove('sel'); }); b.classList.add('sel'); }
@@ -1262,7 +1269,7 @@ function agSurveyBuild(box,title,qs,onSubmit){
     var hint=document.createElement('div'); hint.className='sv-hint'; hint.textContent=multi?'Plusieurs réponses possibles':'Une seule réponse';
     var opts=document.createElement('div'); opts.className='sv-opts';
     var ch=q.choix||q.choices||q.options||q.reponses||[];
-    ch.forEach(function(c,ci){ var b=document.createElement('button'); b.type='button'; b.className='sv-opt'; b.textContent=String(c);
+    ch.forEach(function(c,ci){ var b=document.createElement('button'); b.type='button'; b.className='sv-opt'; b.innerHTML=vecMk(c);
       b.addEventListener('click',function(){ if(wrap._done) return;
         if(multi){ var k=state[qi].indexOf(ci); if(k>=0){ state[qi].splice(k,1); b.classList.remove('sel'); } else { state[qi].push(ci); b.classList.add('sel'); } }
         else { state[qi]=[ci]; Array.prototype.forEach.call(opts.children,function(x){ if(x.classList&&x.classList.contains('sv-opt')) x.classList.remove('sel'); }); b.classList.add('sel'); }
