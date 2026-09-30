@@ -2254,7 +2254,7 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
       var src=body.querySelector(srcClass); if(src) open(src);
     });
   }); }
-  bind('.fbtn:not(.pb-exos)','.fiche-src'); bind('.sbtn:not(.pb-exos)','.serie-src');
+  bind('.fbtn:not(.pb-exos):not(.pb-doss)','.fiche-src'); bind('.sbtn:not(.pb-exos):not(.pb-doss)','.serie-src');
   var c=document.getElementById('ficheClose'); if(c) c.addEventListener('click',close);
   var p=document.getElementById('fichePrint'); if(p) p.addEventListener('click',function(){ window.print(); });
   modal.addEventListener('click',function(e){ if(e.target===modal) close(); });
@@ -2523,6 +2523,13 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
             : 'Crée-moi une série de 6 exercices sur « '+title+' », niveau 1ère Bac Sciences Maths (programme marocain officiel), soigneusement choisis et formateurs pour le Bac : 2 exercices d\'application directe, 2 de niveau moyen, puis 2 exercices « DÉFI » 🧠 qui exigent une VRAIE RÉFLEXION (raisonnement en plusieurs étapes, une astuce, ou un lien entre plusieurs notions). Pour CHAQUE exercice : un énoncé clair, puis un petit INDICE de départ, puis la CORRECTION détaillée pas à pas. Varie les énoncés et rends-les vivants.';
             actions.appendChild(mkBtn('sbtn pb-sx','&#128221; Série d\'exercices', ps));
         }
+        // 2bis) Dossier de l'œuvre (Français) : résumé, personnages, thèmes, citations
+        var dossKey = (window.PB_findDossier ? window.PB_findDossier(title) : null);
+        if(dossKey && !actions.querySelector('.pb-doss')){
+          var db=document.createElement('button'); db.type='button'; db.className='btn sbtn pb-doss'; db.innerHTML='&#128218; Dossier de l\'œuvre';
+          db.addEventListener('click',function(ev){ try{ ev.stopImmediatePropagation(); }catch(_){} try{ if(window.PB_openDossier) window.PB_openDossier(dossKey); }catch(e){} });
+          actions.appendChild(db);
+        }
         // 3) Vidéo : plus de redirection YouTube — leçon vidéo guidée SUR le site
         var vlink=actions.querySelector('a.vbtn');
         if(vlink){
@@ -2665,5 +2672,69 @@ function agEnhanceImage(dataUrl){ return new Promise(function(res){ try{ var img
     ov.querySelector('.exo-print').addEventListener('click',function(){ try{ ov.querySelectorAll('details').forEach(function(d){d.open=true;}); setTimeout(function(){window.print();},60); }catch(e){} });
     document.addEventListener('keydown',function esc(e){ if(e.key==='Escape'){ close(); document.removeEventListener('keydown',esc);} });
     try{ if(window.PB_renderMath) window.PB_renderMath(ov.querySelector('.exo-body')); }catch(e){}
+  };
+})();
+
+/* ===== Dossiers d'œuvres (Français) — recherche + affichage modal à onglets ===== */
+(function(){
+  function norm(s){ return String(s||'').toLowerCase().replace(/\s+/g,' ').trim(); }
+  window.PB_findDossier=function(title){ try{ var O=window.PB_OEUVRES; if(!O) return null; if(O[title]) return title; var nt=norm(title); if(!nt) return null; for(var k in O){ if(norm(k)===nt) return k; } }catch(e){} return null; };
+  var CSS=""
+   +".doss-ov{position:fixed;inset:0;z-index:100000;background:rgba(20,16,40,.55);display:flex;align-items:flex-start;justify-content:center;padding:22px;overflow:auto}"
+   +".doss-modal{background:var(--surface,#fff);color:var(--text,#111);max-width:820px;width:100%;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.35);overflow:hidden;margin:auto}"
+   +".doss-head{background:linear-gradient(135deg,var(--royal,#4A3EA0),#7a6fd0);color:#fff;padding:18px 22px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}"
+   +".doss-head .dt{font-family:Newsreader,serif;font-size:1.35rem;font-weight:600;line-height:1.15}"
+   +".doss-head .da{font-size:.85rem;opacity:.9;margin-top:3px}"
+   +".doss-x{background:rgba(255,255,255,.18);border:0;color:#fff;width:34px;height:34px;border-radius:10px;font-size:1.1rem;cursor:pointer;flex:0 0 auto}"
+   +".doss-tabs{display:flex;gap:4px;flex-wrap:wrap;padding:12px 18px 0;border-bottom:1px solid var(--border,#eee)}"
+   +".doss-tab{border:0;background:transparent;color:var(--muted,#888);font-family:inherit;font-size:.88rem;font-weight:600;padding:9px 13px;border-radius:10px 10px 0 0;cursor:pointer;border-bottom:3px solid transparent}"
+   +".doss-tab.on{color:var(--royal,#4A3EA0);border-bottom-color:var(--royal,#4A3EA0);background:var(--surface-2,#f6f6fb)}"
+   +".doss-body{padding:20px 22px;max-height:64vh;overflow:auto;line-height:1.65}"
+   +".doss-body h4{font-family:Newsreader,serif;font-size:1.05rem;margin:0 0 4px}"
+   +".doss-meta{font-size:.85rem;color:var(--muted,#888);margin-bottom:14px}"
+   +".doss-ch{border:1px solid var(--border,#eee);border-radius:12px;padding:12px 14px;margin-bottom:10px}"
+   +".doss-ch .cn{display:inline-block;min-width:26px;height:26px;line-height:26px;text-align:center;border-radius:8px;background:var(--royal,#4A3EA0);color:#fff;font-weight:700;font-size:.8rem;margin-right:8px}"
+   +".doss-ch .ct{font-weight:700}"
+   +".doss-ch p{margin:8px 0 0;font-size:.93rem}"
+   +".doss-item{border-left:3px solid var(--royal,#4A3EA0);background:var(--surface-2,#f6f6fb);border-radius:8px;padding:10px 13px;margin-bottom:9px}"
+   +".doss-item b{color:var(--text,#111)}"
+   +".doss-cit{background:rgba(74,62,160,.06);border-radius:8px;padding:10px 13px;margin-bottom:9px}"
+   +".doss-cit .q{font-family:Newsreader,serif;font-style:italic;font-size:1rem}"
+   +".doss-cit .n{font-size:.86rem;color:var(--muted,#666);margin-top:4px}"
+   +".doss-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid var(--border,#eee)}"
+   +".doss-btn{padding:9px 16px;border-radius:10px;font-weight:600;font-size:.87rem;cursor:pointer;border:1px solid var(--border,#ccc);background:var(--surface-2,#f4f4f8);color:var(--text,#111);font-family:inherit}"
+   +".doss-btn.p{background:var(--royal,#4A3EA0);color:#fff;border:0}"
+   +"@media print{body>*{display:none!important}#pbDossOv{display:block!important;position:static!important;background:#fff!important;padding:0!important}#pbDossOv .doss-x,#pbDossOv .doss-tabs,#pbDossOv .doss-foot{display:none!important}#pbDossOv .doss-body{max-height:none!important;overflow:visible!important}#pbDossOv .doss-tabpane{display:block!important;margin-bottom:20px}}";
+  function ensureCss(){ if(document.getElementById('pbDossCss'))return; var s=document.createElement('style'); s.id='pbDossCss'; s.textContent=CSS; document.head.appendChild(s); }
+  function esc(s){ var d=document.createElement('div'); d.textContent=(s==null?'':s); return d.innerHTML; }
+  window.PB_openDossier=function(key){
+    var D=(window.PB_OEUVRES||{})[key]; if(!D) return; ensureCss();
+    var old=document.getElementById('pbDossOv'); if(old) old.remove();
+    var ov=document.createElement('div'); ov.id='pbDossOv'; ov.className='doss-ov';
+    var resume='<div class="doss-tabpane" data-p="resume"><div class="doss-meta">'+esc(D.genre)+' · '+esc(D.auteur)+' ('+esc(D.publication)+') · Cadre : '+esc(D.cadre)+'</div>'
+      +'<div class="doss-item"><b>Narration.</b> '+D.narration+'</div>'
+      +D.resume.map(function(r){ return '<div class="doss-ch"><span class="cn">'+r.ch+'</span><span class="ct">'+esc(r.titre)+'</span><p>'+r.texte+'</p></div>'; }).join('')+'</div>';
+    var persos='<div class="doss-tabpane" data-p="persos" hidden>'+D.personnages.map(function(p){ return '<div class="doss-item"><b>'+esc(p.nom)+'</b> — '+esc(p.role)+'</div>'; }).join('')+'</div>';
+    var themes='<div class="doss-tabpane" data-p="themes" hidden>'+D.themes.map(function(t){ return '<div class="doss-item"><b>'+esc(t.t)+'.</b> '+esc(t.d)+'</div>'; }).join('')+'</div>';
+    var cits='<div class="doss-tabpane" data-p="cits" hidden>'+D.citations.map(function(c){ return '<div class="doss-cit"><div class="q">'+esc(c.c)+'</div><div class="n">'+esc(c.note)+'</div></div>'; }).join('')
+      +'<div class="doss-meta" style="margin-top:12px">Contexte : '+esc(D.contexte)+'</div></div>';
+    var meth='<div class="doss-tabpane" data-p="meth" hidden>'+(D.methodo||[]).map(function(m){ return '<div class="doss-item">'+esc(m)+'</div>'; }).join('')+'</div>';
+    ov.innerHTML='<div class="doss-modal"><div class="doss-head"><div><div class="dt">'+esc(D.titre)+'</div><div class="da">'+esc(D.auteur)+' · Dossier de révision</div></div><button class="doss-x" aria-label="Fermer">&times;</button></div>'
+      +'<div class="doss-tabs"><button class="doss-tab on" data-t="resume">Résumé</button><button class="doss-tab" data-t="persos">Personnages</button><button class="doss-tab" data-t="themes">Thèmes</button><button class="doss-tab" data-t="cits">Citations</button><button class="doss-tab" data-t="meth">Méthode</button></div>'
+      +'<div class="doss-body">'+resume+persos+themes+cits+meth+'</div>'
+      +'<div class="doss-foot"><button class="doss-btn" id="dossPrint">&#128424;&#65039; Imprimer</button><button class="doss-btn p" id="dossClose">Fermer</button></div></div>';
+    document.body.appendChild(ov); try{ document.body.classList.add('noscroll'); }catch(e){}
+    var map={resume:'resume',persos:'persos',themes:'themes',cits:'cits',meth:'meth'};
+    ov.querySelectorAll('.doss-tab').forEach(function(b){ b.addEventListener('click',function(){
+      ov.querySelectorAll('.doss-tab').forEach(function(x){x.classList.remove('on');}); b.classList.add('on');
+      var t=b.getAttribute('data-t'); ov.querySelectorAll('.doss-tabpane').forEach(function(p){ p.hidden=(p.getAttribute('data-p')!==t); });
+      ov.querySelector('.doss-body').scrollTop=0;
+    }); });
+    function close(){ try{ ov.remove(); document.body.classList.remove('noscroll'); }catch(e){} }
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    ov.querySelector('.doss-x').addEventListener('click',close);
+    ov.querySelector('#dossClose').addEventListener('click',close);
+    ov.querySelector('#dossPrint').addEventListener('click',function(){ try{ ov.querySelectorAll('.doss-tabpane').forEach(function(p){p.hidden=false;}); setTimeout(function(){window.print();},60); }catch(e){} });
+    document.addEventListener('keydown',function esc2(e){ if(e.key==='Escape'){ close(); document.removeEventListener('keydown',esc2);} });
   };
 })();
