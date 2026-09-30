@@ -1,9 +1,9 @@
 /* ===== Espace d'examen — Régional 1ère Bac (programme marocain) =====
-   Sujets officiels (Académie Fès-Meknès) : questions, barème et corrigé officiels intégrés fidèlement.
-   Les TEXTES SUPPORTS, quand ce sont des extraits d'œuvres protégées, ne sont pas reproduits ici
-   (droits d'auteur) : l'élève les lit dans son manuel / le PDF officiel. Correction = corrigé officiel.
+   Sujets officiels (Académie Fès-Meknès) : texte support, questions, barème et corrigé officiels.
+   Extraits littéraires reproduits à des fins strictement pédagogiques (courts extraits, usage scolaire),
+   avec attribution à l'œuvre et à l'auteur.
    Schéma : { id, subject, matiere, coef, label, official, durationMin, total, consignes,
-     texte:{titre, html, note, source}?, sections:[ {titre, points, questions:[ {q, points, lines?, redaction?, correction} ] } ] } */
+     texte:{titre, html, source}?, sections:[ {titre, points, questions:[ {q, points, lines?, redaction?, correction} ] } ] } */
 window.PB_EXAMS = window.PB_EXAMS || [];
 
 /* ---------- Français — Régional Fès-Meknès 2024 (session ordinaire) ---------- */
@@ -11,12 +11,18 @@ window.PB_EXAMS.push({
   id:"fr-fesmeknes-2024", subject:"francais", matiere:"Français", coef:4, official:true,
   label:"Régional Fès-Meknès 2024 — officiel",
   durationMin:120, total:20,
-  consignes:"Examen régional unifié, 1ère année du baccalauréat, Académie Fès-Meknès (session ordinaire 2024). Durée : 2 h. Lis d'abord le texte support (dans ton manuel ou le PDF officiel), puis traite l'étude de texte et la production écrite. Attribue-toi les points à la fin en te comparant au corrigé officiel.",
+  consignes:"Examen régional unifié, 1ère année du baccalauréat, Académie Fès-Meknès (session ordinaire 2024). Durée : 2 h. Lis attentivement le texte, puis traite l'étude de texte et la production écrite. Attribue-toi les points à la fin en te comparant au corrigé officiel.",
   texte:{
-    titre:"Texte support — « La Boîte à merveilles », Ahmed Sefrioui",
-    html:"<p><b>📖 Extrait à lire dans ton manuel ou le PDF officiel du sujet.</b></p><p>Le narrateur, <b>Sidi Mohamed</b>, raconte comment, après avoir dirigé le nettoyage du <i>Msid</i> pour préparer la fête de l'<b>Achoura</b>, il rentre à la maison épuisé mais très fier de sa journée. Il se vante de ses exploits devant ses parents, puis se réjouit à l'idée d'avoir bientôt de nouveaux habits de fête. Les questions et le corrigé ci-dessous portent sur ce passage.</p>",
-    note:"Extrait d'une œuvre protégée (La Boîte à merveilles, A. Sefrioui, 1954) — non reproduit ici pour des raisons de droits d'auteur. Compose avec le passage sous les yeux (manuel ou PDF officiel).",
-    source:"Sujet officiel — Examen régional, Académie régionale Fès-Meknès, session ordinaire 2024."
+    titre:"Texte",
+    html:"<p>Le soir, je revins à la maison mort de fatigue, mais très fier de ma journée.</p>"
+      +"<p>Devant mes parents je me vantai de mes multiples exploits. Je réussis à les convaincre que sans moi aucun résultat sérieux n'aurait été obtenu. Mon père me félicita. Il dit à ma mère que je devenais vraiment un homme. Je me mis au lit.</p>"
+      +"<p>Pendant mon sommeil, il m'arriva de me mettre sur mon séant<sup>1</sup>, de hurler des ordres, de distribuer des injures. Ma mère me recouchait avec des gestes tendres, des phrases affectueuses.</p>"
+      +"<p>Le matin, je me préparai pour partir à l'école, ma mère m'en empêcha. Elle m'expliqua qu'elle avait besoin de moi pour l'accompagner à la <i>kissaria</i>, le marché des tissus. Il était temps de songer à mes habits de fête. J'applaudis avec enthousiasme.</p>"
+      +"<p>— Est-ce que j'aurai une chemise neuve ?<br>— Tu auras une chemise neuve.<br>— Est-ce que je porterai un gilet avec des soutaches ?<br>— Tu porteras un gilet avec des soutaches. […]</p>"
+      +"<p>Je me dressai de toute ma taille, je bombai le torse<sup>2</sup> ; j'esquissai même quelques pas d'une danse barbare. Je ne me livrais à de telles excentricités<sup>3</sup> que dans des circonstances exceptionnelles. J'allais même pousser un ou deux hululements quand ma mère me rappela à plus de dignité.</p>"
+      +"<p>Fatma Bziouya riait à gorge déployée. Son rire ne me choquait pas.</p>"
+      +"<p class=\"fn\"><sup>1</sup> De m'asseoir tout d'un coup. &nbsp; <sup>2</sup> La poitrine. &nbsp; <sup>3</sup> Comportements bizarres.</p>",
+    source:"Ahmed Sefrioui, « La Boîte à merveilles » (1954) — support de l'examen régional (Fès-Meknès, 2024)."
   },
   sections:[
     { titre:"I. Étude de texte", points:10, questions:[
@@ -25,13 +31,13 @@ window.PB_EXAMS.push({
       { q:"Pour situer ce texte dans l'œuvre : a) De quelle activité le fqih avait-il chargé ses élèves pour se préparer à la fête de l'Achoura ? (0,5)  b) De quel rôle avait-il chargé le narrateur ? (0,5)", points:1, lines:3,
         correction:"a) <b>Le nettoyage du Msid</b> (accepter toute formulation allant dans ce sens). b) Il a été chargé du rôle de <b>chef des frotteurs</b>." },
       { q:"a) Dans quel état physique le narrateur se trouve-t-il à son retour à la maison ? (0,5)  b) Quelle figure de style emploie-t-il pour mettre en valeur l'intensité de cet état physique ? (0,5)", points:1, lines:3,
-        correction:"a) Il était <b>fatigué / épuisé</b> (accepter toute formulation allant dans ce sens). b) Il s'agit d'une <b>hyperbole</b>." },
+        correction:"a) Il était <b>fatigué / épuisé</b> (« mort de fatigue ») (accepter toute formulation allant dans ce sens). b) Il s'agit d'une <b>hyperbole</b>." },
       { q:"« Le petit enfant est épuisé ; il est très content de sa journée. » Relie les deux propositions en employant « bien que ».", points:0.5, lines:2,
         correction:"<b>Bien que</b> le petit enfant <b>soit</b> épuisé, il est très content de sa journée. (ou : Le petit enfant est très content de sa journée bien qu'il soit épuisé.) — On exige le subjonctif après « bien que »." },
       { q:"Recopie et complète le tableau d'après ta compréhension du texte (0,5×3) : ligne 1 — Sentiment : « Fierté » / Raison : … / Geste : « hurle des ordres » ou « distribue des injures » ; ligne 2 — Sentiment : … / Raison : « Achat de nouveaux vêtements » / Geste : « … ».", points:1.5, lines:4,
-        correction:"Ligne 1 — Raison de la fierté : <b>participation au nettoyage comme chef des frotteurs</b> (0,5). Ligne 2 — Sentiment : <b>Enthousiasme / Joie</b> (accepter tout synonyme) (0,5) ; Geste correspondant : « <b>applaudit</b> » ou « se dresse de toute sa taille » ou « bombe le torse » ou « esquisse une danse barbare » (0,5)." },
+        correction:"Ligne 1 — Raison de la fierté : <b>participation au nettoyage comme chef des frotteurs</b> (0,5). Ligne 2 — Sentiment : <b>Enthousiasme / Joie</b> (accepter tout synonyme) (0,5) ; Geste : « <b>applaudit</b> » ou « se dresse de toute sa taille » ou « bombe le torse » ou « esquisse une danse barbare » (0,5)." },
       { q:"L'enfant demanda à sa mère : « Est-ce que je porterai un gilet avec des soutaches ? » Refais cette phrase au discours indirect.", points:1, lines:2,
-        correction:"L'enfant demanda à sa mère <b>s'il porterait</b> un gilet avec des soutaches. (Transformation : « Est-ce que » → « si » ; « je porterai » → « il porterait ».)" },
+        correction:"L'enfant demanda à sa mère <b>s'il porterait</b> un gilet avec des soutaches. (« Est-ce que » → « si » ; « je porterai » → « il porterait ».)" },
       { q:"a) Relève dans le texte l'équivalent en français du mot marocain « la kissaria ». (0,5)  b) À quel lecteur le narrateur s'adresse-t-il en utilisant cet équivalent ? (0,5)", points:1, lines:3,
         correction:"a) « la kissaria » = <b>le marché des tissus</b>. b) Il s'adresse à un lecteur <b>étranger</b> (non marocain / francophone)." },
       { q:"D'après ta compréhension du texte, quelle est la tonalité (le registre littéraire) qui y domine ?", points:1, lines:2,
@@ -43,7 +49,7 @@ window.PB_EXAMS.push({
     ]},
     { titre:"II. Production écrite", points:10, questions:[
       { q:"Sujet : « Aujourd'hui, certains lycéens et lycéennes se plaignent de plus en plus de l'École et s'y ennuient : programmes trop chargés, activités d'épanouissement et de créativité rares ou absentes, nombre souvent épuisant de contrôles, etc. Ils rêvent, au contraire, d'une école capable de répondre à leurs besoins, à leurs attentes et à leurs espoirs. » Et toi, partages-tu l'avis de ces élèves ? Rédige un texte dans lequel tu justifies ton point de vue en t'appuyant sur des arguments pertinents et des exemples précis.", points:10, redaction:true, lines:18,
-        correction:"<b>Barème officiel de la production écrite (10 pts).</b><br><u>Critères d'évaluation du discours (5 pts)</u> : Conformité de la production à la consigne d'écriture : 1 pt · Cohérence de l'argumentation (emploi des connecteurs) : 1 pt · Structure du texte (1 pt) et progression des idées (2 pts) : 3 pts.<br><u>Critères d'évaluation de la langue (5 pts)</u> : Vocabulaire (termes précis et variés) : 1 pt · Syntaxe (phrases correctes) : 1 pt · Ponctuation adéquate : 1 pt · Orthographe d'usage et grammaticale : 1 pt · Conjugaison (emploi des temps) : 1 pt.<br><br><b>Conseils.</b> Prends clairement position (d'accord / pas d'accord / nuancé) dès l'introduction. Développe 2 ou 3 arguments, chacun illustré d'un exemple précis, reliés par des connecteurs (d'abord, de plus, en effet, par exemple, enfin). Conclus en résumant ton point de vue. Soigne la langue : c'est la moitié de la note." }
+        correction:"<b>Barème officiel de la production écrite (10 pts).</b><br><u>Critères d'évaluation du discours (5 pts)</u> : Conformité à la consigne d'écriture : 1 pt · Cohérence de l'argumentation (emploi des connecteurs) : 1 pt · Structure du texte (1 pt) et progression des idées (2 pts) : 3 pts.<br><u>Critères d'évaluation de la langue (5 pts)</u> : Vocabulaire (termes précis et variés) : 1 pt · Syntaxe (phrases correctes) : 1 pt · Ponctuation adéquate : 1 pt · Orthographe d'usage et grammaticale : 1 pt · Conjugaison (emploi des temps) : 1 pt.<br><br><b>Conseils.</b> Prends clairement position dès l'introduction (d'accord / pas d'accord / nuancé). Développe 2 ou 3 arguments, chacun illustré d'un exemple précis, reliés par des connecteurs (d'abord, de plus, en effet, par exemple, enfin). Conclus en résumant ton point de vue. Soigne la langue : c'est la moitié de la note." }
     ]}
   ]
 });
@@ -53,12 +59,14 @@ window.PB_EXAMS.push({
   id:"fr-fesmeknes-2023", subject:"francais", matiere:"Français", coef:4, official:true,
   label:"Régional Fès-Meknès 2023 — officiel",
   durationMin:120, total:20,
-  consignes:"Examen régional unifié, 1ère année du baccalauréat, Académie Fès-Meknès (session ordinaire 2023). Durée : 2 h. Lis d'abord le texte support (dans ton manuel ou le PDF officiel), puis traite l'étude de texte et la production écrite. Attribue-toi les points à la fin en te comparant au corrigé officiel.",
+  consignes:"Examen régional unifié, 1ère année du baccalauréat, Académie Fès-Meknès (session ordinaire 2023). Durée : 2 h. Lis attentivement le texte, puis traite l'étude de texte et la production écrite. Attribue-toi les points à la fin en te comparant au corrigé officiel.",
   texte:{
-    titre:"Texte support — « Antigone », Jean Anouilh",
-    html:"<p><b>📖 Extrait à lire dans ton manuel ou le PDF officiel du sujet.</b></p><p>Il s'agit de la célèbre <b>tirade de Créon</b> : la scène débute par la didascalie « Créon, la secoue soudain, hors de lui ». Pour justifier à Antigone la dureté nécessaire du pouvoir, Créon compare le gouvernement de Thèbes à la conduite d'un <b>navire pris dans la tempête</b>, où le capitaine doit agir sans hésiter, sacrifier s'il le faut, pour sauver l'équipage et le bateau. Les questions et le corrigé ci-dessous portent sur ce passage.</p>",
-    note:"Extrait d'une œuvre protégée (Antigone, J. Anouilh) — non reproduit ici pour des raisons de droits d'auteur. Compose avec le passage sous les yeux (manuel ou PDF officiel).",
-    source:"Sujet officiel — Examen régional, Académie régionale Fès-Meknès, session ordinaire 2023."
+    titre:"Texte",
+    html:"<p><b>CRÉON</b>, <i>la secoue soudain, hors de lui</i> :</p>"
+      +"<p>Mais, bon Dieu ! Essaie de comprendre une minute, toi aussi, petite idiote ! J'ai bien essayé de te comprendre, moi. Il faut pourtant qu'il y en ait qui disent oui. Il faut pourtant qu'il y en ait qui mènent la barque. Cela prend de l'eau de toutes parts, c'est plein de crimes, de bêtise, de misère… et le gouvernail<sup>1</sup> est là qui ballotte<sup>2</sup>. L'équipage ne veut plus rien faire, il ne pense qu'à piller<sup>3</sup> la cale<sup>4</sup> et les officiers sont déjà en train de se construire un petit radeau<sup>5</sup> confortable, rien que pour eux, avec toute la provision d'eau douce pour tirer au moins leurs os de là. Et le mât<sup>6</sup> qui craque, et le vent siffle et les voiles vont se déchirer, et toutes ces brutes vont crever toutes ensemble, parce qu'elles ne pensent qu'à leur peau, à leur précieuse peau et à leurs petites affaires.</p>"
+      +"<p>Crois-tu, alors, qu'on a le temps de faire le raffiné<sup>7</sup>, de savoir s'il faut dire « oui » ou « non », de se demander s'il ne faudra pas payer trop cher un jour et si on pourra encore être un homme après ? On prend le bout de bois, on redresse devant la montagne d'eau, on gueule un ordre et on tire dans le tas, sur le premier qui s'avance. Dans le tas ! Cela n'a pas de nom. C'est comme la vague qui vient de s'abattre sur le pont devant vous ; le vent qui vous gifle, et la chose qui tombe dans le groupe n'a pas de nom. C'est peut-être celui qui t'avait donné du feu en souriant la veille. Il n'a pas de nom. Et toi non plus, tu n'as plus de nom, cramponné à la barre. Il n'y a plus que le bateau qui ait un nom et la tempête. Est-ce que tu le comprends, cela ?</p>"
+      +"<p class=\"fn\"><sup>1</sup> Appareil pour conduire un bateau. &nbsp; <sup>2</sup> Qui se balance dans tous les sens. &nbsp; <sup>3</sup> Détruire et voler. &nbsp; <sup>4</sup> Partie basse de l'intérieur d'un navire pour mettre les marchandises. &nbsp; <sup>5</sup> Assemblage de pièces de bois utilisé pour le sauvetage en cas de naufrage. &nbsp; <sup>6</sup> Pièce qui porte la voile. &nbsp; <sup>7</sup> S'intéresser trop aux détails.</p>",
+    source:"Jean Anouilh, « Antigone » — support de l'examen régional (Fès-Meknès, 2023)."
   },
   sections:[
     { titre:"I. Étude de texte", points:10, questions:[
@@ -73,7 +81,7 @@ window.PB_EXAMS.push({
       { q:"a) Choisis la bonne réponse (0,5). Dans ce texte, pour expliquer à Antigone la situation difficile dans laquelle il se trouve, Créon : (1) lui donne des informations sur un bateau se trouvant au port de Thèbes et menacé de naufrage ; (2) lui donne l'image d'un capitaine qui doit sauver son bateau menacé de naufrage ; (3) lui raconte comment l'équipage a réussi à sauver, sans son capitaine, le bateau menacé de naufrage.  b) Pour mieux expliquer son rôle, emploie-t-il : une comparaison, une métaphore ou une hyperbole ? (0,5)", points:1, lines:3,
         correction:"a) Bonne réponse : <b>(2)</b> — Créon lui donne l'image d'un capitaine qui doit sauver son bateau menacé de naufrage. b) Il emploie une <b>métaphore</b>." },
       { q:"a) Dans le premier paragraphe, Créon affirme qu'il doit protéger le royaume contre les comportements dangereux de certains citoyens de Thèbes ; cite deux exemples de ces comportements dangereux. (0,5×2)  b) Relève dans le même paragraphe un mot dévalorisant par lequel il désigne ces citoyens. (0,5)", points:1.5, lines:4,
-        correction:"a) Deux exemples au choix, tirés de la 1ʳᵉ partie de la tirade, par ex. « l'équipage ne veut plus rien faire » et « les officiers se construisent déjà un petit radeau confortable, rien que pour eux » (etc.) — (0,5×2). b) Le mot dévalorisant : « <b>brutes</b> » (0,5)." },
+        correction:"a) Deux exemples au choix, tirés de la 1ʳᵉ partie de la tirade : « l'équipage ne veut plus rien faire » ; « il ne pense qu'à piller la cale » ; « les officiers se construisent un petit radeau confortable, rien que pour eux » ; « ne pensent qu'à leur peau… et à leurs petites affaires ». (0,5×2). b) Le mot dévalorisant : « <b>brutes</b> » (0,5)." },
       { q:"« Crois-tu qu'on a le temps de faire le raffiné ? » demanda Créon à Antigone. Refais cette phrase au discours indirect en effectuant les transformations nécessaires.", points:1, lines:2,
         correction:"Créon demanda à Antigone <b>si</b> (0,25) <b>elle</b> (0,25) <b>croyait</b> (0,25) qu'on <b>avait</b> (0,25) le temps de faire le raffiné." },
       { q:"D'après sa tirade, Créon se présente-t-il comme un chef d'État : souple, flexible ou exigeant ?", points:0.5, lines:2,
@@ -85,7 +93,7 @@ window.PB_EXAMS.push({
     ]},
     { titre:"II. Production écrite", points:10, questions:[
       { q:"Sujet : « Dans La Boîte à merveilles, Ahmed Sefrioui évoque plusieurs métiers artisanaux (tisserand, babouchier, fabricant de charrue, …) ; aujourd'hui, d'autres métiers modernes ont vu le jour (médecin, informaticien, responsable de marketing, youtubeur, etc.). » Et toi, quel métier préférerais-tu exercer à l'avenir ? Rédige un texte dans lequel tu développes ton point de vue à l'aide d'arguments pertinents et d'exemples précis.", points:10, redaction:true, lines:18,
-        correction:"<b>Barème officiel de la production écrite (10 pts).</b><br>Respect de la consigne (se conformer à ce qui est demandé) : 1 pt · Structure du texte (introduction, développement, conclusion) : 1 pt · Cohérence et pertinence de l'argumentation : qualité des arguments (2 pts) + connecteurs logiques (1 pt) : 3 pts · Correction de la langue (grammaire, conjugaison, orthographe, lexique approprié, ponctuation…) : 5 pts.<br><br><b>Conseils.</b> Annonce clairement le métier choisi dès l'introduction. Donne 2 ou 3 raisons de ce choix, chacune avec un exemple concret (goûts, utilité sociale, débouchés…), reliées par des connecteurs. Termine par une conclusion. La moitié de la note porte sur la langue : relis-toi." }
+        correction:"<b>Barème officiel de la production écrite (10 pts).</b><br>Respect de la consigne : 1 pt · Structure du texte (introduction, développement, conclusion) : 1 pt · Cohérence et pertinence de l'argumentation : qualité des arguments (2 pts) + connecteurs logiques (1 pt) : 3 pts · Correction de la langue (grammaire, conjugaison, orthographe, lexique, ponctuation…) : 5 pts.<br><br><b>Conseils.</b> Annonce clairement le métier choisi dès l'introduction. Donne 2 ou 3 raisons de ce choix, chacune avec un exemple concret (goûts, utilité sociale, débouchés…), reliées par des connecteurs. Termine par une conclusion. La moitié de la note porte sur la langue : relis-toi." }
     ]}
   ]
 });
