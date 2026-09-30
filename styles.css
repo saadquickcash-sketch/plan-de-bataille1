@@ -919,3 +919,4 @@ body.noscroll{overflow:hidden}
 .exam-result{background:linear-gradient(135deg,var(--royal,#4A3EA0),#7a6fd0);color:#fff;border-radius:16px;padding:20px 22px;text-align:center;margin-bottom:22px}
 .exam-result .rn{font-family:Newsreader,serif;font-size:2.4rem;font-weight:600;line-height:1}
 .exam-result .rl{opacity:.9;font-size:.9rem;margin-top:6px}
+.exam-official{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.05em;padding:4px 9px;border-radius:20px;background:rgba(34,168,110,.14);color:#1a8f5c;margin:0 0 8px 6px;vertical-align:middle}
