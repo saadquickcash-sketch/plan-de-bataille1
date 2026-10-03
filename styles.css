@@ -974,3 +974,12 @@ body.noscroll{overflow:hidden}
 .schema .cold{stroke:var(--royal);fill:none}
 .schema .part{fill:var(--royal);stroke:none}
 .schema .grid{stroke:var(--border);stroke-width:1;fill:none}
+
+/* Liens bleus cliquables dans le chat du tuteur IA (clair + sombre) */
+.cb-a{color:#1565e6;text-decoration:underline;text-underline-offset:2px;font-weight:500;word-break:break-word}
+.cb-a:hover{opacity:.82}
+:root[data-theme="dark"] .cb-a,:root:not([data-theme="light"]) .cb-a{color:#7fb0ff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cb-a{color:#7fb0ff}}
+/* Schéma dessiné par le tuteur IA */
+.ai-schema{margin:14px 0}
+.ai-schema svg{width:min(460px,100%);height:auto;display:inline-block}
