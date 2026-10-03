@@ -960,3 +960,17 @@ body.noscroll{overflow:hidden}
 .schema .em{fill:var(--accent);font-weight:700}
 .schema .em-r{fill:var(--royal);font-weight:700}
 .schema .em-g{fill:var(--good);font-weight:700}
+/* schémas — éléments additionnels (vecteurs secondaires, barres d'énergie, boîtes, thermo) */
+.schema .vec2{stroke:var(--royal);stroke-width:2.6;fill:none;stroke-linecap:round}
+.schema .vhead2{fill:var(--royal);stroke:none}
+.schema .vecm{stroke:var(--muted);stroke-width:2;fill:none;stroke-linecap:round}
+.schema .vheadm{fill:var(--muted);stroke:none}
+.schema .barEc{fill:color-mix(in srgb,var(--accent) 70%,var(--surface));stroke:var(--accent);stroke-width:1.5}
+.schema .barEp{fill:color-mix(in srgb,var(--royal) 60%,var(--surface));stroke:var(--royal);stroke-width:1.5}
+.schema .box{fill:color-mix(in srgb,var(--royal) 7%,var(--surface));stroke:var(--border-strong);stroke-width:1.6}
+.schema .obj{fill:color-mix(in srgb,var(--accent) 22%,var(--surface));stroke:var(--accent);stroke-width:1.8}
+.schema .hot{stroke:var(--warn);fill:none}
+.schema .hotf{fill:var(--warn);stroke:none}
+.schema .cold{stroke:var(--royal);fill:none}
+.schema .part{fill:var(--royal);stroke:none}
+.schema .grid{stroke:var(--border);stroke-width:1;fill:none}
