@@ -922,3 +922,41 @@ body.noscroll{overflow:hidden}
 .exam-official{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.05em;padding:4px 9px;border-radius:20px;background:rgba(34,168,110,.14);color:#1a8f5c;margin:0 0 8px 6px;vertical-align:middle}
 .exam-texte .fn{font-size:.78rem;color:var(--muted,#888);border-top:1px dashed var(--border,#ddd);padding-top:8px;margin-top:10px;line-height:1.5}
 .exam-texte p{margin:0 0 10px}
+
+/* ===== Cours de physique : cartes-relations (formules KaTeX) + schémas SVG ===== */
+.fml{margin:18px 0;border:1px solid var(--border-strong);border-radius:14px;background:var(--surface);box-shadow:var(--shadow-sm);overflow:hidden}
+.fml-eq{padding:20px 18px;text-align:center;background:radial-gradient(130% 150% at 12% 0%,color-mix(in srgb,var(--accent) 9%,var(--surface-2)),var(--surface-2));border-bottom:1px solid var(--border)}
+.fml-eq .katex-display{margin:0;padding:0;background:none;border:0;box-shadow:none;overflow-x:auto;overflow-y:hidden}
+.fml-eq .katex{color:var(--accent)}
+.fml-cap{display:block;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;font-weight:800;color:var(--muted);margin-bottom:10px}
+.fml-units{padding:13px 16px 15px;font-size:.93rem;line-height:1.7}
+.fml-units>b{display:block;margin-bottom:7px;color:var(--text);font-size:.8rem;letter-spacing:.03em;text-transform:uppercase;font-weight:800}
+.fml-units ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.fml-units li{position:relative;padding-left:22px;color:var(--muted)}
+.fml-units li::before{content:"\203A";position:absolute;left:4px;top:-1px;color:var(--accent);font-weight:800;font-size:1.1rem;line-height:1.4}
+.fml-units li .katex{color:var(--text)}
+.fml-const{margin:0 16px 16px;padding:11px 14px;border-radius:10px;background:color-mix(in srgb,var(--accent-soft) 55%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 34%,transparent);text-align:center}
+.fml-const .katex-display{margin:0;padding:0;background:none;border:0;box-shadow:none}
+.fml-const .katex{color:var(--accent)}
+.lz-body.rtl .fml-units li{padding-left:0;padding-right:22px}
+.lz-body.rtl .fml-units li::before{left:auto;right:4px}
+
+.schema{margin:20px 0;text-align:center}
+.schema svg{width:min(480px,100%);height:auto;display:inline-block}
+.schema-cap{color:var(--muted);font-size:.85rem;font-style:italic;margin:9px auto 0;line-height:1.55;max-width:460px}
+.schema-cap b{color:var(--text);font-style:normal}
+.schema .sx{stroke:var(--border-strong);stroke-width:1.6;fill:none}
+.schema .dim{stroke:var(--muted);stroke-width:1;stroke-dasharray:5 4;fill:none}
+.schema .circ{fill:none;stroke:var(--border-strong);stroke-width:1.8}
+.schema .sol{fill:color-mix(in srgb,var(--royal) 15%,var(--surface));stroke:var(--royal);stroke-width:2}
+.schema .sol2{fill:none;stroke:var(--accent);stroke-width:2.4}
+.schema .vec{stroke:var(--accent);stroke-width:2.6;fill:none;stroke-linecap:round}
+.schema .vhead{fill:var(--accent);stroke:none}
+.schema .arc{stroke:var(--good);stroke-width:2.4;fill:none;stroke-linecap:round}
+.schema .vhead-g{fill:var(--good);stroke:none}
+.schema text{fill:var(--text);font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:14px}
+.schema .mut{fill:var(--muted);font-size:12px}
+.schema .pt{fill:var(--text);stroke:none}
+.schema .em{fill:var(--accent);font-weight:700}
+.schema .em-r{fill:var(--royal);font-weight:700}
+.schema .em-g{fill:var(--good);font-weight:700}

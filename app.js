@@ -87,7 +87,9 @@
     h.addEventListener('click',function(){
       var b=h.nextElementSibling, open=h.getAttribute('aria-expanded')==='true';
       h.setAttribute('aria-expanded', open?'false':'true');
-      if(b) b.classList.toggle('open', !open);
+      if(b){ b.classList.toggle('open', !open);
+        if(!open && !b.dataset.mathDone){ b.dataset.mathDone='1'; try{ renderMath(b); }catch(_){} }
+      }
     });
   });
   // subject tabs
