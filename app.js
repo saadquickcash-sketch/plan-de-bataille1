@@ -117,7 +117,7 @@
   if(!fab||!panel) return;
   var msgsEl=document.getElementById('chatMsgs'),input=document.getElementById('chatInput'),send=document.getElementById('chatSend');
   var full=document.getElementById('chatFull'),cfList=document.getElementById('cfList'),cfMsgs=document.getElementById('cfMsgs'),cfInput=document.getElementById('cfInput'),cfSend=document.getElementById('cfSend'),cfTitle=document.getElementById('cfTitle');
-  var selAsk=document.getElementById('selAsk'); var busy=false; var pendingForcePage=null; var pendingForceQuiz=false;
+  var selAsk=document.getElementById('selAsk'); var busy=false; var pendingForcePage=null; var pendingForceQuiz=false; var pendingForceMedia=null;
   function uid(){ return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
   var convos=[], curId=null;
   function byId(id){ for(var i=0;i<convos.length;i++) if(convos[i].id===id) return convos[i]; return null; }
@@ -294,7 +294,10 @@
       try{ if(window._pbTopChap&&window._pbTopChap.t){ agLogChapter(window._pbTopChap.t, window._pbTopChap.s); } }catch(_){}
       // Variété : jeton changeant pour éviter que les QCM/exercices/plannings se répètent
       try{ if(/qcm|quiz|test|planning|exercice|s[ée]rie|entra[iî]n|r[ée]vis/i.test(lastU)){ base.push({role:'system',content:'VARIÉTÉ (jeton '+Math.random().toString(36).slice(2,8)+') : propose des questions et exercices NOUVEAUX, différents des fois précédentes ; varie les énoncés, les nombres, l\'ordre et la difficulté. Ne répète jamais exactement le même contenu.'}); } }catch(_){}
-      try{ if(pendingForceQuiz){ base.push({role:'system',content:'QCM INTERACTIF (impératif) : l\'élève veut un QCM interactif dans le chat. Réponds UNIQUEMENT par un QCM au FORMAT TEXTE EXACT ci-dessous — SANS aucune balise, SANS JSON, SANS LaTeX ni antislash (écris les maths en clair avec des symboles : lim, x→0, x², √, ≤, ≥, ∞, π, sin(x)/x). Format pour CHAQUE question :\n1) énoncé de la question ?\nA) premier choix\nB) deuxième choix\nC) troisième choix\nD) quatrième choix\nRéponse : B\nExplication : courte explication de la bonne réponse\n\nEnchaîne ainsi 5 questions (2), 3) …), ou le nombre demandé par l\'élève. Chaque question a 4 choix (A à D), une ligne « Réponse : <lettre> » et une ligne « Explication : … ». N\'écris AUCUNE introduction ni conclusion, seulement les questions à ce format.'}); } }catch(_){}
+      try{ if(pendingForceMedia==='mindmap'){ base.push({role:'system',content:'CARTE MENTALE (impératif) : l\'élève veut une carte mentale (mind map). Tu DOIS déclencher l\'outil. Écris AU PLUS une courte phrase d\'introduction, puis termine ta réponse par EXACTEMENT une balise [[PB]]{"outil":"mindmap","args":{"titre":"…","centre":"le thème central (court)","branches":[{"t":"nom de branche","sous":["sous-idée courte","autre sous-idée"]}]}}[[/PB]] avec 4 à 6 branches et 2 à 4 sous-points brefs chacune. N\'écris PAS de longue leçon, n\'utilise JAMAIS de bloc ```svg, n\'invente pas d\'autre balise, n\'enveloppe pas la balise dans des $.'}); }
+      else if(pendingForceMedia==='mp3'){ base.push({role:'system',content:'AUDIO MP3 (impératif) : l\'élève veut un fichier audio à écouter. Tu DOIS déclencher l\'outil. Écris AU PLUS une courte phrase, puis termine EXACTEMENT par [[PB]]{"outil":"mp3","args":{"titre":"…","texte":"le texte EXACT à lire, clair, sans LaTeX ni symboles","lang":"fr"}}[[/PB]]. N\'écris JAMAIS de lien Markdown, ni « Télécharger », ni fausse URL ; n\'invente pas d\'autre balise ; n\'enveloppe pas la balise dans des $. Pour l\'arabe mets "lang":"ar".'}); }
+      else if(pendingForceMedia==='video'){ base.push({role:'system',content:'VIDÉO DE COURS (impératif) : l\'élève veut une vidéo. Tu DOIS déclencher l\'outil. Écris AU PLUS une courte phrase, puis termine EXACTEMENT par [[PB]]{"outil":"video","args":{"titre":"…","lang":"fr","slides":[{"t":"titre de la diapo","p":["point bref"],"say":"1 à 3 phrases de narration"}]}}[[/PB]] avec 3 à 5 diapositives. N\'invente pas d\'autre balise ; n\'enveloppe pas la balise dans des $.'}); }
+      if(pendingForceQuiz){ base.push({role:'system',content:'QCM INTERACTIF (impératif) : l\'élève veut un QCM interactif dans le chat. Réponds UNIQUEMENT par un QCM au FORMAT TEXTE EXACT ci-dessous — SANS aucune balise, SANS JSON, SANS LaTeX ni antislash (écris les maths en clair avec des symboles : lim, x→0, x², √, ≤, ≥, ∞, π, sin(x)/x). Format pour CHAQUE question :\n1) énoncé de la question ?\nA) premier choix\nB) deuxième choix\nC) troisième choix\nD) quatrième choix\nRéponse : B\nExplication : courte explication de la bonne réponse\n\nEnchaîne ainsi 5 questions (2), 3) …), ou le nombre demandé par l\'élève. Chaque question a 4 choix (A à D), une ligne « Réponse : <lettre> » et une ligne « Explication : … ». N\'écris AUCUNE introduction ni conclusion, seulement les questions à ce format.'}); } }catch(_){}
     }catch(e){}
     return base.concat(c.msgs.slice(-16)); }
   async function pbIdToken(){
@@ -425,7 +428,7 @@
   function rmTyping(nodes){ nodes.forEach(function(n){ if(n){ if(n._iv){ clearInterval(n._iv); n._iv=null; } if(n.parentNode) n.parentNode.removeChild(n); } }); }
   function activeInput(){ return (full&&!full.hidden)?cfInput:input; }
   async function ask(text, raw){ text=(text||'').trim(); var imgs=pendingImgs.slice(); var img=imgs[0]||null; if((!text&&!imgs.length)||busy) return;
-    pendingForceQuiz=false;
+    pendingForceQuiz=false; pendingForceMedia=null;
     if(!img && !raw){
       if(agWantsPlanning(text)){ startPlanningWizard(text); return; }
       var _gx=agWantsPlot(text); if(_gx){ if(input) input.value=''; if(cfInput){ cfInput.value=''; autoGrow(cfInput); } var _gc=cur(); _gc.msgs.push({role:'user',content:text}); if(!_gc.title||_gc.title==='Nouvelle conversation') _gc.title=text.slice(0,42); _gc.msgs.push({role:'assistant',content:'Voici la courbe 📈'}); _gc.t=Date.now(); save(); renderMsgs(); renderList(); setTimeout(function(){ try{ agPlotBubble(_gx,{}); }catch(e){} },80); return; }
@@ -439,6 +442,8 @@
       setTimeout(function(){ try{ if(qc.kind==='qcm') agQcm({matiere:qc.subj}); else agGo({page:qc.page?qc.page.replace('.html',''):'',matiere:qc.subj,lecon:qc.lesson}); }catch(e){} },320); return; }
       pendingForceQuiz=agWantsChatQuiz(text);
       pendingForcePage=agWantsPage(text);
+      pendingForceMedia=agWantsMedia(text);
+      if(pendingForceMedia){ pendingForceQuiz=false; pendingForcePage=null; }
     }
     if(window.PB_isPremium && !window.PB_isPremium() && window.PB_quota){
       var _q=window.PB_quota.check();
@@ -460,14 +465,27 @@
       if(pendingForceQuiz && !hasAct){ var _qz=agTextToQuiz(clean); if(_qz && _qz.questions.length>=2){
         c.msgs.push({role:'assistant',content:'Voici ton QCM interactif 👇'}); c.t=Date.now(); save(); renderMsgs(); renderList();
         var _bq=agActiveBox(); if(_bq){ _bq.appendChild(agQuizBuild(_bq, _qz.title||'QCM', _qz.questions)); _bq.scrollTop=_bq.scrollHeight; }
-        pendingForcePage=null; pendingForceQuiz=false; busy=false; var _aiq=activeInput(); if(_aiq) _aiq.focus(); return; } }
+        pendingForcePage=null; pendingForceQuiz=false; pendingForceMedia=null; busy=false; var _aiq=activeInput(); if(_aiq) _aiq.focus(); return; } }
+      /* Média forcé : l'élève veut un MP3 / une carte mentale, mais l'IA n'a pas émis la balise -> on le crée nous-mêmes. */
+      if(pendingForceMedia && !hasAct){
+        var _ar=/[؀-ۿ]/.test((clean||'')+' '+(text||'')), _built=false;
+        if(pendingForceMedia==='mp3'){
+          var _q=(text.match(/[«»"„“”]([\s\S]{3,}?)[«»"„“”]/)||[])[1]; var _say=(_q&&_q.trim())?_q.trim():clean;
+          var _ct=String(clean||'').replace(/\[?\s*🎤?\s*[Tt][éeè]l[éeè]charger[^\]\n]*\]?(\([^)]*\))?/g,'').replace(/^\s*voici[^\n:]*:?\s*$/gim,'').trim();
+          if(_ct){ c.msgs.push({role:'assistant',content:_ct}); c.t=Date.now(); save(); renderMsgs(); renderList(); }
+          _built=agMp3({titre:agGuessTitle(clean)||'Audio',texte:_say,lang:_ar?'ar':'fr'});
+        } else if(pendingForceMedia==='mindmap'){
+          var _mm=agTextToMindmap(clean); if(_mm){ _built=agMindmap({titre:agGuessTitle(clean)||'Carte mentale',centre:_mm.centre,branches:_mm.branches,lang:_ar?'ar':'fr'}); }
+        }
+        if(_built){ try{ agCaptureNote(clean,text); }catch(_){} try{ pbMaybeTitle(c,text); }catch(_){} pendingForcePage=null; pendingForceQuiz=false; pendingForceMedia=null; busy=false; var _aim=activeInput(); if(_aim) _aim.focus(); return; }
+      }
       /* Si l'IA a écrit un QCM/questionnaire en texte (sans balise), on le rend cliquable */
       var conv = (!hasAct && !pendingForcePage && !pendingForceQuiz) ? agTextToSurvey(clean) : null;
       if(conv && conv.questions.length){
         var intro=(conv.intro&&conv.intro.trim())?conv.intro.trim():'Voici ton questionnaire — coche tes réponses puis clique « Envoyer ».';
         c.msgs.push({role:'assistant',content:intro}); c.t=Date.now(); save(); renderMsgs(); renderList();
         var boxc=agActiveBox(); if(boxc){ boxc.appendChild(agSurveyBuild(boxc,conv.title||'Questionnaire',conv.questions)); boxc.scrollTop=boxc.scrollHeight; }
-        pendingForcePage=null; pendingForceQuiz=false; busy=false; var aic=activeInput(); if(aic) aic.focus(); return;
+        pendingForcePage=null; pendingForceQuiz=false; pendingForceMedia=null; busy=false; var aic=activeInput(); if(aic) aic.focus(); return;
       }
       if(clean && clean.trim()){ try{ await typeReveal(clean); }catch(_){} }
       c.msgs.push({role:'assistant',content:clean});
@@ -478,7 +496,7 @@
       if(hasAct){ pr.actions.forEach(function(a){ try{ if(agRun(a, clean)){ var tn=(a.outil||a.tool||'').toString().toLowerCase(); if(tn.indexOf('page')>=0||tn.indexOf('onglet')>=0) madePage=true; } }catch(_){} }); }
       if(pendingForcePage && !madePage){ try{ agCreatePage({titre:pendingForcePage}, clean); }catch(_){} }
       else if(!hasAct){ try{ agChips(); }catch(_){} }
-      pendingForcePage=null; pendingForceQuiz=false; busy=false; var ai1=activeInput(); if(ai1) ai1.focus(); return;
+      pendingForcePage=null; pendingForceQuiz=false; pendingForceMedia=null; busy=false; var ai1=activeInput(); if(ai1) ai1.focus(); return;
     }
     catch(e){ rmTyping(typ); c.msgs.push({role:'assistant',content: img ? 'Je n\'ai pas pu analyser l\'image (service occupé). Réessaie dans un instant, ou décris-moi l\'exercice en texte.' : 'Le service IA gratuit est momentanément indisponible. Réessaie dans un instant, ou reformule ta question.'}); }
     c.t=Date.now(); save(); renderMsgs(); renderList(); busy=false; var ai=activeInput(); if(ai) ai.focus();
@@ -1719,6 +1737,30 @@ function agWantsPage(t){ var s=(t||'').toLowerCase(); if(/\bplanning\b|emploi du
   if(/\b(html|css|javascript|js|python|code|coder|script|programme|programmation|web|site|bouton|fonction|classe|balise|composant|framework|react)\b/.test(s)) return null;
   var m=s.match(/(?:cr[ée]{1,2}e?r?|construi(?:s|re)?|fais|f[ai]s|g[ée]n[èe]re|ajoute|nouvel(?:le)?)\s+(?:moi\s+)?(?:un[e]?\s+)?(?:nouvel(?:le)?\s+)?(onglet|page)\b(?:\s+(?:sur|pour|de|d'|:|intitul[ée]e?)\s*(.+))?/);
   if(!m) return null; var subj=(m[2]||'').trim().replace(/[.?!]+$/,''); return subj?subj.slice(0,60):'Nouvelle page'; }
+
+/* Détecte l'intention « média » (carte mentale / vidéo / MP3) pour forcer l'outil correspondant. */
+function agWantsMedia(t){ var s=(t||'').toString().toLowerCase();
+  if(/carte\s+(mentale|heuristique|conceptuelle|des\s+id[ée]es)|mind[\s-]?map|sch[ée]ma\s+(mental|d['’]?id[ée]es|conceptuel)/.test(s)) return 'mindmap';
+  if(/\bvid[ée]os?\b|capsule\s+vid|en\s+vid[ée]o|mini[\s-]?cours\s+en\s+vid/.test(s)) return 'video';
+  if(/\bmp3\b|\bpodcast\b|fichier\s+audio|version\s+audio|en\s+audio|\b[àa]\s+voix\s+haute\b|lis[\s-]*(moi|le|la)[^.?!]{0,30}\b(audio|voix|haute)\b/.test(s)) return 'mp3';
+  return null; }
+
+/* Construit une carte mentale à partir d'une réponse en texte (titres en gras ou ##, puces) — repli si l'IA n'émet pas la balise. */
+function agTextToMindmap(clean){
+  var lines=String(clean||'').split('\n'), branches=[], cur=null;
+  function clr(x){ return String(x||'').replace(/[*_`#>•▸▪◦·–—]+/g,' ').replace(/^\s*[-]\s*/,'').replace(/\s+/g,' ').trim(); }
+  for(var i=0;i<lines.length;i++){ var t=(lines[i]||'').trim(); if(!t) continue;
+    var mh=t.match(/^#{1,4}\s+(.+)$/);
+    var mb=t.match(/^[-*]?\s*\*\*([^*]{2,60})\*\*\s*:?\s*(.*)$/);
+    var ms=t.match(/^[-*•▸▪◦]\s+(.+)$/);
+    if(mh){ var n1=clr(mh[1]).slice(0,48); if(n1){ cur={t:n1,sous:[]}; branches.push(cur); } continue; }
+    if(mb){ var n2=clr(mb[1]).slice(0,48); if(n2){ cur={t:n2,sous:[]}; branches.push(cur); var r=clr(mb[2]); if(r) cur.sous.push(r.slice(0,80)); } continue; }
+    if(ms && cur){ var sv=clr(ms[1]).slice(0,80); if(sv) cur.sous.push(sv); continue; }
+  }
+  branches=branches.filter(function(b){ return b.t; }).slice(0,6).map(function(b){ b.sous=(b.sous||[]).slice(0,4); return b; });
+  if(branches.length<2) return null;
+  var centre=agGuessTitle(clean)||'Carte mentale';
+  return {centre:centre.slice(0,60), branches:branches}; }
 
 /* -- Assistant planning : questionnaire natif -> crée l'onglet, sans dépendre de l'IA -- */
 var PLANNING_QS=[
