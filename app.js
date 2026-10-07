@@ -98,21 +98,17 @@
     stabs.forEach(function(x){x.setAttribute('aria-selected','false')}); t.setAttribute('aria-selected','true');
     document.querySelectorAll('.subject-panel').forEach(function(p){p.classList.toggle('on', p.dataset.panel===t.dataset.subj)});
   });});
-  // TTS
-  var synth=window.speechSynthesis;
+  // TTS — lecture des leçons via le moteur vocal Brio (MP3 serveur + repli, FR/AR)
   document.querySelectorAll('.tts-btn').forEach(function(btn){
     btn.addEventListener('click',function(e){
       e.stopPropagation();
-      if(!synth){ toast('Lecture vocale non disponible sur ce navigateur.'); return; }
-      if(synth.speaking){ synth.cancel(); btn.textContent=btn.getAttribute('data-label'); return; }
       var el=document.getElementById(btn.getAttribute('data-target')); if(!el) return;
       var lang=btn.getAttribute('data-lang')||'fr-FR';
-      var clone=el.cloneNode(true); var a=clone.querySelector('.lz-actions'); if(a)a.remove();
-      var u=new SpeechSynthesisUtterance(clone.innerText); u.lang=lang; u.rate=.96;
-      try{var vs=synth.getVoices();var v=vs.filter(function(x){return x.lang&&x.lang.slice(0,2)===lang.slice(0,2)})[0];if(v)u.voice=v;}catch(_){}
-      u.onend=function(){btn.textContent=btn.getAttribute('data-label')};
-      synth.cancel(); synth.speak(u); btn.textContent='⏸ Arrêter la lecture';
-      toast('Lecture en cours — voix de ton appareil.');
+      var clone=el.cloneNode(true);
+      var a=clone.querySelector('.lz-actions'); if(a)a.remove();
+      var fs=clone.querySelector('.fiche-src'); if(fs)fs.remove();
+      clone.querySelectorAll('details').forEach(function(d){ d.remove(); }); // ne lit pas les corrigés repliés
+      brioRead(clone.textContent||'', lang, btn);
     });
   });
   // ===== Tuteur IA — chat intégré (compact + plein écran, multi-conversations) =====
@@ -157,14 +153,10 @@
     if(role==='ai'){ try{ agEnhanceCode(d); }catch(_){} }
     if(role==='ai'){ var spoken=text; var bar=document.createElement('div'); bar.className='msg-bar';
       var sp=document.createElement('button'); sp.className='msg-ic'; sp.title='Écouter'; sp.innerHTML='&#128266;';
-      sp.addEventListener('click',function(e){ e.stopPropagation(); try{ var syn=window.speechSynthesis;
+      sp.addEventListener('click',function(e){ e.stopPropagation();
         var isAr=/[\u0600-\u06FF]/.test(spoken);
-        // Arabe -> voix en ligne (le navigateur n'a souvent pas de voix arabe)
-        if(isAr){ try{ if(syn) syn.cancel(); }catch(_){} if(_ttsAudio && !_ttsAudio.paused){ try{ _ttsAudio.pause(); }catch(_){} _ttsAudio=null; return; } pbCloudTTS(voiceCleanTTS(spoken),'ar',null,function(){ try{ var u=new SpeechSynthesisUtterance(spoken); u.lang='ar-SA'; u.rate=.98; var v=voicePick('ar-SA'); if(v){u.voice=v;} syn&&syn.speak(u); }catch(_){} }); return; }
-        if(!syn)return; if(syn.speaking){ syn.cancel(); return; }
-        var doSpeak=function(){ try{ var u=new SpeechSynthesisUtterance(spoken); u.lang='fr-FR'; u.rate=.98; try{ var v=voicePick('fr-FR'); if(v){ u.voice=v; u.lang=v.lang; } }catch(_){} syn.cancel(); syn.speak(u); }catch(_){} };
-        if((syn.getVoices()||[]).length) doSpeak(); else { try{ syn.onvoiceschanged=doSpeak; }catch(_){} setTimeout(doSpeak,350); }
-      }catch(_){} });
+        brioRead(spoken, isAr?'ar':'fr', sp);
+      });
       bar.appendChild(sp);
       var dl=document.createElement('button'); dl.className='msg-ic'; dl.title='Télécharger (.md)'; dl.innerHTML='&#8681;';
       dl.addEventListener('click',function(e){ e.stopPropagation(); try{ var blob=new Blob([spoken],{type:'text/markdown;charset=utf-8'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='tuteur-ia.md'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1200); }catch(_){} });
@@ -685,11 +677,103 @@
   function setVoiceLang(l){ try{ localStorage.setItem('pb_voice_lang',l); }catch(e){} }
   function voiceLangName(){ var c=getVoiceLang(); for(var i=0;i<VLANGS.length;i++){ if(VLANGS[i].c===c) return VLANGS[i].n; } return 'FR'; }
   function cycleVoiceLang(){ var c=getVoiceLang(), i=0; for(var k=0;k<VLANGS.length;k++){ if(VLANGS[k].c===c){ i=k; break; } } var nx=VLANGS[(i+1)%VLANGS.length]; setVoiceLang(nx.c); return nx; }
+  /* ================= MOTEUR VOCAL BRIO (voix MP3 serveur + repli, FR/AR) =================
+     Lit un texte en le nettoyant, le découpant en phrases et en jouant chaque morceau en
+     MP3 depuis /api/tts via UNE SEULE balise Audio (déverrouillée au 1er clic) -> fiable
+     sur iPhone / Android / PC. Repli automatique sur la voix du navigateur si le serveur
+     est injoignable. Barre lecteur élégante : légende de la phrase lue, pause/reprise, stop. */
   function voiceCleanTTS(t){ t=String(t||'');
-    t=t.replace(/```[\s\S]*?```/g,' . ');
-    t=t.replace(/\$\$([\s\S]*?)\$\$/g,' . ').replace(/\$[^$\n]*\$/g,' ');
-    t=t.replace(/\\[a-zA-Z]+/g,' ').replace(/[{}\\^_~#>*`|]/g,' ');
-    t=t.replace(/\s+/g,' ').trim(); return t.slice(0,700); }
+    t=t.replace(/```[\s\S]*?```/g,'. ');
+    t=t.replace(/\$\$[\s\S]*?\$\$/g,'. ').replace(/\$[^$\n]*\$/g,' ');
+    t=t.replace(/<br\s*\/?>/gi,'\n').replace(/<\/(p|div|li|h[1-6]|tr|details)>/gi,'\n').replace(/<[^>]+>/g,' ');
+    t=t.replace(/\[([^\]]+)\]\((?:https?:)?\/\/[^)]+\)/g,'$1').replace(/https?:\/\/\S+/g,' ');
+    t=t.replace(/&nbsp;/g,' ').replace(/&amp;/g,' et ').replace(/&#x27;|&#39;|&rsquo;|&lsquo;/g,'’')
+       .replace(/&quot;|&laquo;|&raquo;/g,' ').replace(/&hellip;/g,'…').replace(/&lt;/g,' ').replace(/&gt;/g,' ')
+       .replace(/&[a-z]+;/gi,' ').replace(/&#\d+;/g,' ');
+    t=t.replace(/\\[a-zA-Z]+/g,' ').replace(/[{}\\^_~#>*`|•▸▾▶■◀⏸🔊👆🤖✓✔✅➜→←↦©]/g,' ');
+    t=t.replace(/\bp\.\s*ex\.?/gi,'par exemple').replace(/\bex\s*\.\s*:/gi,'exemple :')
+       .replace(/\betc\./gi,'et cetera').replace(/\bcf\.?/gi,'voir').replace(/\bn°\s*/g,'numéro ')
+       .replace(/\b1ʳᵉ\b|\b1ère\b|\b1re\b/g,'première').replace(/\b1er\b/g,'premier')
+       .replace(/\b2ᵉ\b|\b2e\b|\b2ème\b/g,'deuxième').replace(/\b3ᵉ\b|\b3e\b|\b3ème\b/g,'troisième');
+    t=t.replace(/[ \t ]+/g,' ').replace(/ *\n+ */g,'\n').replace(/\n{2,}/g,'\n').trim();
+    return t; }
+  function brioSplit(t,max){ max=max||280; t=String(t||'');
+    t=t.replace(/([\.\!\?…؟])(\s)/g,'$1\u0001$2').replace(/([،؛;:])(\s)/g,'$1\u0001$2');
+    var raw=t.split(/[\u0001\n]+/), out=[], cur='';
+    for(var k=0;k<raw.length;k++){ var s=(raw[k]||'').trim(); if(!s) continue;
+      while(s.length>max){ var cut=s.lastIndexOf(' ',max); if(cut<=0)cut=max; var pc=s.slice(0,cut).trim(); if(pc)out.push(pc); s=s.slice(cut).trim(); }
+      if(!s) continue;
+      if((cur?cur.length+1+s.length:s.length)<=max){ cur=(cur?cur+' ':'')+s; }
+      else { if(cur)out.push(cur); cur=s; } }
+    if(cur)out.push(cur); return out; }
+  // UNE seule balise Audio persistante (déverrouillée au 1er geste) => lecture séquentielle fiable sur mobile
+  var _brioEl=null; function brioAudio(){ if(!_brioEl){ try{ _brioEl=new Audio(); _brioEl.preload='auto'; }catch(_){ _brioEl=null; } } return _brioEl; }
+  var _seq={chunks:[],i:0,on:false,paused:false,lang:'fr',gen:0,onChunk:null,onDone:null};
+  function brioSeqStop(){ _seq.on=false; _seq.paused=false; _seq.gen++; try{ var a=brioAudio(); if(a){ a.pause(); } }catch(_){} try{ window.speechSynthesis && window.speechSynthesis.cancel(); }catch(_){} }
+  function brioSeqStart(text,lang,onChunk,onDone){ brioSeqStop();
+    _seq.chunks=brioSplit(voiceCleanTTS(text),200); _seq.i=0; _seq.on=true; _seq.paused=false;
+    _seq.lang=(lang&&/^ar/i.test(lang))?'ar':'fr'; _seq.onChunk=onChunk||null; _seq.onDone=onDone||null; _seq.gen++;
+    if(!_seq.chunks.length){ _seq.on=false; if(onDone)try{onDone();}catch(_){} return false; }
+    brioSeqNext(); return true; }
+  function brioSeqNext(){ if(!_seq.on) return;
+    if(_seq.i>=_seq.chunks.length){ _seq.on=false; if(_seq.onChunk)try{_seq.onChunk(null,-1);}catch(_){} if(_seq.onDone)try{_seq.onDone();}catch(_){} return; }
+    var myGen=_seq.gen, text=_seq.chunks[_seq.i];
+    if(_seq.onChunk)try{_seq.onChunk(text,_seq.i);}catch(_){}
+    var adv=false;
+    function go(){ if(adv||myGen!==_seq.gen)return; adv=true; _seq.i++; brioSeqNext(); }
+    function fb(){ if(adv||myGen!==_seq.gen)return; adv=true; brioSeqBrowser(text,function(){ if(myGen!==_seq.gen)return; _seq.i++; brioSeqNext(); }); }
+    var a=brioAudio(); if(!a){ fb(); return; }
+    try{ a.onended=go; a.onerror=fb;
+      a.src='/api/tts?lang='+encodeURIComponent(_seq.lang)+'&text='+encodeURIComponent(text);
+      var p=a.play(); if(p&&p.catch)p.catch(fb);
+      // préchargement du morceau suivant (réchauffe le cache -> lecture quasi sans coupure)
+      try{ if(_seq.i+1<_seq.chunks.length){ var nx=_seq.chunks[_seq.i+1]; fetch('/api/tts?lang='+encodeURIComponent(_seq.lang)+'&text='+encodeURIComponent(nx)).catch(function(){}); } }catch(_){}
+    }catch(e){ fb(); } }
+  function brioSeqBrowser(text,done){ var fin=false; function f(){ if(fin)return; fin=true; try{done();}catch(_){} }
+    try{ var syn=window.speechSynthesis; if(!syn){ f(); return; }
+      var u=new SpeechSynthesisUtterance(text); u.lang=(_seq.lang==='ar'?'ar-SA':'fr-FR'); u.rate=.98; u.pitch=1;
+      try{ var v=voicePick(u.lang); if(v){ u.voice=v; u.lang=v.lang; } }catch(_){}
+      u.onend=f; u.onerror=f; try{syn.cancel();}catch(_){} syn.speak(u);
+      setTimeout(function(){ if(!fin && !syn.speaking && !syn.pending) f(); },1600);
+    }catch(e){ f(); } }
+  function brioSeqToggle(){ if(!_seq.on)return false; var a=brioAudio();
+    if(_seq.paused){ _seq.paused=false; try{a&&a.play();}catch(_){} try{window.speechSynthesis.resume();}catch(_){} }
+    else { _seq.paused=true; try{a&&a.pause();}catch(_){} try{window.speechSynthesis.pause();}catch(_){} }
+    return _seq.paused; }
+  var _brBtn=null;
+  function brioSetBtn(btn,reading){ if(!btn||!btn.getAttribute)return; var lbl=btn.getAttribute('data-label'); if(lbl==null)return; try{ btn.textContent=reading?'⏸ Arrêter la lecture':lbl; }catch(_){} }
+  function brioReadCss(){ if(document.getElementById('brioReadCss'))return; var s=document.createElement('style'); s.id='brioReadCss';
+    s.textContent='#brioRead{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:100003;display:none;align-items:center;gap:11px;width:min(94vw,620px);box-sizing:border-box;background:linear-gradient(135deg,#4b3fa7,#7c5cff);color:#fff;padding:11px 15px;border-radius:18px;box-shadow:0 14px 44px rgba(60,50,150,.45);font:600 14px system-ui,-apple-system,sans-serif}'
+     +'#brioRead .br-eq{display:flex;align-items:flex-end;gap:2px;height:18px;flex:0 0 auto}'
+     +'#brioRead .br-eq i{width:3px;height:6px;background:#ffe08a;border-radius:2px;animation:brEq .9s infinite ease-in-out}'
+     +'#brioRead .br-eq i:nth-child(2){animation-delay:.15s}#brioRead .br-eq i:nth-child(3){animation-delay:.3s}#brioRead .br-eq i:nth-child(4){animation-delay:.45s}'
+     +'@keyframes brEq{0%,100%{height:5px;opacity:.6}50%{height:17px;opacity:1}}'
+     +'#brioRead.paused .br-eq i{animation-play-state:paused;height:6px}'
+     +'#brioRead .br-cap{flex:1 1 auto;min-width:0;max-height:3.1em;overflow:hidden;font-weight:500;line-height:1.3;opacity:.96;word-break:break-word}'
+     +'#brioRead button{flex:0 0 auto;border:0;background:rgba(255,255,255,.2);color:#fff;border-radius:11px;padding:7px 11px;cursor:pointer;font-weight:700;font-size:14px;line-height:1}'
+     +'#brioRead button:hover{background:rgba(255,255,255,.34)}';
+    document.head.appendChild(s); }
+  function brioReadBar(){ brioReadCss(); var el=document.getElementById('brioRead');
+    if(!el){ el=document.createElement('div'); el.id='brioRead';
+      el.innerHTML='<span class="br-eq"><i></i><i></i><i></i><i></i></span><span class="br-cap"></span><button class="br-pp" type="button" title="Pause / Reprendre">⏸</button><button class="br-x" type="button" title="Arrêter la lecture">■</button>';
+      el.querySelector('.br-pp').addEventListener('click',function(){ var pz=brioSeqToggle(); this.textContent=pz?'▶':'⏸'; el.classList.toggle('paused',!!pz); });
+      el.querySelector('.br-x').addEventListener('click',brioReadEnd);
+      document.body.appendChild(el); }
+    return el; }
+  function brioReadEnd(){ brioSeqStop(); var el=document.getElementById('brioRead'); if(el){ el.style.display='none'; el.classList.remove('paused'); var pp=el.querySelector('.br-pp'); if(pp)pp.textContent='⏸'; }
+    brioSetBtn(_brBtn,false); _brBtn=null; }
+  function brioRead(text,lang,btn){
+    if(_seq.on && _brBtn===btn){ brioReadEnd(); return; }   // reclic sur le même bouton -> stop
+    if(_seq.on){ brioReadEnd(); }
+    var c=voiceCleanTTS(text); if(!c){ try{toast("Rien à lire ici.");}catch(_){} return; }
+    var el=brioReadBar(); el.style.display='flex'; el.classList.remove('paused');
+    var pp=el.querySelector('.br-pp'); if(pp)pp.textContent='⏸';
+    var cap=el.querySelector('.br-cap'); var ar=(lang&&/^ar/i.test(lang));
+    if(cap){ cap.dir=ar?'rtl':'ltr'; cap.textContent=ar?'…جارٍ التحضير':'…préparation'; }
+    _brBtn=btn||null; brioSetBtn(_brBtn,true);
+    brioSeqStart(c,lang,function(chunk){ if(chunk===null)return; if(cap){ cap.textContent=chunk; cap.dir=(_seq.lang==='ar')?'rtl':'ltr'; } }, function(){ brioReadEnd(); });
+  }
+  try{ window.brioRead=brioRead; }catch(_){}
   function voiceCss(){ if(document.getElementById('pbVoiceCss')) return; var s=document.createElement('style'); s.id='pbVoiceCss';
     s.textContent='#pbVoiceBar{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);z-index:100001;display:none;align-items:center;gap:12px;background:linear-gradient(135deg,#7c5cff,#4b3fa7);color:#fff;padding:12px 18px;border-radius:30px;box-shadow:0 12px 40px rgba(80,60,180,.45);font:600 14px system-ui,-apple-system,sans-serif}'
       +'#pbVoiceBar .pbv-dot{width:12px;height:12px;border-radius:50%;background:#fff;animation:pbvP 1s infinite}'
@@ -733,12 +817,10 @@
     }catch(e){ if(fallback){ fallback(); } else fin(); }
   }
   function voiceSpeak(text,cb){
-    var syn=window.speechSynthesis;
     var c=voiceCleanTTS(text); if(!c){ cb&&cb(); return; }
-    var lang=(/[؀-ۿ]/.test(c)?'ar-SA':'fr-FR');
-    // Arabe : on n'a pas de voix locale fiable -> voix en ligne /api/tts (repli sur navigateur si échec)
-    if(lang==='ar-SA'){ pbCloudTTS(c,'ar',cb,function(){ voiceSpeakBrowser(c,lang,cb); }); return; }
-    voiceSpeakBrowser(c,lang,cb);
+    var lang=(/[؀-ۿ]/.test(c)?'ar':'fr');
+    // Même moteur que la lecture des leçons : MP3 serveur (voix neurale) + repli navigateur.
+    brioSeqStart(c, lang, null, function(){ cb&&cb(); });
   }
   function voiceSpeakBrowser(c,lang,cb){
     var syn=window.speechSynthesis; if(!syn){ cb&&cb(); return; }
@@ -775,7 +857,7 @@
     voiceState('speak');
     voiceSpeak(reply||"Je n'ai pas pu répondre, réessaie.", function(){ if(VOICE_ON) voiceListen(); }); }
   function voiceStart(){ if(!SR){ try{ toast('Le mode vocal fonctionne sur Chrome (ordi ou Android).'); }catch(_){} return; } if(VOICE_ON){ voiceStop(); return; } VOICE_ON=true; try{ openPanel(); }catch(_){} document.querySelectorAll('.voice-mode-btn').forEach(function(b){ b.classList.add('on'); }); voiceListen(); }
-  function voiceStop(){ VOICE_ON=false; try{ if(vrec) vrec.stop(); }catch(_){} vrec=null; try{ window.speechSynthesis.cancel(); }catch(_){} try{ if(_ttsAudio){ _ttsAudio.pause(); _ttsAudio=null; } }catch(_){} var el=document.getElementById('pbVoiceBar'); if(el) el.style.display='none'; document.querySelectorAll('.voice-mode-btn').forEach(function(b){ b.classList.remove('on'); }); }
+  function voiceStop(){ VOICE_ON=false; try{ if(vrec) vrec.stop(); }catch(_){} vrec=null; try{ window.speechSynthesis.cancel(); }catch(_){} try{ brioSeqStop(); }catch(_){} try{ if(_ttsAudio){ _ttsAudio.pause(); _ttsAudio=null; } }catch(_){} var el=document.getElementById('pbVoiceBar'); if(el) el.style.display='none'; document.querySelectorAll('.voice-mode-btn').forEach(function(b){ b.classList.remove('on'); }); }
   if(SR){ document.querySelectorAll('.mic-btn').forEach(function(mic){ if(!mic.parentNode || mic.parentNode.querySelector('.voice-mode-btn')) return; var vb=document.createElement('button'); vb.type='button'; vb.className='io-btn voice-mode-btn'; vb.title='Mode vocal — parle avec l\'IA (mains-libres)'; vb.innerHTML='🎧'; vb.addEventListener('click',voiceStart); mic.parentNode.insertBefore(vb, mic.nextSibling); }); }
   document.querySelectorAll('.gen-btn').forEach(function(b){ b.addEventListener('click',function(){ var ti=activeInput(); var v=(ti&&ti.value.trim())||''; if(!v){ openPanel(); var t2=activeInput(); if(t2){ t2.placeholder='Décris l\'image à créer, puis reclique 🎨'; t2.focus(); } return; } genImage(v); }); });
   var cfMenu=document.getElementById('cfMenu'); if(cfMenu&&full) cfMenu.addEventListener('click',function(e){ e.stopPropagation(); full.classList.toggle('side-open'); });
