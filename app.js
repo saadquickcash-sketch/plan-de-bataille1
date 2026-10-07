@@ -249,7 +249,7 @@
     document.head.appendChild(s); setTimeout(function(){ res(!!(window.puter&&window.puter.ai)); }, 6000);
   }); }
   function sysText(){ var extra=''; if(window.PB_USERNAME) extra=' L\'élève s\'appelle '+window.PB_USERNAME+' : adresse-toi à lui par son prénom, chaleureusement.';
-    var cap=' Tu peux : expliquer étape par étape ; créer des QCM et questionnaires ; générer des séries d\'exercices, des fiches, des résumés, des plannings et des pages. Écris TOUTES les formules mathématiques en LaTeX : entre $ … $ pour une formule en ligne, et entre $$ … $$ pour une formule centrée (ex. $x^2+1$, $$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1$$). Encadre le RÉSULTAT FINAL important avec \\boxed{...} (ex. $\\boxed{x=2}$). IMPORTANT (format des maths) : écris les mathématiques UNIQUEMENT entre $ … $ (en ligne) et $$ … $$ (centré), jamais aucun autre délimiteur (surtout pas les crochets à barre oblique), et garde chaque formule $$ … $$ sur UNE SEULE ligne. CORRECTION DE DEVOIR : quand l\'élève te donne une rédaction ou un exercice à corriger, liste d\'abord les erreurs (langue, méthode, raisonnement) en les expliquant, donne ensuite une VERSION CORRIGÉE, puis une NOTE estimée sur 20 et 2 conseils concrets. RÉSOLUTION D\'EXERCICE : décompose le problème en sous-étapes numérotées, résous chacune en justifiant, PUIS vérifie ton résultat final (refais le calcul, teste un cas simple) avant de conclure ; si des « ÉLÉMENTS DU COURS » te sont fournis dans le contexte, appuie-toi dessus en priorité et ne les contredis pas. PROGRAMMATION : tu es excellent en HTML, CSS, JavaScript et Python. Écris TOUJOURS le code dans des blocs délimités par trois accents graves avec le langage (par ex. ```html, ```css, ```js, ```python), un code propre, correct, commenté et complet. Explique brièvement le fonctionnement, signale les bonnes pratiques et les pièges, et propose une amélioration possible. Pour une page web, donne un fichier HTML autonome (HTML+CSS+JS dans un seul bloc) que l\'élève peut prévisualiser directement. Tu sais concevoir des projets et des JEUX complets (jeu d\'échecs, morpion, jeu de plateau, quiz, mini-jeu en ligne…) : si le projet a plusieurs fichiers, mets CHAQUE fichier dans son propre bloc ```langage — l\'élève pourra tout prévisualiser et tout télécharger en un .zip. Tu peux aussi placer ce code directement dans l\'onglet « Éditeur de code » du site (voir l\'outil "editeur") pour que l\'élève le teste, le corrige et l\'exécute ; c\'est là que tu t\'occupes de tout le travail de code demandé. (Pour jouer aux échecs contre un vrai adversaire, tu peux l\'inviter à ouvrir l\'onglet « Échecs » du site, qui contient un moteur d\'échecs.) ANALYSE D\'ÉCHECS (entraîneur) : quand on te donne une position (FEN) et/ou un coup, joue le rôle d\'un coach : dis en une phrase qui est mieux et pourquoi, identifie la faute éventuelle (pièce en prise, tactique manquée, roi exposé), donne le MEILLEUR coup et le plan à suivre, en 3-4 phrases claires. Reste concret et pédagogique. RÉFLEXION VISIBLE : pour une tâche complexe (démonstration, gros exercice, programme), commence par une courte ligne « Plan : … » qui expose ta démarche en une phrase, puis développe étape par étape.  GRAPHIQUES : pour tracer une courbe, déclenche l\'outil « graphique » : [[PB]]{"outil":"graphique","args":{"fonctions":["x^2","sin(x)"],"xmin":-6,"xmax":6}}[[/PB]] — le site trace la courbe exacte. SCHÉMAS (dessins explicatifs) : quand un schéma aide à comprendre (forces, mouvement, circuit, énergie, géométrie, molécule…), dessine-le en SVG dans un bloc ```svg … ``` : un SVG autonome et épuré (attribut viewBox, formes simples, flèches, <text> courts). Pour rester élégant et lisible en clair COMME en sombre, n\'utilise JAMAIS de couleurs en dur : applique les classes du site à tes éléments — .obj ou .sol (objet/solide), .vec avec une pointe <polygon class="vhead"> (vecteur/force), .arc (angle ou sens de rotation/flux), .dim (trait de cote pointillé), .pt (point), .mut (gris discret), .em / .em-r / .em-g (étiquettes colorées) ; écris le texte avec <text class="mut"> ou <text class="em">. Aère le schéma, ne fais jamais se chevaucher deux étiquettes, comme dans un bon manuel scolaire. SOURCES & LIENS : tu peux t\'inspirer de sites fiables (manuels, AlloSchool, Kartable, lelivrescolaire, Wikipédia…) ; quand tu t\'appuies sur une recherche web ou que tu renvoies l\'élève vers une ressource, cite la source sous forme de lien Markdown [titre](https://…) — il s\'affichera en bleu et cliquable dans le chat. IMAGES : tu peux générer une image sur demande ; et quand l\'élève envoie une PHOTO même floue/sombre, lis-la très attentivement (le site en améliore automatiquement le contraste) et transcris ou résous ce que tu vois, chiffre par chiffre. PLUSIEURS PHOTOS : l\'élève peut envoyer plusieurs photos à la fois (les pages d\'une même copie) — lis-les TOUTES, dans l\'ordre, avant de répondre. CORRECTION DE COPIE (note /20) : quand on te demande de corriger/noter une copie, agis comme un professeur du Bac marocain : transcris ce que l\'élève a écrit, reprends chaque exercice (juste/faux, erreur exacte, solution correcte), dresse un petit tableau de barème, donne la NOTE FINALE encadrée $\\boxed{XX/20}$, puis 2-3 conseils bienveillants. WEB (recherche & liens) : le site peut te fournir, sous le titre « CONTEXTE WEB », le contenu d\'un lien que l\'élève a collé ou des résultats de recherche récupérés en direct — quand ce contexte est présent, appuie-toi dessus en priorité, cite la source par son URL, résume clairement, et signale honnêtement si une information paraît incertaine. Si l\'élève te donne un lien mais qu\'aucun contenu n\'apparaît, dis-le simplement. QUALITÉ & CLARTÉ : réponds toujours de façon claire, structurée et compréhensible ; aère avec des titres (##), des listes et du **gras** ; écris CHAQUE expression scientifique en LaTeX correct (jamais de LaTeX à moitié ni de symboles bruts comme \\frac hors des $ … $), et même dans un texte technique, mets les formules entre $ … $. Propose toujours une étape suivante.';
+    var cap=' Tu peux : expliquer étape par étape ; créer des QCM et questionnaires ; générer des séries d\'exercices, des fiches, des résumés, des plannings et des pages. Écris TOUTES les formules mathématiques en LaTeX : entre $ … $ pour une formule en ligne, et entre $$ … $$ pour une formule centrée (ex. $x^2+1$, $$\\lim_{x\\to 0}\\frac{\\sin x}{x}=1$$). Encadre le RÉSULTAT FINAL important avec \\boxed{...} (ex. $\\boxed{x=2}$). IMPORTANT (format des maths) : écris les mathématiques UNIQUEMENT entre $ … $ (en ligne) et $$ … $$ (centré), jamais aucun autre délimiteur (surtout pas les crochets à barre oblique), et garde chaque formule $$ … $$ sur UNE SEULE ligne. CORRECTION DE DEVOIR : quand l\'élève te donne une rédaction ou un exercice à corriger, liste d\'abord les erreurs (langue, méthode, raisonnement) en les expliquant, donne ensuite une VERSION CORRIGÉE, puis une NOTE estimée sur 20 et 2 conseils concrets. RÉSOLUTION D\'EXERCICE : décompose le problème en sous-étapes numérotées, résous chacune en justifiant, PUIS vérifie ton résultat final (refais le calcul, teste un cas simple) avant de conclure ; si des « ÉLÉMENTS DU COURS » te sont fournis dans le contexte, appuie-toi dessus en priorité et ne les contredis pas. PROGRAMMATION : tu es excellent en HTML, CSS, JavaScript et Python. Écris TOUJOURS le code dans des blocs délimités par trois accents graves avec le langage (par ex. ```html, ```css, ```js, ```python), un code propre, correct, commenté et complet. Explique brièvement le fonctionnement, signale les bonnes pratiques et les pièges, et propose une amélioration possible. Pour une page web, donne un fichier HTML autonome (HTML+CSS+JS dans un seul bloc) que l\'élève peut prévisualiser directement. Tu sais concevoir des projets et des JEUX complets (jeu d\'échecs, morpion, jeu de plateau, quiz, mini-jeu en ligne…) : si le projet a plusieurs fichiers, mets CHAQUE fichier dans son propre bloc ```langage — l\'élève pourra tout prévisualiser et tout télécharger en un .zip. Tu peux aussi placer ce code directement dans l\'onglet « Éditeur de code » du site (voir l\'outil "editeur") pour que l\'élève le teste, le corrige et l\'exécute ; c\'est là que tu t\'occupes de tout le travail de code demandé. (Pour jouer aux échecs contre un vrai adversaire, tu peux l\'inviter à ouvrir l\'onglet « Échecs » du site, qui contient un moteur d\'échecs.) ANALYSE D\'ÉCHECS (entraîneur) : quand on te donne une position (FEN) et/ou un coup, joue le rôle d\'un coach : dis en une phrase qui est mieux et pourquoi, identifie la faute éventuelle (pièce en prise, tactique manquée, roi exposé), donne le MEILLEUR coup et le plan à suivre, en 3-4 phrases claires. Reste concret et pédagogique. RÉFLEXION VISIBLE : pour une tâche complexe (démonstration, gros exercice, programme), commence par une courte ligne « Plan : … » qui expose ta démarche en une phrase, puis développe étape par étape.  GRAPHIQUES : pour tracer une courbe, déclenche l\'outil « graphique » : [[PB]]{"outil":"graphique","args":{"fonctions":["x^2","sin(x)"],"xmin":-6,"xmax":6}}[[/PB]] — le site trace la courbe exacte. SCHÉMAS (dessins explicatifs) : quand un schéma aide à comprendre (forces, mouvement, circuit, énergie, géométrie, molécule…), dessine-le en SVG dans un bloc ```svg … ``` : un SVG autonome et épuré (attribut viewBox, formes simples, flèches, <text> courts). Pour rester élégant et lisible en clair COMME en sombre, n\'utilise JAMAIS de couleurs en dur : applique les classes du site à tes éléments — .obj ou .sol (objet/solide), .vec avec une pointe <polygon class="vhead"> (vecteur/force), .arc (angle ou sens de rotation/flux), .dim (trait de cote pointillé), .pt (point), .mut (gris discret), .em / .em-r / .em-g (étiquettes colorées) ; écris le texte avec <text class="mut"> ou <text class="em">. Aère le schéma, ne fais jamais se chevaucher deux étiquettes, comme dans un bon manuel scolaire. SOURCES & LIENS : tu peux t\'inspirer de sites fiables (manuels, AlloSchool, Kartable, lelivrescolaire, Wikipédia…) ; quand tu t\'appuies sur une recherche web ou que tu renvoies l\'élève vers une ressource, cite la source sous forme de lien Markdown [titre](https://…) — il s\'affichera en bleu et cliquable dans le chat. IMAGES : tu peux générer une image sur demande ; tu peux aussi créer un FICHIER AUDIO MP3 (outil "mp3") pour que l\'élève écoute ou télécharge un résumé/leçon, et GÉNÉRER UNE VIDÉO DE COURS narrée (outil "video", diapositives + ta voix) quand il le demande ; et quand l\'élève envoie une PHOTO même floue/sombre, lis-la très attentivement (le site en améliore automatiquement le contraste) et transcris ou résous ce que tu vois, chiffre par chiffre. PLUSIEURS PHOTOS : l\'élève peut envoyer plusieurs photos à la fois (les pages d\'une même copie) — lis-les TOUTES, dans l\'ordre, avant de répondre. CORRECTION DE COPIE (note /20) : quand on te demande de corriger/noter une copie, agis comme un professeur du Bac marocain : transcris ce que l\'élève a écrit, reprends chaque exercice (juste/faux, erreur exacte, solution correcte), dresse un petit tableau de barème, donne la NOTE FINALE encadrée $\\boxed{XX/20}$, puis 2-3 conseils bienveillants. WEB (recherche & liens) : le site peut te fournir, sous le titre « CONTEXTE WEB », le contenu d\'un lien que l\'élève a collé ou des résultats de recherche récupérés en direct — quand ce contexte est présent, appuie-toi dessus en priorité, cite la source par son URL, résume clairement, et signale honnêtement si une information paraît incertaine. Si l\'élève te donne un lien mais qu\'aucun contenu n\'apparaît, dis-le simplement. QUALITÉ & CLARTÉ : réponds toujours de façon claire, structurée et compréhensible ; aère avec des titres (##), des listes et du **gras** ; écris CHAQUE expression scientifique en LaTeX correct (jamais de LaTeX à moitié ni de symboles bruts comme \\frac hors des $ … $), et même dans un texte technique, mets les formules entre $ … $. Propose toujours une étape suivante.';
     var proto=' ACTIONS SUR LE SITE — quand l\'élève te demande explicitement de FAIRE quelque chose sur la plateforme, déclenche un outil en terminant ta réponse par UNE balise, seule sur la dernière ligne, au format EXACT : [[PB]]{"outil":"...","args":{...}}[[/PB]]. Outils : '
       +'(1) "document" = rend TON texte imprimable et téléchargeable (planning, série d\'exercices, fiche, résumé, corrigé). Rédige TOUT le contenu AU-DESSUS de la balise, bien structuré (titres avec ##, listes, **gras**, et tableaux Markdown avec des | quand c\'est utile). args:{"titre":"...","type":"PLANNING|SÉRIE D\'EXERCICES|FICHE|RÉSUMÉ|CORRIGÉ|DOCUMENT"}. '
       +'(2) "qcm" = lance un QCM auto-corrigé du site. args:{"matiere":"maths|pc|svt|francais|philo|arabe|islam|hg"}. '
@@ -263,6 +263,8 @@
       +'(10) "memoire" = mémorise durablement une information sur l\'élève (utilise-le quand il révèle une difficulté, un point fort ou un objectif). args:{"faible":"...","fort":"...","objectif":"...","note":"..."}. '
       +'(11) "style" = modifie l\'apparence du site (fond, couleur du texte, accent, taille, ou CSS libre) et l\'enregistre — tu as un accès complet à la présentation. args:{"page":"accueil|revision|qcm|outils|tout","fond":"couleur","texte":"couleur","accent":"couleur","css":"regles CSS"}. Utilise-le dès que l\'élève demande de changer une couleur ou l\'apparence. '
       +'(12) "editeur" = PLACE ton code directement dans l\'onglet « Éditeur de code » (mini-VS Code : coloration syntaxique de nombreux langages, détection d\'erreurs façon VS Code, exécution des projets web) et l\'ouvre pour l\'élève. Utilise-le dès que l\'élève veut écrire, tester, corriger ou exécuter du code, ou dès que tu produis un projet à plusieurs fichiers. Deux façons de fournir les fichiers : soit tu écris chaque fichier dans un bloc ```langage AU-DESSUS de la balise (nomme le fichier juste après le langage, par ex. ```js script.js ou ```python solution.py — sinon un nom est choisi automatiquement) et tu laisses args vide {}, soit tu passes args:{"fichiers":[{"nom":"index.html","contenu":"..."},{"nom":"style.css","contenu":"..."}]}. Chaque fichier va dans son propre onglet ; s\'il y a du HTML, un clic sur « Exécuter » montre le résultat. Écris toujours un code complet, correct et sans erreur de syntaxe (le panneau « Problèmes » signale les erreurs). '
+      +'(13) "mp3" = crée un FICHIER AUDIO MP3 téléchargeable (la voix neurale lit un texte). Utilise-le quand l\'élève veut écouter ou télécharger un résumé, une leçon, une règle, une définition ou un poème en audio. args:{"titre":"…","texte":"le texte EXACT à lire (résumé/leçon, sans balises ni LaTeX brut)","lang":"fr|ar"}. Si "texte" est omis, c\'est TA réponse qui est lue. Pour l\'arabe, mets "lang":"ar". '
+      +'(14) "video" = génère une VIDÉO DE COURS narrée (diapositives animées + ta voix) téléchargeable, affichée directement dans le chat. Utilise-le quand l\'élève demande une vidéo, une capsule, un mini-cours ou un résumé en vidéo. Découpe le sujet en 3 à 6 diapositives CLAIRES. args:{"titre":"…","lang":"fr|ar","slides":[{"t":"titre court de la diapo","p":["point clé bref","autre point"],"say":"1 à 3 phrases de narration pour cette diapo"}, …]}. Garde chaque diapo courte (un titre + 2 à 4 points), et "say" = exactement ce que la voix doit dire (concis et pédagogique, sans formules LaTeX ni symboles). Pour l\'arabe, mets "lang":"ar" et rédige tout en arabe. '
       +'ACCÈS : tu as accès à tout le site — tu peux enchaîner ces actions pour réaliser en détail ce que l\'élève demande, tout en respectant la présentation existante (n\'invente pas d\'autres balises). Si une action a besoin d\'informations, commence par un "sondage", puis agis avec le résultat. '
       +'RÈGLES : utilise la balise UNIQUEMENT si l\'élève veut vraiment l\'action ; UNE seule balise par réponse ; pour un planning ou une série, rédige d\'abord le contenu COMPLET puis ajoute [[PB]]{"outil":"document",...}[[/PB]]. Pour une simple question ou explication, réponds normalement SANS aucune balise.';
     var teach=' PÉDAGOGIE ADAPTATIVE : évalue la difficulté. Pour une question SIMPLE, réponds directement. Pour une question DIFFICILE (démonstration, gros problème, notion nouvelle), commence par donner UN indice ou une première étape, puis propose « veux-tu la suite / la solution complète, ou tu essaies d\'abord ? » — fais réfléchir l\'élève avant de tout donner. Adapte-toi à son niveau réel (vois la MÉMOIRE DE L\'ÉLÈVE) : reviens sur ses points faibles connus et relie la nouvelle notion à ce qu\'il maîtrise déjà.'
@@ -774,6 +776,147 @@
     brioSeqStart(c,lang,function(chunk){ if(chunk===null)return; if(cap){ cap.textContent=chunk; cap.dir=(_seq.lang==='ar')?'rtl':'ltr'; } }, function(){ brioReadEnd(); });
   }
   try{ window.brioRead=brioRead; }catch(_){}
+
+  /* ================= BRIO MÉDIA : export MP3 + génération de VIDÉO de cours =================
+     - MP3  : synthèse de la voix neurale (/api/tts) concaténée en un fichier .mp3 téléchargeable.
+     - VIDÉO: diapositives dessinées sur un <canvas> + voix neurale, enregistrées via MediaRecorder
+              en un fichier vidéo téléchargeable. 100% navigateur, gratuit. Le fichier se lit partout. */
+  function brioStripTags(t){ return String(t||'').replace(/\[\[PB\]\][\s\S]*?\[\[\/PB\]\]/g,'').replace(/\[\[MEM\]\][\s\S]*?\[\[\/MEM\]\]/g,'').trim(); }
+  function brioSafeName(s){ return (String(s||'brio').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w؀-ۿ -]/g,'').trim().replace(/\s+/g,'-').slice(0,48))||'brio'; }
+  function brioLangOf(txt,hint){ hint=(hint||'').toString().toLowerCase(); if(/ar/.test(hint)) return 'ar'; if(/fr/.test(hint)) return 'fr'; return /[؀-ۿ]/.test(txt||'')?'ar':'fr'; }
+  async function brioFetchMp3(text,lang){ var c=voiceCleanTTS(text); if(!c) return null;
+    var chunks=brioSplit(c,500), parts=[];
+    for(var i=0;i<chunks.length;i++){ var r=await fetch('/api/tts?lang='+encodeURIComponent(lang)+'&text='+encodeURIComponent(chunks[i])); if(!r||!r.ok) throw new Error('tts_'+(r?r.status:'net')); parts.push(new Uint8Array(await r.arrayBuffer())); }
+    if(!parts.length) return null; return new Blob(parts,{type:'audio/mpeg'}); }
+  function brioMediaCss(){ if(document.getElementById('brioMediaCss'))return; var s=document.createElement('style'); s.id='brioMediaCss';
+    s.textContent='.bmedia{background:var(--surface,#fff);border:1px solid var(--border,rgba(140,130,210,.3));border-radius:16px;padding:13px 14px;box-shadow:0 6px 22px rgba(31,58,95,.07)}'
+     +'.bmedia .bm-head{font-weight:800;margin-bottom:9px;display:flex;align-items:center;gap:7px}'
+     +'.bmedia .bm-stat{font-size:.9rem;color:var(--muted,#8a86a0);display:flex;align-items:center;gap:8px}'
+     +'.bmedia audio.bm-audio{width:100%;margin:2px 0 10px;display:block}'
+     +'.bmedia video.bm-video{width:100%;border-radius:12px;background:#000;margin:2px 0 10px;display:block}'
+     +'.bmedia .bm-btn,.bmedia .bm-dl{display:inline-flex;align-items:center;gap:7px;border:0;background:linear-gradient(135deg,#4b3fa7,#7c5cff);color:#fff;border-radius:12px;padding:9px 15px;font-weight:700;cursor:pointer;font-size:.92rem}'
+     +'.bmedia .bm-btn:hover,.bmedia .bm-dl:hover{filter:brightness(1.07)}'
+     +'.bmedia .bm-note{font-size:.78rem;color:var(--muted,#8a86a0);margin-top:7px;line-height:1.4}'
+     +'.bmedia .bm-bar{height:7px;border-radius:5px;background:color-mix(in srgb,var(--royal,#4b3fa7) 14%,transparent);overflow:hidden;margin:9px 0 4px}'
+     +'.bmedia .bm-bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4b3fa7,#9C7522);transition:width .25s ease}'
+     +'.bmedia .bm-spin{width:15px;height:15px;border:2px solid rgba(140,130,210,.3);border-top-color:#6c5ce7;border-radius:50%;animation:bmspin .8s linear infinite;display:inline-block}'
+     +'@keyframes bmspin{to{transform:rotate(360deg)}}';
+    document.head.appendChild(s); }
+  function brioMediaCard(){ brioMediaCss(); var box=(typeof agActiveBox==='function')?agActiveBox():(document.getElementById('cfMsgs')||document.getElementById('chatMsgs')); if(!box) return null;
+    var el=document.createElement('div'); el.className='cp-msg ai bmedia'; box.appendChild(el); try{ box.scrollTop=box.scrollHeight; }catch(_){} return el; }
+
+  // ---------- MP3 ----------
+  async function agMp3(args,sourceText){ args=args||{};
+    var text=(args.texte||args.text||args.contenu||args.content||'').toString().trim(); if(!text) text=brioStripTags(sourceText||'');
+    text=brioStripTags(text); if(!voiceCleanTTS(text)){ return false; }
+    var lang=brioLangOf(text,args.lang), titre=(args.titre||args.title||args.nom||'Audio Brio').toString().slice(0,80);
+    var card=brioMediaCard(); if(!card) return false;
+    card.innerHTML='<div class="bm-head">🎧 '+esc(titre)+'</div><div class="bm-stat"><span class="bm-spin"></span> Création du MP3…</div>';
+    (async function(){ try{
+      var blob=await brioFetchMp3(text,lang); if(!blob||!blob.size) throw new Error('empty');
+      var url=URL.createObjectURL(blob), fn=brioSafeName(titre)+'.mp3';
+      card.innerHTML='<div class="bm-head">🎧 '+esc(titre)+'</div><audio class="bm-audio" controls preload="metadata" src="'+url+'"></audio><button class="bm-dl" type="button">⬇ Télécharger le MP3</button>';
+      card.querySelector('.bm-dl').addEventListener('click',function(){ try{ agDownload(blob,fn); toast('MP3 enregistré.'); }catch(_){} });
+    }catch(e){ card.innerHTML='<div class="bm-head">🎧 '+esc(titre)+'</div><div class="bm-stat">La création du MP3 n\'a pas abouti. Réessaie dans un instant.</div>'; } })();
+    return true; }
+
+  // ---------- VIDÉO de cours (canvas + voix neurale -> MediaRecorder) ----------
+  function brioVideoSupported(){ try{ return !!(window.MediaRecorder && HTMLCanvasElement.prototype.captureStream && (window.AudioContext||window.webkitAudioContext)); }catch(_){ return false; } }
+  function brioPickMime(){ var C=['video/mp4;codecs=h264,aac','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm']; for(var i=0;i<C.length;i++){ try{ if(MediaRecorder.isTypeSupported(C[i])) return C[i]; }catch(_){} } return ''; }
+  function brioWrap(ctx,text,maxW){ var words=String(text||'').split(/\s+/), lines=[], cur='';
+    for(var i=0;i<words.length;i++){ var tryl=cur?cur+' '+words[i]:words[i]; if(ctx.measureText(tryl).width>maxW && cur){ lines.push(cur); cur=words[i]; } else cur=tryl; }
+    if(cur) lines.push(cur); return lines; }
+  function brioDrawSlide(ctx,W,H,slide,idx,total,prog,lang){ var rtl=(lang==='ar');
+    var g=ctx.createLinearGradient(0,0,W,H); g.addColorStop(0,'#2a2350'); g.addColorStop(1,'#4b3fa7'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='rgba(255,255,255,.06)'; ctx.beginPath(); ctx.arc(W-120,120,230,0,7); ctx.fill();
+    var ML=rtl?0:90, MR=rtl?90:0, xStart=rtl?(W-90):90;
+    ctx.textAlign=rtl?'right':'left'; try{ctx.direction=rtl?'rtl':'ltr';}catch(_){}
+    // marque Brio
+    ctx.font='700 30px system-ui,Segoe UI,sans-serif'; ctx.fillStyle='#ffd36b'; ctx.fillText('✦ Brio', xStart, 74);
+    // titre global (petit, à l'opposé)
+    ctx.font='500 24px system-ui,sans-serif'; ctx.fillStyle='rgba(255,255,255,.72)'; ctx.textAlign=rtl?'left':'right'; ctx.fillText((slide._cap||''), rtl?90:(W-90), 74); ctx.textAlign=rtl?'right':'left';
+    // trait
+    ctx.strokeStyle='rgba(255,255,255,.25)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(90,100); ctx.lineTo(W-90,100); ctx.stroke();
+    // titre de diapo
+    ctx.fillStyle='#fff'; ctx.font='800 56px system-ui,Segoe UI,sans-serif';
+    var tl=brioWrap(ctx,slide.t||'',W-180), y=200;
+    for(var i=0;i<tl.length;i++){ ctx.fillText(tl[i],xStart,y); y+=66; }
+    y+=18;
+    // points, révélés progressivement
+    var pts=slide.p||[]; var shown=Math.min(pts.length, Math.floor(prog*(pts.length+0.6))+1);
+    ctx.font='400 34px system-ui,Segoe UI,sans-serif';
+    for(var k=0;k<pts.length;k++){ if(k>=shown) break;
+      var bx=xStart; ctx.fillStyle='#ffd36b'; ctx.font='700 34px system-ui,sans-serif';
+      var bullet=rtl?'◂':'▸'; ctx.fillText(bullet, bx, y);
+      ctx.fillStyle='rgba(255,255,255,.95)'; ctx.font='400 34px system-ui,Segoe UI,sans-serif';
+      var tx=rtl?(bx-44):(bx+44); var lines=brioWrap(ctx,pts[k],W-230);
+      for(var j=0;j<lines.length;j++){ ctx.fillText(lines[j],tx,y); y+=46; }
+      y+=16; }
+    // pied : barre de progression + pagination
+    var pb=(idx+prog)/total; ctx.fillStyle='rgba(255,255,255,.18)'; ctx.fillRect(90,H-70,W-180,8);
+    ctx.fillStyle='#ffd36b'; ctx.fillRect(rtl?(W-90-(W-180)*pb):90,H-70,(W-180)*pb,8);
+    ctx.fillStyle='rgba(255,255,255,.7)'; ctx.font='600 22px system-ui,sans-serif'; ctx.textAlign=rtl?'left':'right'; try{ctx.direction='ltr';}catch(_){}
+    ctx.fillText((idx+1)+' / '+total, rtl?90:(W-90), H-30); }
+  function brioDecode(ac,ab){ return new Promise(function(res,rej){ try{ var p=ac.decodeAudioData(ab,res,rej); if(p&&p.then)p.then(res,rej); }catch(e){ rej(e); } }); }
+  async function brioMakeVideo(slides,lang,titre,onProg){
+    var W=1280,H=720, cv=document.createElement('canvas'); cv.width=W; cv.height=H; var ctx=cv.getContext('2d');
+    var AC=window.AudioContext||window.webkitAudioContext, ac=new AC(); try{ await ac.resume(); }catch(_){}
+    var adest=ac.createMediaStreamDestination();
+    // synthèse audio par diapo
+    var bufs=[]; for(var i=0;i<slides.length;i++){ var say=(slides[i].say||slides[i].narration||((slides[i].t||'')+'. '+((slides[i].p||[]).join('. ')))).toString();
+      var csay=voiceCleanTTS(say)||(slides[i].t||'diapositive'); slides[i]._cap=titre;
+      var r=await fetch('/api/tts?lang='+encodeURIComponent(lang)+'&text='+encodeURIComponent(csay.slice(0,1500)));
+      if(!r||!r.ok) throw new Error('tts_'+(r?r.status:'net'));
+      var ab=await r.arrayBuffer(); var buf=await brioDecode(ac,ab); bufs.push(buf);
+      if(onProg) onProg(0.05+0.35*((i+1)/slides.length)); }
+    // chronologie
+    var gap=0.45, spans=[], t=0; for(var s=0;s<bufs.length;s++){ var d=bufs[s].duration+gap; spans.push({start:t,dur:d}); t+=d; } var total=t+0.25;
+    // flux combiné + enregistreur
+    var vstream=cv.captureStream(30); var mime=brioPickMime();
+    var stream=new MediaStream(vstream.getVideoTracks().concat(adest.stream.getAudioTracks()));
+    var rec=new MediaRecorder(stream, mime?{mimeType:mime,videoBitsPerSecond:2500000}:undefined);
+    var parts=[]; rec.ondataavailable=function(e){ if(e.data&&e.data.size) parts.push(e.data); };
+    return await new Promise(function(resolve,reject){
+      rec.onstop=function(){ try{ ac.close(); }catch(_){} var ct=(mime&&mime.indexOf('mp4')>=0)?'video/mp4':'video/webm'; resolve({blob:new Blob(parts,{type:ct}),mime:ct}); };
+      rec.onerror=function(){ try{ac.close();}catch(_){} reject(new Error('rec')); };
+      try{ rec.start(); }catch(e){ reject(e); return; }
+      var t0=ac.currentTime+0.18;
+      for(var s2=0;s2<bufs.length;s2++){ var src=ac.createBufferSource(); src.buffer=bufs[s2]; src.connect(ac.destination); src.connect(adest); src.start(t0+spans[s2].start); }
+      function frame(){ var tt=ac.currentTime-t0; if(tt<0) tt=0;
+        var idx=spans.length-1; for(var q=0;q<spans.length;q++){ if(tt<spans[q].start+spans[q].dur){ idx=q; break; } }
+        var sp=spans[idx], lp=Math.max(0,Math.min(1,(tt-sp.start)/sp.dur));
+        brioDrawSlide(ctx,W,H,slides[idx],idx,slides.length,lp,lang);
+        if(onProg) onProg(0.4+0.6*Math.min(1,tt/total));
+        if(tt<total){ requestAnimationFrame(frame); } else { try{ rec.stop(); }catch(_){} }
+      }
+      requestAnimationFrame(frame);
+    }); }
+  function agVideo(args,sourceText){ args=args||{};
+    var slides=args.slides||args.diapos||args.diapositives||args.scenes; if(!Array.isArray(slides)||!slides.length) return false;
+    slides=slides.map(function(s){ if(typeof s==='string') return {t:s,p:[]}; return {t:(s.t||s.titre||s.title||'').toString(), p:(s.p||s.points||s.puces||[]).map(String), say:(s.say||s.narration||s.texte||'').toString()}; }).filter(function(s){ return s.t||s.p.length||s.say; });
+    if(!slides.length) return false;
+    var titre=(args.titre||args.title||args.nom||'Vidéo de cours').toString().slice(0,80);
+    var lang=brioLangOf((slides[0].say||slides[0].t||'')+' '+((slides[0].p||[]).join(' ')),args.lang);
+    var card=brioMediaCard(); if(!card) return false;
+    if(!brioVideoSupported()){
+      card.innerHTML='<div class="bm-head">🎬 '+esc(titre)+'</div><div class="bm-note">La création vidéo n\'est pas disponible sur ce navigateur (souvent iPhone). Je te prépare la version <b>audio MP3</b> à la place.</div>';
+      var say=slides.map(function(s){ return (s.say||((s.t||'')+'. '+(s.p||[]).join('. '))); }).join('. ');
+      agMp3({titre:titre,texte:say,lang:lang}); return true; }
+    var estSec=Math.max(8, slides.length*9);
+    card.innerHTML='<div class="bm-head">🎬 '+esc(titre)+'</div><div class="bm-note">Vidéo de cours · '+slides.length+' diapositives, voix '+(lang==='ar'?'arabe':'française')+'. La création dure ≈ sa durée de lecture (~'+estSec+' s) — <b>garde cet onglet ouvert et au premier plan</b>.</div><button class="bm-btn" type="button">▶ Générer la vidéo</button>';
+    var btn=card.querySelector('.bm-btn');
+    btn.addEventListener('click',function(){ // le clic fournit le geste utilisateur (audio/enregistrement)
+      card.innerHTML='<div class="bm-head">🎬 '+esc(titre)+'</div><div class="bm-stat"><span class="bm-spin"></span> <span class="bm-msg">Préparation de la voix…</span></div><div class="bm-bar"><i></i></div>';
+      var bar=card.querySelector('.bm-bar>i'), msg=card.querySelector('.bm-msg');
+      brioMakeVideo(slides,lang,titre,function(p){ if(bar)bar.style.width=Math.round(p*100)+'%'; if(msg){ msg.textContent = p<0.4?'Préparation de la voix…':'Enregistrement de la vidéo…'; } })
+        .then(function(out){ var url=URL.createObjectURL(out.blob); var ext=out.mime.indexOf('mp4')>=0?'mp4':'webm'; var fn=brioSafeName(titre)+'.'+ext;
+          card.innerHTML='<div class="bm-head">🎬 '+esc(titre)+'</div><video class="bm-video" controls playsinline preload="metadata" src="'+url+'"></video><button class="bm-dl" type="button">⬇ Télécharger la vidéo ('+ext.toUpperCase()+')</button>';
+          card.querySelector('.bm-dl').addEventListener('click',function(){ try{ agDownload(out.blob,fn); toast('Vidéo enregistrée.'); }catch(_){} });
+        })
+        .catch(function(){ card.innerHTML='<div class="bm-head">🎬 '+esc(titre)+'</div><div class="bm-note">La création de la vidéo a échoué. Je te prépare l\'audio MP3 à la place.</div>'; var say=slides.map(function(s){ return (s.say||((s.t||'')+'. '+(s.p||[]).join('. '))); }).join('. '); agMp3({titre:titre,texte:say,lang:lang}); });
+    });
+    return true; }
+  try{ window.agMp3=agMp3; window.agVideo=agVideo; }catch(_){}
   function voiceCss(){ if(document.getElementById('pbVoiceCss')) return; var s=document.createElement('style'); s.id='pbVoiceCss';
     s.textContent='#pbVoiceBar{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);z-index:100001;display:none;align-items:center;gap:12px;background:linear-gradient(135deg,#7c5cff,#4b3fa7);color:#fff;padding:12px 18px;border-radius:30px;box-shadow:0 12px 40px rgba(80,60,180,.45);font:600 14px system-ui,-apple-system,sans-serif}'
       +'#pbVoiceBar .pbv-dot{width:12px;height:12px;border-radius:50%;background:#fff;animation:pbvP 1s infinite}'
@@ -1063,6 +1206,8 @@ function agRun(a, sourceText){
   if(!a) return false;
   var tool=(a.outil||a.tool||a.action||a.name||'').toString().toLowerCase();
   var args=a.args||a.arguments||a.parametres||a; if(typeof args!=='object'||args===null) args={};
+  if(tool.indexOf('mp3')>=0 || tool.indexOf('audio')>=0 || tool.indexOf('podcast')>=0){ if(agMp3(args, sourceText)) return true; }
+  if(tool.indexOf('video')>=0 || tool.indexOf('vidéo')>=0 || tool.indexOf('film')>=0 || tool.indexOf('clip')>=0){ if(agVideo(args, sourceText)) return true; }
   if(tool.indexOf('page')>=0 || tool.indexOf('onglet')>=0){ if(agCreatePage(args, sourceText)) return true; }
   if(tool.indexOf('graph')>=0 || tool.indexOf('courbe')>=0 || tool.indexOf('plot')>=0 || tool.indexOf('trace')>=0 || (tool.indexOf('fonction')>=0 && (args.fonctions||args.fonction))){ var _fs=args.fonctions||args.functions||args.courbes||(args.fonction?[args.fonction]:(args.f?[args.f]:[])); if(!Array.isArray(_fs)) _fs=[_fs]; _fs=_fs.filter(Boolean).map(String); if(_fs.length && agPlotBubble(_fs,{xmin:args.xmin,xmax:args.xmax})) return true; }
   if(tool.indexOf('sondage')>=0 || tool.indexOf('survey')>=0 || tool.indexOf('questionnaire')>=0 || tool.indexOf('dispo')>=0){ if(agSurvey(args)) return true; }
