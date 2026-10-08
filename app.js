@@ -459,8 +459,10 @@
       if(imgs.length){ raw=await callVision(text,imgs); }
       else { _webCtx=''; try{ _webCtx=await fetchWebContext(text); }catch(_w){ _webCtx=''; } raw=await callAI(c); }
       rmTyping(typ);
-      var pr=agParse(raw); var clean=pr.clean||raw; try{ clean=agVerifyArithmetic(clean); }catch(_){} try{ clean=agMathNormalize(clean); }catch(_){}
-      var hasAct = pr.actions && pr.actions.length;
+      var pr=agParse(raw); var hasAct = pr.actions && pr.actions.length;
+      // Réponse = UNIQUEMENT une balise (pas de texte) -> clean vide : NE PAS retomber sur le brut (sinon la balise fuite).
+      var clean = (pr.clean && pr.clean.trim()) ? pr.clean : (hasAct ? '' : raw);
+      try{ clean=agVerifyArithmetic(clean); }catch(_){} try{ clean=agMathNormalize(clean); }catch(_){}
       /* QCM interactif forcé : si l'IA a écrit le QCM en texte (sans balise), on le rend en quiz cliquable */
       if(pendingForceQuiz && !hasAct){ var _qz=agTextToQuiz(clean); if(_qz && _qz.questions.length>=2){
         c.msgs.push({role:'assistant',content:'Voici ton QCM interactif 👇'}); c.t=Date.now(); save(); renderMsgs(); renderList();
@@ -487,10 +489,10 @@
         var boxc=agActiveBox(); if(boxc){ boxc.appendChild(agSurveyBuild(boxc,conv.title||'Questionnaire',conv.questions)); boxc.scrollTop=boxc.scrollHeight; }
         pendingForcePage=null; pendingForceQuiz=false; pendingForceMedia=null; busy=false; var aic=activeInput(); if(aic) aic.focus(); return;
       }
-      if(clean && clean.trim()){ try{ await typeReveal(clean); }catch(_){} }
-      c.msgs.push({role:'assistant',content:clean});
-      c.t=Date.now(); save(); renderMsgs(); renderList();
-      try{ agCaptureNote(clean, text); }catch(_){}
+      if(clean && clean.trim()){ try{ await typeReveal(clean); }catch(_){}
+        c.msgs.push({role:'assistant',content:clean}); c.t=Date.now(); save(); renderMsgs(); renderList();
+        try{ agCaptureNote(clean, text); }catch(_){}
+      }
       try{ pbMaybeTitle(c, text); }catch(_){}
       var madePage=false;
       if(hasAct){ pr.actions.forEach(function(a){ try{ if(agRun(a, clean)){ var tn=(a.outil||a.tool||'').toString().toLowerCase(); if(tn.indexOf('page')>=0||tn.indexOf('onglet')>=0) madePage=true; } }catch(_){} }); }
@@ -1085,11 +1087,25 @@
     if(!svg){ el.innerHTML=head+'<div class="bm-note">Carte mentale indisponible.</div>'; return; }
     el.innerHTML=head+'<div class="bm-mm">'+svg+'</div><button class="bm-dl" type="button">⬇ Télécharger (SVG)</button>';
     el.querySelector('.bm-dl').addEventListener('click',function(){ try{ var blob=new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n'+svg],{type:'image/svg+xml'}); agDownload(blob, brioSafeName(titre)+'.svg'); toast('Carte enregistrée.'); }catch(_){} }); }
+  function agMmLabel(x){ if(x==null) return ''; if(typeof x==='string') return x; return (x.t||x.titre||x.title||x.label||x.nom||x.name||'').toString(); }
   function agMindmap(args,sourceText){ args=args||{};
-    var centre=(args.centre||args.central||args.theme||args.thème||args.sujet||args.titre||args.title||'').toString().trim();
-    var branches=args.branches||args.branch||args.noeuds||args.nodes||args.idees||[];
-    if(!Array.isArray(branches)) branches=[];
-    branches=branches.map(function(b){ if(typeof b==='string') return {t:b,sous:[]}; return {t:(b.t||b.titre||b.title||b.nom||'').toString(), sous:(b.sous||b.sub||b.points||b.enfants||b.children||b.details||[]).map(String)}; }).filter(function(b){ return b.t||b.sous.length; });
+    var centre=(args.centre||args.central||args.theme||args.thème||args.sujet||args.racine||args.titre||args.title||'').toString().trim();
+    var branches=args.branches||args.branch||args.noeuds||args.nodes||args.idees||args.idées||args.sections||[];
+    if(!Array.isArray(branches)) branches=[branches];
+    branches=branches.map(function(b){ if(typeof b==='string') return {t:b,sous:[]};
+      var t=agMmLabel(b);
+      var raw=b.sous||b.sub||b.points||b.puces||b.enfants||b.children||b.details||b.items||b.contenu||[];
+      if(!Array.isArray(raw)) raw=(raw?[raw]:[]);
+      var sous=[];
+      raw.forEach(function(x){ if(x==null) return;
+        if(typeof x==='string'){ if(x.trim()) sous.push(x.trim()); return; }
+        var lab=agMmLabel(x), cont=(x.content||x.contenu||x.texte||x.text||x.desc||x.description||x.valeur||'').toString();
+        var one=(lab&&cont)?(lab+' : '+cont):(lab||cont);
+        if(one.trim()){ sous.push(one.trim()); }
+        else { var gc=x.children||x.sous||x.sub||x.items||[]; if(Array.isArray(gc)) gc.forEach(function(g){ var gl=agMmLabel(g)||(g&&(g.content||g.texte||'')); if(String(gl||'').trim()) sous.push(String(gl).trim()); }); }
+      });
+      return {t:(t||'').toString(), sous:sous};
+    }).filter(function(b){ return (b.t&&b.t.trim())||b.sous.length; }).map(function(b){ if((!b.t||!b.t.trim())&&b.sous.length){ b.t=b.sous.shift(); } return b; }).filter(function(b){ return b.t&&b.t.trim(); });
     if(!centre && branches.length) centre=(args.titre||args.title||'Carte mentale').toString();
     if(!centre || !branches.length) return false;
     var lang=brioLangOf(centre+' '+branches.map(function(b){return b.t+' '+b.sous.join(' ');}).join(' '), args.lang);
