@@ -140,7 +140,7 @@
   // diapositives, arbre) — jamais en octets : ils sont re-synthétisés à l'identique sur
   // chaque appareil (la limite d'1 Mo d'un document Firestore interdit de stocker l'audio/vidéo).
   function stripMedia(md){ md=md||{}; var o={kind:md.kind||'mp3',title:(md.title||'').toString().slice(0,90),lang:md.lang||'fr'};
-    if(md.kind==='video'){ o.slides=(md.slides||[]).slice(0,10).map(function(s){ return {t:(s.t||'').toString().slice(0,120),p:(s.p||[]).slice(0,6).map(function(x){return String(x).slice(0,160);}),say:(s.say||'').toString().slice(0,600),f:(s.f||'').toString().slice(0,120)}; }); }
+    if(md.kind==='video'){ o.slides=(md.slides||[]).slice(0,24).map(function(s){ return {t:(s.t||'').toString().slice(0,120),p:(s.p||[]).slice(0,6).map(function(x){return String(x).slice(0,160);}),say:(s.say||'').toString().slice(0,1300),f:(s.f||'').toString().slice(0,120),kind:(s.kind||'').toString().slice(0,16)}; }); }
     else if(md.kind==='mindmap'||md.kind==='carte'){ o.kind='mindmap'; o.centre=(md.centre||md.title||'').toString().slice(0,80); o.branches=(md.branches||[]).slice(0,8).map(function(b){ return {t:(b.t||'').toString().slice(0,60),sous:(b.sous||[]).slice(0,6).map(function(x){return String(x).slice(0,80);})}; }); }
     else { o.text=(md.text||'').toString().slice(0,4000); }
     return o; }
@@ -276,7 +276,7 @@
       +'(11) "style" = modifie l\'apparence du site (fond, couleur du texte, accent, taille, ou CSS libre) et l\'enregistre — tu as un accès complet à la présentation. args:{"page":"accueil|revision|qcm|outils|tout","fond":"couleur","texte":"couleur","accent":"couleur","css":"regles CSS"}. Utilise-le dès que l\'élève demande de changer une couleur ou l\'apparence. '
       +'(12) "editeur" = PLACE ton code directement dans l\'onglet « Éditeur de code » (mini-VS Code : coloration syntaxique de nombreux langages, détection d\'erreurs façon VS Code, exécution des projets web) et l\'ouvre pour l\'élève. Utilise-le dès que l\'élève veut écrire, tester, corriger ou exécuter du code, ou dès que tu produis un projet à plusieurs fichiers. Deux façons de fournir les fichiers : soit tu écris chaque fichier dans un bloc ```langage AU-DESSUS de la balise (nomme le fichier juste après le langage, par ex. ```js script.js ou ```python solution.py — sinon un nom est choisi automatiquement) et tu laisses args vide {}, soit tu passes args:{"fichiers":[{"nom":"index.html","contenu":"..."},{"nom":"style.css","contenu":"..."}]}. Chaque fichier va dans son propre onglet ; s\'il y a du HTML, un clic sur « Exécuter » montre le résultat. Écris toujours un code complet, correct et sans erreur de syntaxe (le panneau « Problèmes » signale les erreurs). '
       +'(13) "mp3" = crée un FICHIER AUDIO MP3 téléchargeable (la voix neurale lit un texte). Utilise-le quand l\'élève veut écouter ou télécharger un résumé, une leçon, une règle, une définition ou un poème en audio. args:{"titre":"…","texte":"le texte EXACT à lire (résumé/leçon, sans balises ni LaTeX brut)","lang":"fr|ar"}. Si "texte" est omis, c\'est TA réponse qui est lue. Pour l\'arabe, mets "lang":"ar". '
-      +'(14) "video" = génère une VIDÉO DE COURS narrée (diapositives animées + ta voix) téléchargeable, affichée directement dans le chat. Utilise-le quand l\'élève demande une vidéo, une capsule, un mini-cours ou un résumé en vidéo. Découpe le sujet en 3 à 6 diapositives CLAIRES (une diapo d\'intro et une diapo de clôture Brio sont ajoutées automatiquement). args:{"titre":"…","lang":"fr|ar","slides":[{"t":"titre court de la diapo","p":["point clé bref","autre point"],"say":"1 à 3 phrases de narration pour cette diapo","f":"formule clé facultative, ex. v = d/t"}, …]}. Garde chaque diapo courte (un titre + 2 à 4 points) ; "say" = exactement ce que la voix doit dire (concis et pédagogique, sans symboles) ; "f" (facultatif) = UNE formule mise en valeur à l\'écran. Pour l\'arabe, mets "lang":"ar" et rédige tout en arabe. '
+      +'(14) "video" = génère une VIDÉO DE COURS narrée (diapositives animées + ta voix) téléchargeable, affichée directement dans le chat. Utilise-le quand l\'élève demande une vidéo, une capsule ou un cours en vidéo. PAR DÉFAUT, fais un VRAI COURS COMPLET façon professeur (pas un simple résumé) : enchaîne une introduction, plusieurs diapositives d\'EXPLICATION claire et progressive, au moins un EXEMPLE résolu pas à pas, les FORMULES clés, un ou deux EXERCICES d\'application PUIS leur CORRECTION détaillée, et une diapo « à retenir ». (Une diapo d\'intro et une diapo de clôture Brio sont ajoutées automatiquement.) Adapte la longueur à la demande : ~8 à 12 diapositives pour un cours standard, jusqu\'à ~20 si l\'élève veut « détaillé / complet / long » — mais JAMAIS plus de 10 minutes au total (le site coupe automatiquement au-delà). args:{"titre":"…","lang":"fr|ar","slides":[{"t":"titre court de la diapo","p":["point clé bref","autre point"],"say":"la narration pédagogique de cette diapo (1 à 5 phrases, claire, sans symboles)","f":"formule clé facultative, ex. v = d/t","kind":"intro|cours|exemple|formule|exercice|correction|conclusion"}, …]}. Donne à CHAQUE diapo son "kind" (il colore la diapo et affiche une étiquette : COURS, EXEMPLE, EXERCICE, CORRECTION, À RETENIR…). Garde chaque diapo lisible (titre + 2 à 4 points) et mets le détail pédagogique dans "say". Pour l\'arabe, mets "lang":"ar" et rédige tout en arabe. '
       +'(15) "mindmap" = crée une CARTE MENTALE visuelle (thème central → branches → sous-points), affichée dans le chat et téléchargeable. Utilise-la pour résumer un chapitre, organiser des idées, un plan de dissertation, une synthèse. args:{"titre":"…","centre":"le thème central","lang":"fr|ar","branches":[{"t":"nom de la branche","sous":["sous-idée brève","autre sous-idée"]}, …]}. Mets 3 à 6 branches, 2 à 4 sous-points courts chacune. Pour l\'arabe, "lang":"ar" et tout le texte en arabe. '
       +'NOTE : les MP3, vidéos et cartes mentales que tu crées RESTENT ENREGISTRÉS dans la conversation et se retrouvent sur tous les appareils de l\'élève (ils sont recréés automatiquement à l\'identique). '
       +'ACCÈS : tu as accès à tout le site — tu peux enchaîner ces actions pour réaliser en détail ce que l\'élève demande, tout en respectant la présentation existante (n\'invente pas d\'autres balises). Si une action a besoin d\'informations, commence par un "sondage", puis agis avec le résultat. '
@@ -296,7 +296,7 @@
       try{ if(/qcm|quiz|test|planning|exercice|s[ée]rie|entra[iî]n|r[ée]vis/i.test(lastU)){ base.push({role:'system',content:'VARIÉTÉ (jeton '+Math.random().toString(36).slice(2,8)+') : propose des questions et exercices NOUVEAUX, différents des fois précédentes ; varie les énoncés, les nombres, l\'ordre et la difficulté. Ne répète jamais exactement le même contenu.'}); } }catch(_){}
       try{ if(pendingForceMedia==='mindmap'){ base.push({role:'system',content:'CARTE MENTALE (impératif) : l\'élève veut une carte mentale (mind map). Tu DOIS déclencher l\'outil. Écris AU PLUS une courte phrase d\'introduction, puis termine ta réponse par EXACTEMENT une balise [[PB]]{"outil":"mindmap","args":{"titre":"…","centre":"le thème central (court)","branches":[{"t":"nom de branche","sous":["sous-idée courte","autre sous-idée"]}]}}[[/PB]] avec 4 à 6 branches et 2 à 4 sous-points brefs chacune. N\'écris PAS de longue leçon, n\'utilise JAMAIS de bloc ```svg, n\'invente pas d\'autre balise, n\'enveloppe pas la balise dans des $.'}); }
       else if(pendingForceMedia==='mp3'){ base.push({role:'system',content:'AUDIO MP3 (impératif) : l\'élève veut un fichier audio à écouter. Tu DOIS déclencher l\'outil. Écris AU PLUS une courte phrase, puis termine EXACTEMENT par [[PB]]{"outil":"mp3","args":{"titre":"…","texte":"le texte EXACT à lire, clair, sans LaTeX ni symboles","lang":"fr"}}[[/PB]]. N\'écris JAMAIS de lien Markdown, ni « Télécharger », ni fausse URL ; n\'invente pas d\'autre balise ; n\'enveloppe pas la balise dans des $. Pour l\'arabe mets "lang":"ar".'}); }
-      else if(pendingForceMedia==='video'){ base.push({role:'system',content:'VIDÉO DE COURS (impératif) : l\'élève veut une vidéo. Tu DOIS déclencher l\'outil. Écris AU PLUS une courte phrase, puis termine EXACTEMENT par [[PB]]{"outil":"video","args":{"titre":"…","lang":"fr","slides":[{"t":"titre de la diapo","p":["point bref"],"say":"1 à 3 phrases de narration"}]}}[[/PB]] avec 3 à 5 diapositives. N\'invente pas d\'autre balise ; n\'enveloppe pas la balise dans des $.'}); }
+      else if(pendingForceMedia==='video'){ base.push({role:'system',content:'VIDÉO DE COURS (impératif) : l\'élève veut une vidéo. Tu DOIS déclencher l\'outil et faire un VRAI COURS COMPLET façon professeur : introduction, explications progressives, au moins un EXEMPLE résolu, les formules clés, un ou deux EXERCICES d\'application PUIS leur CORRECTION détaillée, et une diapo « à retenir ». Écris AU PLUS une courte phrase d\'intro, puis termine EXACTEMENT par [[PB]]{"outil":"video","args":{"titre":"…","lang":"fr","slides":[{"t":"titre","p":["point bref"],"say":"narration claire","f":"formule facultative","kind":"intro|cours|exemple|formule|exercice|correction|conclusion"}]}}[[/PB]]. Mets ~8 à 12 diapositives (jusqu\'à ~20 si « détaillé/complet »), SANS dépasser 10 minutes, et donne à chaque diapo son "kind". N\'invente pas d\'autre balise ; n\'enveloppe pas la balise dans des $.'}); }
       if(pendingForceQuiz){ base.push({role:'system',content:'QCM INTERACTIF (impératif) : l\'élève veut un QCM interactif dans le chat. Réponds UNIQUEMENT par un QCM au FORMAT TEXTE EXACT ci-dessous — SANS aucune balise, SANS JSON, SANS LaTeX ni antislash (écris les maths en clair avec des symboles : lim, x→0, x², √, ≤, ≥, ∞, π, sin(x)/x). Format pour CHAQUE question :\n1) énoncé de la question ?\nA) premier choix\nB) deuxième choix\nC) troisième choix\nD) quatrième choix\nRéponse : B\nExplication : courte explication de la bonne réponse\n\nEnchaîne ainsi 5 questions (2), 3) …), ou le nombre demandé par l\'élève. Chaque question a 4 choix (A à D), une ligne « Réponse : <lettre> » et une ligne « Explication : … ». N\'écris AUCUNE introduction ni conclusion, seulement les questions à ce format.'}); } }catch(_){}
     }catch(e){}
     return base.concat(c.msgs.slice(-16)); }
@@ -907,10 +907,21 @@
        .replace(/\^2/g,'²').replace(/\^3/g,'³').replace(/\\left|\\right|\\,|\\;|\\!/g,'')
        .replace(/\\boxed\s*\{([^{}]*)\}/g,'$1').replace(/\\[a-zA-Z]+/g,'').replace(/[{}]/g,'');
     return s.replace(/\s+/g,' ').trim().slice(0,60); }
+  // Styles par TYPE de diapo (cours façon prof) : étiquette + couleur d'accent + dégradé de fond.
+  function brioSlideStyle(kind){ kind=(kind||'').toString().toLowerCase();
+    var M={ intro:{l:'',c:'#ffd36b',g:['#2a2350','#4b3fa7']},
+      cours:{l:'COURS',c:'#8fd0ff',g:['#1f2a4a','#38478f']}, explication:{l:'COURS',c:'#8fd0ff',g:['#1f2a4a','#38478f']}, definition:{l:'DÉFINITION',c:'#8fd0ff',g:['#1f2a4a','#38478f']},
+      exemple:{l:'EXEMPLE',c:'#86e3ad',g:['#15331f','#1f7a46']}, methode:{l:'MÉTHODE',c:'#86e3ad',g:['#15331f','#1f7a46']},
+      formule:{l:'FORMULE',c:'#ffd36b',g:['#2a2350','#4b3fa7']},
+      exercice:{l:'EXERCICE',c:'#ffb27c',g:['#3a2412','#8a4a1e']}, application:{l:'EXERCICE',c:'#ffb27c',g:['#3a2412','#8a4a1e']},
+      correction:{l:'CORRECTION',c:'#86e3ad',g:['#15331f','#1f7a46']}, solution:{l:'CORRECTION',c:'#86e3ad',g:['#15331f','#1f7a46']},
+      conclusion:{l:'À RETENIR',c:'#d7b3ff',g:['#241a40','#5a3fa7']}, resume:{l:'À RETENIR',c:'#d7b3ff',g:['#241a40','#5a3fa7']}, outro:{l:'',c:'#ffd36b',g:['#2a2350','#4b3fa7']} };
+    return M[kind]||M.intro; }
   function brioDrawSlide(ctx,W,H,slide,idx,total,prog,lang){ var rtl=(lang==='ar');
-    var g=ctx.createLinearGradient(0,0,W,H); g.addColorStop(0,'#2a2350'); g.addColorStop(1,'#4b3fa7'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    var st=brioSlideStyle(slide.kind), ease=function(x){ x=Math.max(0,Math.min(1,x)); return 1-Math.pow(1-x,3); };
+    var g=ctx.createLinearGradient(0,0,W,H); g.addColorStop(0,st.g[0]); g.addColorStop(1,st.g[1]); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
     ctx.fillStyle='rgba(255,255,255,.06)'; ctx.beginPath(); ctx.arc(W-120,120,230,0,7); ctx.fill();
-    var ML=rtl?0:90, MR=rtl?90:0, xStart=rtl?(W-90):90;
+    var xStart=rtl?(W-90):90;
     ctx.textAlign=rtl?'right':'left'; try{ctx.direction=rtl?'rtl':'ltr';}catch(_){}
     // marque Brio
     ctx.font='700 30px system-ui,Segoe UI,sans-serif'; ctx.fillStyle='#ffd36b'; ctx.fillText('✦ Brio', xStart, 74);
@@ -918,30 +929,38 @@
     ctx.font='500 24px system-ui,sans-serif'; ctx.fillStyle='rgba(255,255,255,.72)'; ctx.textAlign=rtl?'left':'right'; ctx.fillText((slide._cap||''), rtl?90:(W-90), 74); ctx.textAlign=rtl?'right':'left';
     // trait
     ctx.strokeStyle='rgba(255,255,255,.25)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(90,100); ctx.lineTo(W-90,100); ctx.stroke();
-    // titre de diapo
-    ctx.fillStyle='#fff'; ctx.font='800 56px system-ui,Segoe UI,sans-serif';
-    var tl=brioWrap(ctx,slide.t||'',W-180), y=200;
-    for(var i=0;i<tl.length;i++){ ctx.fillText(tl[i],xStart,y); y+=66; }
-    y+=18;
-    // points, révélés progressivement
-    var pts=slide.p||[]; var shown=Math.min(pts.length, Math.floor(prog*(pts.length+0.6))+1);
-    ctx.font='400 34px system-ui,Segoe UI,sans-serif';
-    for(var k=0;k<pts.length;k++){ if(k>=shown) break;
-      var bx=xStart; ctx.fillStyle='#ffd36b'; ctx.font='700 34px system-ui,sans-serif';
-      var bullet=rtl?'◂':'▸'; ctx.fillText(bullet, bx, y);
-      ctx.fillStyle='rgba(255,255,255,.95)'; ctx.font='400 34px system-ui,Segoe UI,sans-serif';
+    var y=180;
+    // badge du type de diapo (EXEMPLE, EXERCICE, CORRECTION…)
+    if(st.l){ var ba=ease(prog*6); ctx.save(); ctx.globalAlpha=ba; ctx.font='800 20px system-ui,sans-serif';
+      var bw=ctx.measureText(st.l).width+30, bx0=rtl?(W-90-bw):90;
+      ctx.fillStyle=st.c; brioRound(ctx,bx0,y-24,bw,32,9); ctx.globalAlpha=ba*0.22; ctx.fill(); ctx.globalAlpha=ba;
+      ctx.strokeStyle=st.c; ctx.lineWidth=1.5; brioRound(ctx,bx0,y-24,bw,32,9); ctx.stroke();
+      ctx.fillStyle=st.c; ctx.textAlign=rtl?'right':'left'; ctx.fillText(st.l, rtl?(W-105):105, y); ctx.restore(); y+=44; }
+    // titre de diapo (fondu + léger glissement)
+    var ta=ease(prog*5), tdx=(1-ta)*(rtl?-24:24);
+    ctx.save(); ctx.globalAlpha=ta; ctx.fillStyle='#fff'; ctx.font='800 54px system-ui,Segoe UI,sans-serif';
+    var tl=brioWrap(ctx,slide.t||'',W-180);
+    for(var i=0;i<tl.length;i++){ ctx.fillText(tl[i],xStart+tdx,y); y+=64; } ctx.restore();
+    y+=16;
+    // points, révélés un à un (fondu + glissement)
+    var pts=slide.p||[], n=pts.length;
+    for(var k=0;k<n;k++){ var start=0.12+0.8*(k/(n+0.5)); var a=ease((prog-start)*7); if(a<=0.02) continue;
+      var dx=(1-a)*(rtl?-22:22); ctx.save(); ctx.globalAlpha=a;
+      var bx=xStart+dx; ctx.fillStyle=st.c; ctx.font='700 34px system-ui,sans-serif';
+      ctx.fillText(rtl?'◂':'▸', bx, y);
+      ctx.fillStyle='rgba(255,255,255,.96)'; ctx.font='400 33px system-ui,Segoe UI,sans-serif';
       var tx=rtl?(bx-44):(bx+44); var lines=brioWrap(ctx,pts[k],W-230);
-      for(var j=0;j<lines.length;j++){ ctx.fillText(lines[j],tx,y); y+=46; }
-      y+=16; }
-    // formule mise en valeur (facultatif) : encadré centré avec le symbole = lisible
-    var fml=brioFormulaText(slide.f||''); if(fml && prog>0.15){ ctx.textAlign='center'; try{ctx.direction='ltr';}catch(_){}
+      for(var j=0;j<lines.length;j++){ ctx.fillText(lines[j],tx,y); y+=44; }
+      ctx.restore(); y+=14; }
+    // formule mise en valeur (facultatif) : encadré centré, lisible
+    var fml=brioFormulaText(slide.f||''); if(fml){ var fa=ease((prog-0.2)*5); if(fa>0.02){ ctx.save(); ctx.globalAlpha=fa; ctx.textAlign='center'; try{ctx.direction='ltr';}catch(_){}
       ctx.font='700 40px "Cambria Math",Georgia,serif'; var fw=Math.min(W-200, ctx.measureText(fml).width+70), fx=W/2, fy=Math.min(y+6, H-150);
-      ctx.fillStyle='rgba(255,255,255,.12)'; brioRound(ctx, fx-fw/2, fy, fw, 64, 14); ctx.fill();
-      ctx.strokeStyle='rgba(255,211,107,.6)'; ctx.lineWidth=2; brioRound(ctx, fx-fw/2, fy, fw, 64, 14); ctx.stroke();
-      ctx.fillStyle='#fff'; ctx.fillText(fml, fx, fy+43); ctx.textAlign=rtl?'right':'left'; }
+      ctx.fillStyle=st.c; ctx.globalAlpha=fa*0.14; brioRound(ctx, fx-fw/2, fy, fw, 64, 14); ctx.fill(); ctx.globalAlpha=fa;
+      ctx.strokeStyle=st.c; ctx.lineWidth=2; brioRound(ctx, fx-fw/2, fy, fw, 64, 14); ctx.stroke();
+      ctx.fillStyle='#fff'; ctx.fillText(fml, fx, fy+43); ctx.restore(); ctx.textAlign=rtl?'right':'left'; } }
     // pied : barre de progression + pagination
     var pb=(idx+prog)/total; ctx.fillStyle='rgba(255,255,255,.18)'; ctx.fillRect(90,H-70,W-180,8);
-    ctx.fillStyle='#ffd36b'; ctx.fillRect(rtl?(W-90-(W-180)*pb):90,H-70,(W-180)*pb,8);
+    ctx.fillStyle=st.c; ctx.fillRect(rtl?(W-90-(W-180)*pb):90,H-70,(W-180)*pb,8);
     ctx.fillStyle='rgba(255,255,255,.7)'; ctx.font='600 22px system-ui,sans-serif'; ctx.textAlign=rtl?'left':'right'; try{ctx.direction='ltr';}catch(_){}
     ctx.fillText((idx+1)+' / '+total, rtl?90:(W-90), H-30); }
   function brioDecode(ac,ab){ return new Promise(function(res,rej){ try{ var p=ac.decodeAudioData(ab,res,rej); if(p&&p.then)p.then(res,rej); }catch(e){ rej(e); } }); }
@@ -949,13 +968,17 @@
     var W=1280,H=720, cv=document.createElement('canvas'); cv.width=W; cv.height=H; var ctx=cv.getContext('2d');
     var AC=window.AudioContext||window.webkitAudioContext, ac=new AC(); try{ await ac.resume(); }catch(_){}
     var adest=ac.createMediaStreamDestination();
-    // synthèse audio par diapo
-    var bufs=[]; for(var i=0;i<slides.length;i++){ var say=(slides[i].say||slides[i].narration||((slides[i].t||'')+'. '+((slides[i].p||[]).join('. ')))).toString();
+    // synthèse audio par diapo — PLAFOND DUR de 10 minutes (on s'arrête avant, mais on garde la diapo de clôture)
+    var CAP=9.6*60, bufs=[], used=[], acc=0;
+    for(var i=0;i<slides.length;i++){ var isLast=(i===slides.length-1);
+      if(acc>=CAP && !isLast) continue; // limite atteinte : on saute le reste du contenu, on gardera la clôture
+      var say=(slides[i].say||slides[i].narration||((slides[i].t||'')+'. '+((slides[i].p||[]).join('. ')))).toString();
       var csay=voiceCleanTTS(say)||(slides[i].t||'diapositive'); slides[i]._cap=titre;
       var r=await fetch('/api/tts?lang='+encodeURIComponent(lang)+'&text='+encodeURIComponent(csay.slice(0,1500)));
       if(!r||!r.ok) throw new Error('tts_'+(r?r.status:'net'));
-      var ab=await r.arrayBuffer(); var buf=await brioDecode(ac,ab); bufs.push(buf);
+      var ab=await r.arrayBuffer(); var buf=await brioDecode(ac,ab); bufs.push(buf); used.push(slides[i]); acc+=buf.duration+0.45;
       if(onProg) onProg(0.05+0.35*((i+1)/slides.length)); }
+    slides=used;
     // chronologie
     var gap=0.45, spans=[], t=0; for(var s=0;s<bufs.length;s++){ var d=bufs[s].duration+gap; spans.push({start:t,dur:d}); t+=d; } var total=t+0.25;
     // flux combiné + enregistreur
@@ -980,11 +1003,11 @@
     }); }
   // Ajoute une diapo d'intro (titre) et une diapo de clôture Brio autour du contenu.
   function brioVideoFrame(slides,titre,lang){ var ar=(lang==='ar');
-    var intro={t:titre, p:ar?['درس مصوّر من Brio']:['Capsule vidéo — Brio'], say:(ar?('هذا درس حول: '+titre+'. لنبدأ.'):('Petite vidéo de cours sur : '+titre+'. C\'est parti !'))};
-    var outro={t:(ar?'أحسنت!':'Bravo !'), p:[ar?'راجِع جيّدًا مع Brio':'Révise bien avec Brio'], say:(ar?'أحسنت! واصل المراجعة مع بريو. إلى اللقاء.':'Bravo ! Continue à réviser avec Brio. À bientôt.')};
+    var intro={t:titre, p:ar?['درس مصوّر من Brio']:['Capsule vidéo — Brio'], say:(ar?('هذا درس حول: '+titre+'. لنبدأ.'):('Petite vidéo de cours sur : '+titre+'. C\'est parti !')), kind:'intro'};
+    var outro={t:(ar?'أحسنت!':'Bravo !'), p:[ar?'راجِع جيّدًا مع Brio':'Révise bien avec Brio'], say:(ar?'أحسنت! واصل المراجعة مع بريو. إلى اللقاء.':'Bravo ! Continue à réviser avec Brio. À bientôt.'), kind:'outro'};
     return [intro].concat(slides, [outro]); }
   function brioNormSlides(raw){ if(!Array.isArray(raw)) return [];
-    return raw.map(function(s){ if(typeof s==='string') return {t:s,p:[],say:'',f:''}; return {t:(s.t||s.titre||s.title||'').toString(), p:(s.p||s.points||s.puces||[]).map(String), say:(s.say||s.narration||s.texte||'').toString(), f:(s.f||s.formule||s.formula||'').toString()}; }).filter(function(s){ return s.t||s.p.length||s.say||s.f; }); }
+    return raw.map(function(s){ if(typeof s==='string') return {t:s,p:[],say:'',f:'',kind:''}; return {t:(s.t||s.titre||s.title||'').toString(), p:(s.p||s.points||s.puces||[]).map(String), say:(s.say||s.narration||s.texte||'').toString(), f:(s.f||s.formule||s.formula||'').toString(), kind:(s.kind||s.type||s.genre||'').toString()}; }).filter(function(s){ return s.t||s.p.length||s.say||s.f; }); }
   // Construit la carte vidéo (persistante) : bouton de génération -> vidéo + téléchargement.
   function brioVideoBuild(el, slides, lang, titre){ slides=brioNormSlides(slides);
     var head='<div class="bm-head">🎬 '+esc(titre)+'</div>';
@@ -993,8 +1016,9 @@
       var say=slides.map(function(s){ return (s.say||((s.t||'')+'. '+(s.p||[]).join('. '))); }).join('. ');
       el.innerHTML=head+'<div class="bm-note">La création vidéo n\'est pas disponible sur ce navigateur (souvent iPhone). Voici la version <b>audio</b> :</div>';
       var sub=document.createElement('div'); el.appendChild(sub); brioMp3Build(sub, titre, say, lang); return; }
-    var estSec=Math.max(8, slides.length*9);
-    el.innerHTML=head+'<div class="bm-note">Vidéo de cours · '+slides.length+' diapositives, voix '+(lang==='ar'?'arabe':'française')+'. La création dure ≈ sa durée de lecture (~'+estSec+' s) — <b>garde cet onglet ouvert et au premier plan</b>.</div><button class="bm-btn" type="button">▶ Générer la vidéo</button>';
+    var estSec=Math.min(600, Math.max(12, slides.length*11));
+    var estTxt=estSec<90?('~'+estSec+' s'):('~'+Math.round(estSec/60)+' min');
+    el.innerHTML=head+'<div class="bm-note">Vidéo de cours · '+slides.length+' diapositives, voix '+(lang==='ar'?'arabe':'française')+' · durée '+estTxt+' (max 10 min). La création se fait en temps réel (environ la durée de la vidéo) — <b>garde cet onglet ouvert et au premier plan</b> jusqu\'à la fin.</div><button class="bm-btn" type="button">▶ Générer la vidéo</button>';
     var btn=el.querySelector('.bm-btn');
     btn.addEventListener('click',function(){ // le clic fournit le geste utilisateur (audio/enregistrement)
       el.innerHTML=head+'<div class="bm-stat"><span class="bm-spin"></span> <span class="bm-msg">Préparation de la voix…</span></div><div class="bm-bar"><i></i></div>';
