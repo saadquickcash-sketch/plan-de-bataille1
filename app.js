@@ -296,7 +296,7 @@
       try{ if(/qcm|quiz|test|planning|exercice|s[ée]rie|entra[iî]n|r[ée]vis/i.test(lastU)){ base.push({role:'system',content:'VARIÉTÉ (jeton '+Math.random().toString(36).slice(2,8)+') : propose des questions et exercices NOUVEAUX, différents des fois précédentes ; varie les énoncés, les nombres, l\'ordre et la difficulté. Ne répète jamais exactement le même contenu.'}); } }catch(_){}
       try{ if(pendingForceMedia==='mindmap'){ base.push({role:'system',content:'CARTE MENTALE (impératif) : l\'élève veut une carte mentale (mind map). Tu DOIS déclencher l\'outil. Écris AU PLUS une courte phrase d\'introduction, puis termine ta réponse par EXACTEMENT une balise [[PB]]{"outil":"mindmap","args":{"titre":"…","centre":"le thème central (court)","branches":[{"t":"nom de branche","sous":["sous-idée courte","autre sous-idée"]}]}}[[/PB]] avec 4 à 6 branches et 2 à 4 sous-points brefs chacune. N\'écris PAS de longue leçon, n\'utilise JAMAIS de bloc ```svg, n\'invente pas d\'autre balise, n\'enveloppe pas la balise dans des $.'}); }
       else if(pendingForceMedia==='mp3'){ base.push({role:'system',content:'AUDIO MP3 (impératif) : l\'élève veut un fichier audio à écouter. Tu DOIS déclencher l\'outil. Écris AU PLUS une courte phrase, puis termine EXACTEMENT par [[PB]]{"outil":"mp3","args":{"titre":"…","texte":"le texte EXACT à lire, clair, sans LaTeX ni symboles","lang":"fr"}}[[/PB]]. N\'écris JAMAIS de lien Markdown, ni « Télécharger », ni fausse URL ; n\'invente pas d\'autre balise ; n\'enveloppe pas la balise dans des $. Pour l\'arabe mets "lang":"ar".'}); }
-      else if(pendingForceMedia==='video'){ base.push({role:'system',content:'VIDÉO DE COURS (impératif) : l\'élève veut une vidéo. Tu DOIS déclencher l\'outil et faire un VRAI COURS COMPLET façon professeur : introduction, explications progressives, au moins un EXEMPLE résolu, les formules clés, un ou deux EXERCICES d\'application PUIS leur CORRECTION détaillée, et une diapo « à retenir ». Écris AU PLUS une courte phrase d\'intro, puis termine EXACTEMENT par [[PB]]{"outil":"video","args":{"titre":"…","lang":"fr","slides":[{"t":"titre","p":["point bref"],"say":"narration claire","f":"formule facultative","kind":"intro|cours|exemple|formule|exercice|correction|conclusion"}]}}[[/PB]]. Mets ~8 à 12 diapositives (jusqu\'à ~20 si « détaillé/complet »), SANS dépasser 10 minutes, et donne à chaque diapo son "kind". N\'invente pas d\'autre balise ; n\'enveloppe pas la balise dans des $.'}); }
+      else if(pendingForceMedia==='video'){ base.push({role:'system',content:'VIDÉO DE COURS (impératif) : l\'élève veut une vidéo. N\'écris NI JSON NI balise [[PB]]. Rédige un VRAI COURS COMPLET façon professeur, structuré en SECTIONS où CHAQUE section devient une diapo. Format EXACT, répété pour chaque section :\n## TYPE | Titre court de la diapo\n- point clé bref\n- autre point bref\nVOIX: 1 à 4 phrases claires que la voix doit dire (sans symboles ni LaTeX)\n\nTYPE ∈ INTRO, COURS, EXEMPLE, EXERCICE, CORRECTION, CONCLUSION. Tu peux ajouter une ligne « Formule: … » pour une formule à afficher. Enchaîne la trame d\'un vrai cours : une INTRO, plusieurs sections COURS (explication progressive), au moins un EXEMPLE résolu, un ou deux EXERCICE d\'application PUIS leur CORRECTION détaillée, et une section CONCLUSION « à retenir ». Mets 8 à 14 sections (jusqu\'à ~20 si l\'élève veut « détaillé/complet/long »), sans dépasser 10 minutes de lecture. N\'écris AUCUN autre texte avant la première section ni après la dernière.'}); }
       if(pendingForceQuiz){ base.push({role:'system',content:'QCM INTERACTIF (impératif) : l\'élève veut un QCM interactif dans le chat. Réponds UNIQUEMENT par un QCM au FORMAT TEXTE EXACT ci-dessous — SANS aucune balise, SANS JSON, SANS LaTeX ni antislash (écris les maths en clair avec des symboles : lim, x→0, x², √, ≤, ≥, ∞, π, sin(x)/x). Format pour CHAQUE question :\n1) énoncé de la question ?\nA) premier choix\nB) deuxième choix\nC) troisième choix\nD) quatrième choix\nRéponse : B\nExplication : courte explication de la bonne réponse\n\nEnchaîne ainsi 5 questions (2), 3) …), ou le nombre demandé par l\'élève. Chaque question a 4 choix (A à D), une ligne « Réponse : <lettre> » et une ligne « Explication : … ». N\'écris AUCUNE introduction ni conclusion, seulement les questions à ce format.'}); } }catch(_){}
     }catch(e){}
     return base.concat(c.msgs.slice(-16)); }
@@ -462,6 +462,9 @@
       var pr=agParse(raw); var hasAct = pr.actions && pr.actions.length;
       // Réponse = UNIQUEMENT une balise (pas de texte) -> clean vide : NE PAS retomber sur le brut (sinon la balise fuite).
       var clean = (pr.clean && pr.clean.trim()) ? pr.clean : (hasAct ? '' : raw);
+      // Média demandé + outil média bien déclenché : le média EST la réponse -> on n'affiche PAS le long texte
+      // (évite le « grand texte » quand l'IA recopie toute la leçon au-dessus de la vidéo/carte/MP3).
+      if(pendingForceMedia && hasAct){ try{ var _hasMediaAct=pr.actions.some(function(a){ var tn=(a.outil||a.tool||'').toString().toLowerCase(); return /mp3|audio|podcast|vid|film|clip|mindmap|carte|mental/.test(tn); }); if(_hasMediaAct) clean=''; }catch(_){} }
       try{ clean=agVerifyArithmetic(clean); }catch(_){} try{ clean=agMathNormalize(clean); }catch(_){}
       /* QCM interactif forcé : si l'IA a écrit le QCM en texte (sans balise), on le rend en quiz cliquable */
       if(pendingForceQuiz && !hasAct){ var _qz=agTextToQuiz(clean); if(_qz && _qz.questions.length>=2){
@@ -478,6 +481,10 @@
           _built=agMp3({titre:agGuessTitle(clean)||'Audio',texte:_say,lang:_ar?'ar':'fr'});
         } else if(pendingForceMedia==='mindmap'){
           var _mm=agTextToMindmap(clean); if(_mm){ _built=agMindmap({titre:agGuessTitle(clean)||'Carte mentale',centre:_mm.centre,branches:_mm.branches,lang:_ar?'ar':'fr'}); }
+        } else if(pendingForceMedia==='video'){
+          var _vs=agTextToVideo(clean);
+          if(_vs){ var _vt=((text.match(/\bsur\s+(?:l[ae’']s?\s+|d[eu]s?\s+)?(.{3,60}?)(?:\s+avec\b|\s+en\s+|[.?!]|$)/i)||[])[1]||'').trim()||agGuessTitle(clean)||'Vidéo de cours';
+            _built=agVideo({titre:_vt,slides:_vs,lang:_ar?'ar':'fr'}); }
         }
         if(_built){ try{ agCaptureNote(clean,text); }catch(_){} try{ pbMaybeTitle(c,text); }catch(_){} pendingForcePage=null; pendingForceQuiz=false; pendingForceMedia=null; busy=false; var _aim=activeInput(); if(_aim) _aim.focus(); return; }
       }
@@ -1292,9 +1299,12 @@ function agParse(text){
   var re=/\[\[PB\]\]([\s\S]*?)\[\[\/PB\]\]/g, m;
   while((m=re.exec(text))){ var a=agJson(m[1]); if(a) actions.push(a); }
   var clean=text.replace(re,'').trim();
-  if(!actions.length){ var m2=clean.match(/\[\[PB\]\]([\s\S]*)$/); if(m2){ var a2=agJson(m2[1]); if(a2){ actions.push(a2); clean=clean.slice(0,m2.index).trim(); } } }
+  // Balise [[PB]] non fermée (réponse tronquée par le modèle) : on tente de la lire, mais SURTOUT on la retire TOUJOURS du texte visible.
+  if(!actions.length){ var m2=clean.match(/\[\[PB\]\]([\s\S]*)$/); if(m2){ var a2=agJson(m2[1]); if(a2){ actions.push(a2); } clean=clean.slice(0,m2.index).trim(); } }
   clean=clean.replace(/```json\s*```/gi,'').replace(/\[\[\/?PB\]\]/g,'').trim();
-  // filet de sécurité : jamais de balise brute visible, ni de $ $ / $$ $$ vides laissés par une balise retirée
+  // filet de sécurité DÉFINITIF : retire TOUTE amorce de balise d'outil (fermée, tronquée ou malformée) jusqu'à la fin,
+  // puis toute balise courte isolée et les $ $/$$ $$ vides. Une balise va toujours en fin de réponse.
+  clean=clean.replace(/\[\[(?:PB|MP3|AUDIO|PODCAST|VIDEO|VIDÉO|FILM|CLIP|MINDMAP|CARTE[\s_-]?MENTALE|QCM|QUIZ|IMAGE|GRAPHIQUE|COURBE|SONDAGE)\]\][\s\S]*$/i,'').trim();
   clean=clean.replace(/\[\[\/?[A-Za-zÀ-ÿ0-9 _-]{1,24}\]\]/g,'').replace(/\$\$\s*\$\$/g,' ').replace(/(^|[^\\$])\$\s*\$(?!\$)/g,'$1 ').replace(/[ \t]{2,}/g,' ').trim();
   return {clean:clean, actions:actions};
 }
@@ -1801,6 +1811,36 @@ function agTextToMindmap(clean){
   if(branches.length<2) return null;
   var centre=agGuessTitle(clean)||'Carte mentale';
   return {centre:centre.slice(0,60), branches:branches}; }
+
+/* Construit des diapositives de vidéo à partir d'une leçon en TEXTE (titres ##, puces, narration) —
+   robuste même si la réponse est longue ou tronquée : chaque section devient une diapo typée. */
+function agTextToVideo(clean){
+  var text=String(clean||'').replace(/\r/g,''), lines=text.split('\n'), slides=[], cur=null;
+  var KM=[['intro','intro'],['exemple','exemple'],['exercice','exercice'],['application','exercice'],['correction','correction'],['solution','correction'],['formule','formule'],['théorème','formule'],['theoreme','formule'],['propriété','cours'],['definition','cours'],['définition','cours'],['à retenir','conclusion'],['a retenir','conclusion'],['retenir','conclusion'],['conclusion','conclusion'],['résumé','conclusion'],['resume','conclusion'],['bilan','conclusion'],['cours','cours'],['explication','cours'],['méthode','exemple'],['methode','exemple']];
+  function inferKind(s){ s=(s||'').toLowerCase(); for(var i=0;i<KM.length;i++){ if(s.indexOf(KM[i][0])>=0) return KM[i][1]; } return 'cours'; }
+  var TYPES='INTRO|COURS|EXEMPLE|EXERCICE|APPLICATION|CORRECTION|SOLUTION|CONCLUSION|DÉFINITION|DEFINITION|PROPRIÉTÉ|THÉORÈME|MÉTHODE|METHODE|À RETENIR|A RETENIR|RÉSUMÉ|RESUME|BILAN';
+  var reType=new RegExp('^\\s*\\[?('+TYPES+')\\]?\\s*[:|\\-–]\\s*(.*)$','i');
+  function cleanTitle(s){ return String(s||'').replace(/[*_`#>]/g,'').replace(reType,'$2').replace(/^\s*\d+[.)]\s*/,'').replace(/\s+/g,' ').trim(); }
+  for(var i=0;i<lines.length;i++){ var t=(lines[i]||'').trim(); if(!t) continue;
+    var mh=t.match(/^#{1,4}\s+(.+)$/) || t.match(/^\*\*([^*]{2,80})\*\*\s*:?\s*$/);
+    var mt=t.match(reType);
+    var head = mh ? mh[1] : (mt ? ((mt[1]+' '+(mt[2]||'')).trim()) : null);
+    if(head){ var kindHint=mt?mt[1]:(new RegExp('\\b('+TYPES+')\\b','i').exec(head)||[])[0];
+      cur={t:cleanTitle(head)||cleanTitle(mt&&mt[1]||'')||'Point clé', p:[], say:'', f:'', kind:inferKind(kindHint||head)};
+      slides.push(cur); continue; }
+    if(!cur) continue;
+    var mv=t.match(/^(?:🎙️|🎤|▶️|voix|narration|dire|narrateur)\s*[:\-]\s*(.+)$/i); if(mv){ cur.say=(cur.say?cur.say+' ':'')+mv[1].trim(); continue; }
+    var mf=t.match(/^(?:formule|📐)\s*[:\-]\s*(.+)$/i); if(mf){ if(!cur.f) cur.f=mf[1].replace(/[`$]/g,'').trim(); continue; }
+    var mb=t.match(/^[-*•▸▪◦]\s+(.+)$/) || t.match(/^\d+[.)]\s+(.+)$/);
+    if(mb){ var pv=mb[1].replace(/[*_`]/g,'').trim(); if(pv){ if(cur.p.length<4) cur.p.push(pv.slice(0,150)); cur.say=(cur.say?cur.say+' ':'')+pv; } continue; }
+    // ligne de prose -> narration
+    cur.say=(cur.say?cur.say+' ':'')+t.replace(/[*_`#>]/g,'').trim();
+  }
+  slides=slides.filter(function(s){ return (s.t&&s.t.trim())||s.p.length||s.say; }).map(function(s){
+    if(!s.say||!s.say.trim()) s.say=((s.t||'')+'. '+s.p.join('. ')).trim();
+    s.say=s.say.slice(0,1200); s.p=s.p.slice(0,4); return s; });
+  if(slides.length<2) return null;
+  return slides.slice(0,22); }
 
 /* -- Assistant planning : questionnaire natif -> crée l'onglet, sans dépendre de l'IA -- */
 var PLANNING_QS=[
