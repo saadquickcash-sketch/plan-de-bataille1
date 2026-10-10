@@ -1301,7 +1301,16 @@ function agParse(text){
   var clean=text.replace(re,'').trim();
   // Balise [[PB]] non fermée (réponse tronquée par le modèle) : on tente de la lire, mais SURTOUT on la retire TOUJOURS du texte visible.
   if(!actions.length){ var m2=clean.match(/\[\[PB\]\]([\s\S]*)$/); if(m2){ var a2=agJson(m2[1]); if(a2){ actions.push(a2); } clean=clean.slice(0,m2.index).trim(); } }
-  clean=clean.replace(/```json\s*```/gi,'').replace(/\[\[\/?PB\]\]/g,'').trim();
+  // JSON d'outil écrit SANS balise [[PB]] (ex. {"outil":"video","args":{…}}) : on le repère par la clé "outil",
+  // on l'exécute, et on le retire du texte visible — même tronqué (sinon ce JSON apparaît en « grand texte »).
+  if(!actions.length){ var oi=clean.search(/\{[^{}]{0,40}"(?:outil|tool)"\s*:/);
+    if(oi>=0){ var depth=0,k=oi,instr=false,esc=false;
+      for(;k<clean.length;k++){ var ch=clean.charAt(k); if(esc){esc=false;continue;} if(ch==='\\'){esc=true;continue;} if(ch==='"'){instr=!instr;continue;} if(instr)continue; if(ch==='{')depth++; else if(ch==='}'){depth--; if(depth===0){k++;break;}} }
+      var jstr=clean.slice(oi,k), aj=agJson(jstr);
+      if(aj && (aj.outil||aj.tool)){ actions.push(aj); clean=(clean.slice(0,oi)+' '+clean.slice(k)).trim(); }
+      else { clean=clean.slice(0,oi).trim(); } // JSON cassé/tronqué : on retire quand même tout à partir du { "outil"
+    } }
+  clean=clean.replace(/```json\s*```/gi,'').replace(/```json|```/gi,'').replace(/\[\[\/?PB\]\]/g,'').trim();
   // filet de sécurité DÉFINITIF : retire TOUTE amorce de balise d'outil (fermée, tronquée ou malformée) jusqu'à la fin,
   // puis toute balise courte isolée et les $ $/$$ $$ vides. Une balise va toujours en fin de réponse.
   clean=clean.replace(/\[\[(?:PB|MP3|AUDIO|PODCAST|VIDEO|VIDÉO|FILM|CLIP|MINDMAP|CARTE[\s_-]?MENTALE|QCM|QUIZ|IMAGE|GRAPHIQUE|COURBE|SONDAGE)\]\][\s\S]*$/i,'').trim();
