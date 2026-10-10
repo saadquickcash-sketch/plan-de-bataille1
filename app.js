@@ -301,6 +301,9 @@
         base.push({role:'system',content:'VIDÉO DE COURS (impératif) : l\'élève veut une vidéo. N\'écris NI JSON NI balise [[PB]]. Rédige un VRAI COURS COMPLET façon professeur, structuré en SECTIONS où CHAQUE section devient une diapo. Format EXACT, répété pour chaque section :\n## TYPE | Titre court de la diapo\n- point clé bref\n- autre point bref\nVOIX: les phrases que la voix doit dire pour cette diapo (claires, naturelles, SANS symboles ni LaTeX : dis « u indice n », « racine de 2 », « x au carré »)\n\nTYPE ∈ INTRO, COURS, EXEMPLE, EXERCICE, CORRECTION, CONCLUSION. Dans les TITRES et les PUCES, écris les maths en notation SIMPLE et lisible (ex. u(n), u(n+1) = f(u(n)), racine de 2), SANS LaTeX ni $ ; tu peux ajouter une ligne « Formule: … » pour UNE formule clé à afficher. Enchaîne la trame d\'un vrai cours : une INTRO, plusieurs sections COURS (explication progressive), au moins un EXEMPLE résolu, un ou deux EXERCICE d\'application PUIS leur CORRECTION détaillée, et une section CONCLUSION « à retenir ».'+_vdur+' N\'écris AUCUN autre texte avant la première section ni après la dernière.'}); }
       if(pendingForceQuiz){ base.push({role:'system',content:'QCM INTERACTIF (impératif) : l\'élève veut un QCM interactif dans le chat. Réponds UNIQUEMENT par un QCM au FORMAT TEXTE EXACT ci-dessous — SANS aucune balise, SANS JSON, SANS LaTeX ni antislash (écris les maths en clair avec des symboles : lim, x→0, x², √, ≤, ≥, ∞, π, sin(x)/x). Format pour CHAQUE question :\n1) énoncé de la question ?\nA) premier choix\nB) deuxième choix\nC) troisième choix\nD) quatrième choix\nRéponse : B\nExplication : courte explication de la bonne réponse\n\nEnchaîne ainsi 5 questions (2), 3) …), ou le nombre demandé par l\'élève. Chaque question a 4 choix (A à D), une ligne « Réponse : <lettre> » et une ligne « Explication : … ». N\'écris AUCUNE introduction ni conclusion, seulement les questions à ce format.'}); } }catch(_){}
     }catch(e){}
+    // Pour un MÉDIA forcé (vidéo/MP3/carte), on n'a pas besoin de tout l'historique : on limite le payload
+    // au dernier message — sinon une longue conversation fait échouer l'IA premium (repli sur l'IA gratuite).
+    if(pendingForceMedia){ var lastU=null; for(var li=c.msgs.length-1; li>=0; li--){ if(c.msgs[li].role==='user'){ lastU=c.msgs[li]; break; } } return base.concat(lastU?[{role:'user',content:lastU.content}]:c.msgs.slice(-1)); }
     return base.concat(c.msgs.slice(-16)); }
   async function pbIdToken(){
     try{ if(typeof firebase!=='undefined' && firebase.auth && firebase.auth().currentUser){ return await firebase.auth().currentUser.getIdToken(); } }catch(e){}
@@ -962,8 +965,8 @@
       x=x.replace(/\\sqrt\s*\{([^{}]*)\}/g,'√($1)').replace(/\\sqrt\s*/g,'√');
       x=x.replace(/\\lim\s*_\{([^{}]*)\}/g,'lim($1)').replace(/\\lim\b/g,'lim');
       x=x.replace(/\\(sin|cos|tan|ln|log|exp|max|min|arctan|arcsin|arccos)\b/g,'$1');
-      x=x.replace(/\\times/g,'×').replace(/\\cdot/g,'·').replace(/\\div/g,'÷')
-         .replace(/\\leq|\\le\b/g,'≤').replace(/\\geq|\\ge\b/g,'≥').replace(/\\neq/g,'≠').replace(/\\approx/g,'≈')
+      x=x.replace(/\\times/g,'×').replace(/\\cdot/g,'·').replace(/\\div/g,'÷').replace(/\\circ/g,'∘')
+         .replace(/\\leq|\\le\b/g,'≤').replace(/\\geq|\\ge\b/g,'≥').replace(/\\neq|\\ne\b/g,'≠').replace(/\\approx/g,'≈')
          .replace(/\\pm/g,'±').replace(/\\infty/g,'∞').replace(/\\to\b|\\rightarrow/g,'→').replace(/\\Rightarrow|\\implies/g,'⇒')
          .replace(/\\alpha/g,'α').replace(/\\beta/g,'β').replace(/\\gamma/g,'γ').replace(/\\theta/g,'θ').replace(/\\lambda/g,'λ')
          .replace(/\\mu/g,'µ').replace(/\\pi/g,'π').replace(/\\omega/g,'ω').replace(/\\Delta/g,'Δ').replace(/\\sum/g,'∑').replace(/\\int/g,'∫')
@@ -1087,7 +1090,9 @@
       var say=slides.map(function(s){ return (s.say||((s.t||'')+'. '+(s.p||[]).join('. '))); }).join('. ');
       el.innerHTML=head+'<div class="bm-note">La création vidéo n\'est pas disponible sur ce navigateur (souvent iPhone). Voici la version <b>audio</b> :</div>';
       var sub=document.createElement('div'); el.appendChild(sub); brioMp3Build(sub, titre, say, lang); return; }
-    var estSec=Math.min(600, Math.max(12, slides.length*11));
+    // durée estimée d'après la NARRATION (≈145 mots/min) + petites pauses, plafonnée à 10 min
+    var _w=0; slides.forEach(function(s){ _w+=String(s.say||((s.t||'')+' '+(s.p||[]).join(' '))).split(/\s+/).filter(Boolean).length; });
+    var estSec=Math.min(600, Math.max(12, Math.round(_w/145*60 + slides.length*0.5)));
     var estTxt=estSec<90?('~'+estSec+' s'):('~'+Math.round(estSec/60)+' min');
     el.innerHTML=head+'<div class="bm-note">Vidéo de cours · '+slides.length+' diapositives, voix '+(lang==='ar'?'arabe':'française')+' · durée '+estTxt+' (max 10 min). La création se fait en temps réel (environ la durée de la vidéo) — <b>garde cet onglet ouvert et au premier plan</b> jusqu\'à la fin.</div><button class="bm-btn" type="button">▶ Générer la vidéo</button>';
     var btn=el.querySelector('.bm-btn');
@@ -1119,29 +1124,36 @@
     var BRIO_MM_COLORS=['#4b3fa7','#1f9d55','#c2410c','#0369a1','#9d174d','#7c5cff','#a16207','#0f766e'];
     branches=(branches||[]).filter(function(b){ return b && (b.t||(b.sous&&b.sous.length)); });
     if(!branches.length) return '';
+    // Nettoie les maths ($…$ -> Unicode) dans le thème, les branches et les sous-points.
+    centre=brioInlineMath(centre||'');
+    branches=branches.map(function(b){ return { t:brioInlineMath(b.t||''), sous:(b.sous||[]).slice(0,5).map(function(x){ return brioInlineMath(String(x)); }) }; });
+    var W=1160, bw=310, GAP=24, cx=W/2;
+    function tLines(b){ return brioMmWrap(b.t||'',24); }
+    function sLines(su){ return brioMmWrap(su,32); }
+    function blockH(b){ var sl=0; (b.sous||[]).forEach(function(su){ sl+=sLines(su).length; }); return 30 + tLines(b).length*25 + 6 + sl*21 + 14; }
     var left=[],right=[]; branches.forEach(function(b,i){ (i%2===0?right:left).push(b); });
-    var ROWH=118, PADY=70, colH=Math.max(left.length,right.length)*ROWH, H=Math.max(360, colH+PADY*2), W=1160, cx=W/2, cy=H/2;
-    function blockH(b){ return 30 + brioMmWrap(b.t||'',22).length*22 + (b.sous||[]).length*22 + 12; }
+    function sideH(list){ var h=0; list.forEach(function(b){ h+=blockH(b); }); return h+GAP*Math.max(0,list.length-1); }
+    var H=Math.max(360, Math.max(sideH(left),sideH(right))+80), cy=H/2;
     var parts=[];
     parts.push('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" font-family="system-ui,Segoe UI,Arial,sans-serif" width="100%">');
     parts.push('<defs><linearGradient id="bmmC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a2350"/><stop offset="1" stop-color="#4b3fa7"/></linearGradient></defs>');
-    // branches + connecteurs
-    function side(list,isRight){ var n=list.length; for(var i=0;i<n;i++){ var b=list[i]; var col=BRIO_MM_COLORS[(branches.indexOf(b))%BRIO_MM_COLORS.length];
-      var bh=blockH(b), bw=300, gapY=(colH)/(n), yc=cy - colH/2 + gapY*i + gapY/2, by=yc-bh/2;
-      var bx=isRight?(cx+150):(cx-150-bw);
-      var ex=isRight?(cx+150):(cx-150), sx=isRight?(cx+70):(cx-70);
-      parts.push('<path d="M '+sx+' '+cy+' C '+((sx+ex)/2)+' '+cy+', '+((sx+ex)/2)+' '+yc+', '+ex+' '+yc+'" stroke="'+col+'" stroke-width="3" fill="none" opacity=".55"/>');
-      parts.push('<rect x="'+bx+'" y="'+by+'" rx="14" width="'+bw+'" height="'+bh+'" fill="'+col+'" fill-opacity=".14" stroke="'+col+'" stroke-width="2"/>');
-      // barre d'accent colorée (côté centre) : porte le code couleur sans nuire au contraste du texte
-      var accx=isRight?(bx+4):(bx+bw-10); parts.push('<rect x="'+accx+'" y="'+(by+8)+'" rx="3" width="6" height="'+(bh-16)+'" fill="'+col+'"/>');
-      var padIn=isRight?22:18, padOut=isRight?18:22;
-      var ty=by+28, tx=bx+padIn, anch='start', dir=ar?' direction="rtl"':'';
-      if(ar){ tx=bx+bw-padIn; anch='end'; }
-      var tl=brioMmWrap(b.t||'',24);
-      for(var k=0;k<tl.length;k++){ parts.push('<text x="'+tx+'" y="'+ty+'" text-anchor="'+anch+'"'+dir+' font-size="20" font-weight="800" fill="currentColor">'+brioMmEsc(tl[k])+'</text>'); ty+=24; }
-      ty+=2;
-      (b.sous||[]).forEach(function(su){ var sl=brioMmWrap(su,32); for(var m=0;m<sl.length;m++){ var pre=(m===0?'• ':'   '); parts.push('<text x="'+tx+'" y="'+ty+'" text-anchor="'+anch+'"'+dir+' font-size="15.5" fill="currentColor" fill-opacity=".82">'+brioMmEsc(pre+sl[m])+'</text>'); ty+=21; } });
-    } }
+    // branches + connecteurs — empilées par hauteur réelle (plus de chevauchement)
+    function side(list,isRight){ var total=sideH(list), yTop=cy-total/2;
+      for(var i=0;i<list.length;i++){ var b=list[i]; var col=BRIO_MM_COLORS[(branches.indexOf(b))%BRIO_MM_COLORS.length];
+        var bh=blockH(b), by=yTop, yc=by+bh/2;
+        var bx=isRight?(cx+150):(cx-150-bw);
+        var ex=isRight?(cx+150):(cx-150), sx=isRight?(cx+70):(cx-70);
+        parts.push('<path d="M '+sx+' '+cy+' C '+((sx+ex)/2)+' '+cy+', '+((sx+ex)/2)+' '+yc+', '+ex+' '+yc+'" stroke="'+col+'" stroke-width="3" fill="none" opacity=".55"/>');
+        parts.push('<rect x="'+bx+'" y="'+by+'" rx="14" width="'+bw+'" height="'+bh+'" fill="'+col+'" fill-opacity=".14" stroke="'+col+'" stroke-width="2"/>');
+        var accx=isRight?(bx+4):(bx+bw-10); parts.push('<rect x="'+accx+'" y="'+(by+8)+'" rx="3" width="6" height="'+(bh-16)+'" fill="'+col+'"/>');
+        var padIn=22, tx=isRight?(bx+padIn):(bx+padIn), anch='start', dir=ar?' direction="rtl"':'';
+        if(ar){ tx=bx+bw-padIn; anch='end'; }
+        var ty=by+30, tl=tLines(b);
+        for(var k=0;k<tl.length;k++){ parts.push('<text x="'+tx+'" y="'+ty+'" text-anchor="'+anch+'"'+dir+' font-size="20" font-weight="800" fill="currentColor">'+brioMmEsc(tl[k])+'</text>'); ty+=25; }
+        ty+=6;
+        (b.sous||[]).forEach(function(su){ var sl2=sLines(su); for(var m=0;m<sl2.length;m++){ var pre=(m===0?'• ':'   '); parts.push('<text x="'+tx+'" y="'+ty+'" text-anchor="'+anch+'"'+dir+' font-size="15.5" fill="currentColor" fill-opacity=".82">'+brioMmEsc(pre+sl2[m])+'</text>'); ty+=21; } });
+        yTop += bh + GAP;
+      } }
     side(right,true); side(left,false);
     // nœud central
     var cl=brioMmWrap(centre||'',16), ch=Math.max(70, cl.length*26+30), cw=230;
