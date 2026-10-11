@@ -141,7 +141,8 @@
   // diapositives, arbre) — jamais en octets : ils sont re-synthétisés à l'identique sur
   // chaque appareil (la limite d'1 Mo d'un document Firestore interdit de stocker l'audio/vidéo).
   function stripMedia(md){ md=md||{}; var o={kind:md.kind||'mp3',title:(md.title||'').toString().slice(0,90),lang:md.lang||'fr'};
-    if(md.kind==='video'){ o.slides=(md.slides||[]).slice(0,24).map(function(s){ return {t:(s.t||'').toString().slice(0,120),p:(s.p||[]).slice(0,6).map(function(x){return String(x).slice(0,160);}),say:(s.say||'').toString().slice(0,1300),f:(s.f||'').toString().slice(0,120),kind:(s.kind||'').toString().slice(0,16)}; }); }
+    if(md.kind==='promo'){ /* scènes fixes : rien d'autre à conserver */ }
+    else if(md.kind==='video'){ o.slides=(md.slides||[]).slice(0,24).map(function(s){ return {t:(s.t||'').toString().slice(0,120),p:(s.p||[]).slice(0,6).map(function(x){return String(x).slice(0,160);}),say:(s.say||'').toString().slice(0,1300),f:(s.f||'').toString().slice(0,120),kind:(s.kind||'').toString().slice(0,16)}; }); }
     else if(md.kind==='mindmap'||md.kind==='carte'){ o.kind='mindmap'; o.centre=(md.centre||md.title||'').toString().slice(0,80); o.branches=(md.branches||[]).slice(0,8).map(function(b){ return {t:(b.t||'').toString().slice(0,60),sous:(b.sous||[]).slice(0,6).map(function(x){return String(x).slice(0,80);})}; }); }
     else { o.text=(md.text||'').toString().slice(0,4000); }
     return o; }
@@ -473,6 +474,14 @@
   async function ask(text, raw){ text=(text||'').trim(); var imgs=pendingImgs.slice(); var img=imgs[0]||null; if((!text&&!imgs.length)||busy) return;
     pendingForceQuiz=false; pendingForceMedia=null;
     if(!img && !raw){
+      if(agWantsPromo(text)){ // vidéo de présentation du site : scènes fixes, vraies pages + musique + voix off
+        if(input) input.value=''; if(cfInput){ cfInput.value=''; autoGrow(cfInput); }
+        var _pc=cur(); _pc.msgs.push({role:'user',content:text}); if(!_pc.title||_pc.title==='Nouvelle conversation') _pc.title='Vidéo de présentation';
+        _pc.msgs.push({role:'assistant',content:'Avec plaisir ! 🎬 Je prépare une vidéo de présentation de Brio : les vraies pages du site, animées avec élégance, une musique douce en fond et une voix off qui explique chaque onglet — avec des pauses pour bien suivre. Clique sur « Générer la vidéo » ci-dessous, puis garde l’onglet au premier plan jusqu’à la fin.'});
+        _pc.t=Date.now(); save(); renderMsgs(); renderList();
+        try{ brioMediaPush({kind:'promo',title:'Brio — Vidéo de présentation',lang:'fr'}, '🎬 Vidéo de présentation de Brio'); }catch(_){}
+        var _api=activeInput(); if(_api) _api.focus(); return;
+      }
       if(agWantsPlanning(text)){ startPlanningWizard(text); return; }
       var _gx=agWantsPlot(text); if(_gx){ if(input) input.value=''; if(cfInput){ cfInput.value=''; autoGrow(cfInput); } var _gc=cur(); _gc.msgs.push({role:'user',content:text}); if(!_gc.title||_gc.title==='Nouvelle conversation') _gc.title=text.slice(0,42); _gc.msgs.push({role:'assistant',content:'Voici la courbe 📈'}); _gc.t=Date.now(); save(); renderMsgs(); renderList(); setTimeout(function(){ try{ agPlotBubble(_gx,{}); }catch(e){} },80); return; }
       var _stc=agWantsStyle(text); if(_stc){ if(input) input.value=''; if(cfInput){ cfInput.value=''; autoGrow(cfInput); } var _sc=cur(); _sc.msgs.push({role:'user',content:text}); if(!_sc.title||_sc.title==='Nouvelle conversation') _sc.title=text.slice(0,42); var _r=agDoStyle(_stc); _sc.msgs.push({role:'assistant',content:_r||'Fait 👍'}); _sc.t=Date.now(); save(); renderMsgs(); renderList(); return; }
@@ -904,7 +913,8 @@
   function brioMediaRender(media){ brioMediaCss(); media=media||{};
     var el=document.createElement('div'); el.className='cp-msg ai bmedia';
     try{
-      if(media.kind==='video'){ brioVideoBuild(el, media.slides||[], media.lang||'fr', media.title||'Vidéo de cours'); }
+      if(media.kind==='promo'){ brioPromoBuild(el, media); }
+      else if(media.kind==='video'){ brioVideoBuild(el, media.slides||[], media.lang||'fr', media.title||'Vidéo de cours'); }
       else if(media.kind==='mindmap'||media.kind==='carte'){ brioMindmapBuild(el, media); }
       else { brioMp3Build(el, media.title||'Audio Brio', media.text||'', media.lang||'fr'); }
     }catch(_){ el.innerHTML='<div class="bm-head">🎞️ '+esc(media.title||'Média')+'</div><div class="bm-note">Ce média n\'a pas pu être affiché.</div>'; }
@@ -1055,7 +1065,8 @@
     ctx.fillStyle='rgba(255,255,255,.7)'; ctx.font='600 22px system-ui,sans-serif'; ctx.textAlign=rtl?'left':'right'; try{ctx.direction='ltr';}catch(_){}
     ctx.fillText((idx+1)+' / '+total, rtl?90:(W-90), H-30); }
   function brioDecode(ac,ab){ return new Promise(function(res,rej){ try{ var p=ac.decodeAudioData(ab,res,rej); if(p&&p.then)p.then(res,rej); }catch(e){ rej(e); } }); }
-  async function brioMakeVideo(slides,lang,titre,onProg){
+  async function brioMakeVideo(slides,lang,titre,onProg,opts){
+    opts=opts||{}; var drawFn=opts.draw||brioDrawSlide, gap=(opts.gap!=null?opts.gap:0.45), assets=opts.assets||null;
     var W=1280,H=720, cv=document.createElement('canvas'); cv.width=W; cv.height=H; var ctx=cv.getContext('2d');
     var AC=window.AudioContext||window.webkitAudioContext, ac=new AC(); try{ await ac.resume(); }catch(_){}
     var adest=ac.createMediaStreamDestination();
@@ -1065,13 +1076,19 @@
       if(acc>=CAP && !isLast) continue; // limite atteinte : on saute le reste du contenu, on gardera la clôture
       var say=(slides[i].say||slides[i].narration||((slides[i].t||'')+'. '+((slides[i].p||[]).join('. ')))).toString();
       var csay=voiceCleanTTS(say)||(slides[i].t||'diapositive'); slides[i]._cap=titre;
-      var r=await fetch('/api/tts?lang='+encodeURIComponent(lang)+'&text='+encodeURIComponent(csay.slice(0,1500)));
-      if(!r||!r.ok) throw new Error('tts_'+(r?r.status:'net'));
-      var ab=await r.arrayBuffer(); var buf=await brioDecode(ac,ab); bufs.push(buf); used.push(slides[i]); acc+=buf.duration+0.45;
+      var buf=null;
+      try{ var r=await fetch('/api/tts?lang='+encodeURIComponent(lang)+'&text='+encodeURIComponent(csay.slice(0,1500)));
+        if(!r||!r.ok) throw new Error('tts_'+(r?r.status:'net'));
+        var ab=await r.arrayBuffer(); buf=await brioDecode(ac,ab); }
+      catch(e){ if(!opts.silentOnFail) throw e;
+        // pas de voix pour cette scène : on garde un silence calibré sur le temps de lecture, la vidéo continue
+        var secs=Math.max(3,Math.min(8, Math.round(csay.split(/\s+/).filter(Boolean).length/2.5)+1));
+        buf=ac.createBuffer(1, Math.max(1,Math.ceil(ac.sampleRate*secs)), ac.sampleRate); }
+      bufs.push(buf); used.push(slides[i]); acc+=buf.duration+gap;
       if(onProg) onProg(0.05+0.35*((i+1)/slides.length)); }
     slides=used;
     // chronologie
-    var gap=0.45, spans=[], t=0; for(var s=0;s<bufs.length;s++){ var d=bufs[s].duration+gap; spans.push({start:t,dur:d}); t+=d; } var total=t+0.25;
+    var spans=[], t=0; for(var s=0;s<bufs.length;s++){ var d=bufs[s].duration+gap; spans.push({start:t,dur:d}); t+=d; } var total=t+0.25;
     // flux combiné + enregistreur
     var vstream=cv.captureStream(30); var mime=brioPickMime();
     var stream=new MediaStream(vstream.getVideoTracks().concat(adest.stream.getAudioTracks()));
@@ -1083,10 +1100,11 @@
       try{ rec.start(); }catch(e){ reject(e); return; }
       var t0=ac.currentTime+0.18;
       for(var s2=0;s2<bufs.length;s2++){ var src=ac.createBufferSource(); src.buffer=bufs[s2]; src.connect(ac.destination); src.connect(adest); src.start(t0+spans[s2].start); }
+      if(opts.music){ try{ brioBgMusic(ac,[ac.destination,adest],t0,total); }catch(_){} }
       function frame(){ var tt=ac.currentTime-t0; if(tt<0) tt=0;
         var idx=spans.length-1; for(var q=0;q<spans.length;q++){ if(tt<spans[q].start+spans[q].dur){ idx=q; break; } }
         var sp=spans[idx], lp=Math.max(0,Math.min(1,(tt-sp.start)/sp.dur));
-        brioDrawSlide(ctx,W,H,slides[idx],idx,slides.length,lp,lang);
+        drawFn(ctx,W,H,slides[idx],idx,slides.length,lp,lang,assets);
         if(onProg) onProg(0.4+0.6*Math.min(1,tt/total));
         if(tt<total){ requestAnimationFrame(frame); } else { try{ rec.stop(); }catch(_){} }
       }
@@ -1132,6 +1150,144 @@
     var lang=brioLangOf((slides[0].say||slides[0].t||'')+' '+((slides[0].p||[]).join(' ')),args.lang);
     slides=brioVideoFrame(slides,titre,lang);
     return brioMediaPush({kind:'video',title:titre,slides:slides,lang:lang}, '🎬 '+titre); }
+  // ---------- VIDÉO DE PRÉSENTATION du site (vraies pages animées + musique douce + voix off) ----------
+  // Scènes fixes : chaque scène montre une vraie capture d'une page, avec un panneau de texte animé.
+  var BRIO_PROMO=[
+    {img:'', kind:'intro', eyebrow:'', title:'Brio', tag:'Ton assistant pour viser l’excellence au Bac',
+     say:'Brio. Ton assistant tout-en-un pour préparer le Baccalauréat Sciences Maths, et viser l’excellence.'},
+    {img:'promo/accueil.jpg', eyebrow:'TON ESPACE', title:'Tout au même endroit', tag:'Cours, exercices, QCM et suivi, réunis.',
+     bullets:['Programme officiel complet','Plus de 800 questions auto-corrigées','Un vrai suivi de tes progrès'],
+     say:'Dès l’accueil, tout est réuni : le programme officiel complet, des milliers d’exercices corrigés, et un suivi clair de ta progression.'},
+    {img:'promo/tuteur.jpg', eyebrow:'LE TUTEUR IA', title:'Un prof particulier, 24h/24', tag:'Pose ta question, envoie une photo, écoute la réponse.',
+     bullets:['Explications étape par étape','Corrige ta copie prise en photo','Répond à l’écrit et à l’oral'],
+     say:'Au cœur de Brio, un tuteur intelligent, disponible à toute heure. Pose ta question, envoie la photo d’un exercice, et reçois une explication claire, pas à pas.'},
+    {img:'promo/cours.jpg', eyebrow:'LES COURS', title:'Tout le programme, clair', tag:'Des leçons structurées, matière par matière.',
+     bullets:['Cours illustrés et exemples','Exercices corrigés progressifs','Écoute en audio ou revois en vidéo'],
+     say:'Chaque matière est expliquée simplement : des cours structurés, des exemples, et des exercices corrigés, que tu peux même écouter, ou revoir en vidéo.'},
+    {img:'promo/qcm.jpg', eyebrow:'LES QCM', title:'Teste-toi vraiment', tag:'Plus de 800 questions auto-corrigées.',
+     bullets:['Un QCM différent à chaque fois','Correction et explication immédiates','Mode examen chronométré'],
+     say:'Mets-toi à l’épreuve avec plus de huit cents questions. Le site corrige, explique, et compte ton score, pour que tu progresses à chaque essai.'},
+    {img:'promo/cartes.jpg', eyebrow:'LES CARTES', title:'Mémorise pour de bon', tag:'La répétition espacée qui ancre tout.',
+     bullets:['Formules, définitions et dates','Revues juste au bon moment','Simple et redoutablement efficace'],
+     say:'Avec les cartes à répétition espacée, formules et définitions se gravent dans ta mémoire, revues juste au bon moment.'},
+    {img:'promo/outils.jpg', eyebrow:'LES OUTILS', title:'Des outils malins', tag:'Calcule, convertis, cherche une notion.',
+     bullets:['Calcul de moyenne au vrai coefficient','Formulaire et tableau périodique','Recherche de n’importe quelle notion'],
+     say:'Calcule ta moyenne avec les vrais coefficients, retrouve toutes les formules, et explore le tableau périodique : les bons outils, toujours à portée de main.'},
+    {img:'promo/examens.jpg', eyebrow:'LES EXAMENS', title:'Comme le jour J', tag:'Régionaux blancs, au format officiel.',
+     bullets:['Vrais sujets et examens blancs','Corrigés détaillés','En conditions chronométrées'],
+     say:'Entraîne-toi dans les conditions de l’examen : des régionaux blancs au format officiel, chronométrés, avec leur correction détaillée.'},
+    {img:'promo/progres.jpg', eyebrow:'TA PROGRESSION', title:'Garde le cap', tag:'Ta régularité et tes points, suivis.',
+     bullets:['Progression par chapitre','Minuteur d’étude et carnet d’erreurs','Ta série de jours à ne pas casser'],
+     say:'Brio suit ta progression, chapitre par chapitre, t’aide à rester régulier, et transforme chaque effort en points gagnés.'},
+    {img:'promo/premium.jpg', eyebrow:'PREMIUM', title:'Passe à la vitesse supérieure', tag:'Une IA plus puissante, sans aucune limite.',
+     bullets:['Messages illimités','Réponses plus précises et détaillées','Échecs et éditeur de code en bonus'],
+     say:'Et pour aller plus loin, Premium t’offre une intelligence encore plus puissante, des messages illimités, et des bonus, comme les échecs et l’éditeur de code.'},
+    {img:'', kind:'outro', title:'Prêt à viser plus haut ?', tag:'plan-de-bataille1.pages.dev',
+     say:'Prêt à viser plus haut ? Rejoins Brio, et construis ta réussite, un chapitre à la fois.'}
+  ];
+  // Nappe musicale douce et discrète, synthétisée (aucun fichier, aucun droit d'auteur) — passe sous la voix off.
+  function brioBgMusic(ac, dests, startAt, dur){
+    var master=ac.createGain(); master.gain.value=0.0001;
+    var lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=950; lp.Q.value=0.2;
+    master.connect(lp); (dests||[]).forEach(function(d){ try{ lp.connect(d); }catch(_){} });
+    var vol=0.05, end=startAt+dur;
+    master.gain.setValueAtTime(0.0001,startAt);
+    master.gain.exponentialRampToValueAtTime(vol, startAt+2.4);
+    master.gain.setValueAtTime(vol, Math.max(startAt+2.4, end-2.6));
+    master.gain.exponentialRampToValueAtTime(0.0001, end);
+    // progression douce en La mineur : Am – F – C – G (une octave plus bas, chaud et feutré)
+    var chords=[[220.00,261.63,329.63],[174.61,220.00,261.63],[196.00,246.94,329.63],[146.83,196.00,246.94]];
+    var step=7.2, nCh=Math.ceil(dur/step);
+    for(var c=0;c<nCh;c++){ var ch=chords[c%chords.length], cs=startAt+c*step, cd=Math.min(step, end-cs)+0.7;
+      if(cd<=0.3) break;
+      var cg=ac.createGain(); cg.gain.value=0; cg.connect(master);
+      cg.gain.setValueAtTime(0,cs); cg.gain.linearRampToValueAtTime(1, cs+1.3);
+      cg.gain.setValueAtTime(1, Math.max(cs+1.3, cs+cd-1.3)); cg.gain.linearRampToValueAtTime(0, cs+cd);
+      for(var n=0;n<ch.length;n++){ var o=ac.createOscillator(); o.type=(n===0?'triangle':'sine'); o.frequency.value=ch[n]/2;
+        var og=ac.createGain(); og.gain.value=(n===0?0.5:0.3); o.connect(og); og.connect(cg);
+        try{ o.start(cs); o.stop(cs+cd+0.05); }catch(_){} } }
+  }
+  function brioPromoBg(ctx,W,H){
+    var g=ctx.createLinearGradient(0,0,W,H); g.addColorStop(0,'#141027'); g.addColorStop(0.55,'#1b1640'); g.addColorStop(1,'#241a4d');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    ctx.save(); ctx.globalAlpha=0.11; ctx.fillStyle='#7c5cff'; ctx.beginPath(); ctx.arc(W*0.16,H*0.14,260,0,7); ctx.fill();
+    ctx.globalAlpha=0.08; ctx.fillStyle='#4b3fa7'; ctx.beginPath(); ctx.arc(W*0.9,H*0.88,330,0,7); ctx.fill(); ctx.restore();
+  }
+  function brioPromoDots(ctx,W,idx,total){ var dgap=17, dx0=W-72-(total-1)*dgap;
+    for(var d=0;d<total;d++){ ctx.beginPath(); ctx.fillStyle=(d===idx)?'#ffd36b':'rgba(255,255,255,.26)'; ctx.arc(dx0+d*dgap, 62, d===idx?6:4, 0,7); ctx.fill(); } }
+  function brioDrawPromo(ctx,W,H,scene,idx,total,prog,lang,assets){
+    var ease=function(x){ x=Math.max(0,Math.min(1,x)); return 1-Math.pow(1-x,3); };
+    var easeIO=function(x){ x=Math.max(0,Math.min(1,x)); return x<0.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2; };
+    brioPromoBg(ctx,W,H);
+    ctx.textAlign='left'; try{ctx.direction='ltr';}catch(_){}
+    ctx.font='800 28px system-ui,Segoe UI,sans-serif'; ctx.fillStyle='#ffd36b'; ctx.fillText('✦ Brio', 72, 70);
+    brioPromoDots(ctx,W,idx,total);
+    if(scene.kind==='intro'||scene.kind==='outro'){
+      var a=ease(Math.min(1,prog/0.45)), up=(1-a)*34; ctx.save(); ctx.globalAlpha=a; ctx.textAlign='center';
+      var cy=H/2;
+      if(scene.kind==='intro'){ ctx.font='900 104px system-ui,Segoe UI,sans-serif'; ctx.fillStyle='#ffd36b'; ctx.fillText('✦', W/2, cy-96-up); }
+      ctx.fillStyle='#fff'; ctx.font='800 '+(scene.kind==='intro'?86:62)+'px Newsreader,Georgia,serif';
+      var tl=brioWrap(ctx, scene.title||'', W-260), ty=cy-(scene.kind==='intro'?6:36)-up;
+      for(var i=0;i<tl.length;i++){ ctx.fillText(tl[i], W/2, ty); ty+=(scene.kind==='intro'?92:68); }
+      if(scene.tag){ ctx.font='500 30px system-ui,Segoe UI,sans-serif';
+        if(scene.kind==='outro'){ var pw=ctx.measureText(scene.tag).width+58; ctx.globalAlpha=a*0.16; ctx.fillStyle='#ffd36b'; brioRound(ctx,W/2-pw/2,ty+4,pw,56,28); ctx.fill(); ctx.globalAlpha=a; ctx.strokeStyle='#ffd36b'; ctx.lineWidth=1.5; brioRound(ctx,W/2-pw/2,ty+4,pw,56,28); ctx.stroke(); ctx.fillStyle='#ffe9a8'; ctx.fillText('🔗 '+scene.tag, W/2, ty+40); }
+        else { ctx.fillStyle='rgba(255,255,255,.82)'; ctx.fillText(scene.tag, W/2, ty+8); } }
+      ctx.restore(); return;
+    }
+    // scène de contenu : téléphone (droite) + panneau de texte (gauche)
+    var PW=306, PH=624, px=W-96-PW, py=(H-PH)/2+4;
+    var pin=ease(Math.min(1,prog/0.14)), poff=(1-pin)*70, PX=px+poff;
+    ctx.save(); ctx.globalAlpha=pin;
+    ctx.fillStyle='#07070d'; brioRound(ctx,PX-8,py-8,PW+16,PH+16,42); ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.12)'; ctx.lineWidth=2; brioRound(ctx,PX-8,py-8,PW+16,PH+16,42); ctx.stroke();
+    var sx=PX+6, sy=py+6, sw=PW-12, sh=PH-12;
+    ctx.save(); brioRound(ctx,sx,sy,sw,sh,30); ctx.clip(); ctx.fillStyle='#0d0b16'; ctx.fillRect(sx,sy,sw,sh);
+    var img=assets && scene.img && assets[scene.img];
+    if(img && img.width){ var kb=1+0.05*easeIO(prog), dw=sw*kb, scale=dw/img.width, dh=img.height*scale,
+        maxScroll=Math.max(0,dh-sh), scrollY=maxScroll*easeIO(prog), ox=sx-(dw-sw)/2;
+      try{ ctx.drawImage(img, ox, sy-scrollY, dw, dh); }catch(_){} }
+    ctx.restore();
+    ctx.fillStyle='#07070d'; brioRound(ctx, PX+PW/2-46, py+4, 92, 20, 10); ctx.fill();
+    ctx.restore();
+    var tx=84, tw=px-84-54;
+    var ea=ease(Math.min(1,(prog-0.04)/0.14)); ctx.save(); ctx.globalAlpha=ea; ctx.textAlign='left';
+    ctx.font='800 19px system-ui,sans-serif'; ctx.fillStyle='#ffd36b'; ctx.fillText('✦ '+(scene.eyebrow||'DÉCOUVRE'), tx, 150); ctx.restore();
+    var ta=ease(Math.min(1,(prog-0.06)/0.16)), tdx=(1-ta)*-22; ctx.save(); ctx.globalAlpha=ta; ctx.fillStyle='#fff'; ctx.font='800 52px Newsreader,Georgia,serif';
+    var tl2=brioWrap(ctx, scene.title||'', tw), yy=198; for(var i2=0;i2<tl2.length;i2++){ ctx.fillText(tl2[i2], tx+tdx, yy); yy+=60; } ctx.restore(); yy+=8;
+    if(scene.tag){ var ga=ease(Math.min(1,(prog-0.12)/0.16)); ctx.save(); ctx.globalAlpha=ga; ctx.fillStyle='rgba(255,255,255,.78)'; ctx.font='400 28px system-ui,Segoe UI,sans-serif';
+      var gl=brioWrap(ctx, scene.tag, tw); for(var g2=0;g2<gl.length;g2++){ ctx.fillText(gl[g2], tx, yy); yy+=38; } ctx.restore(); yy+=20; }
+    var bs=scene.bullets||[];
+    for(var k=0;k<bs.length;k++){ var start=0.26+0.52*(k/(bs.length+0.3)), a2=ease((prog-start)/0.16); if(a2<=0.02) continue;
+      var bdx=(1-a2)*-18; ctx.save(); ctx.globalAlpha=Math.min(1,a2);
+      ctx.fillStyle='#86e3ad'; ctx.font='700 26px system-ui,sans-serif'; ctx.fillText('✓', tx+bdx, yy);
+      ctx.fillStyle='rgba(255,255,255,.95)'; ctx.font='500 27px system-ui,Segoe UI,sans-serif';
+      var bl=brioWrap(ctx, bs[k], tw-46), byy=yy; for(var b2=0;b2<bl.length;b2++){ ctx.fillText(bl[b2], tx+42+bdx, byy); byy+=36; }
+      ctx.restore(); yy=byy+16; }
+  }
+  function brioPreloadImgs(urls){ return Promise.all((urls||[]).map(function(u){ return new Promise(function(res){ var im=new Image(); im.onload=function(){ res([u,im]); }; im.onerror=function(){ res([u,null]); }; im.src=u; }); })).then(function(pairs){ var m={}; pairs.forEach(function(p){ if(p[1]) m[p[0]]=p[1]; }); return m; }); }
+  function brioPromoBuild(el, media){
+    var titre=(media&&media.title||'Brio — Vidéo de présentation').toString();
+    var head='<div class="bm-head">🎬 '+esc(titre)+'</div>';
+    if(!brioVideoSupported()){ el.innerHTML=head+'<div class="bm-note">La création vidéo n’est pas disponible sur ce navigateur (souvent iPhone). Ouvre Brio sur un ordinateur ou sur Android pour générer la vidéo de présentation.</div>'; return; }
+    var scenes=BRIO_PROMO;
+    var _w=0; scenes.forEach(function(s){ _w+=String(s.say||'').split(/\s+/).filter(Boolean).length; });
+    var estSec=Math.round(_w/145*60 + scenes.length*1.2), estTxt=estSec<90?('~'+estSec+' s'):('~'+Math.round(estSec/60)+' min');
+    el.innerHTML=head+'<div class="bm-note">Vidéo de présentation de Brio · '+scenes.length+' scènes avec les vraies pages animées, musique douce en fond et voix off (avec pauses) · durée '+estTxt+'. La création se fait en temps réel — <b>garde cet onglet au premier plan</b> jusqu’à la fin.</div><button class="bm-btn" type="button">▶ Générer la vidéo</button>';
+    var btn=el.querySelector('.bm-btn');
+    btn.addEventListener('click',function(){
+      el.innerHTML=head+'<div class="bm-stat"><span class="bm-spin"></span> <span class="bm-msg">Chargement des pages…</span></div><div class="bm-bar"><i></i></div>';
+      var bar=el.querySelector('.bm-bar>i'), msg=el.querySelector('.bm-msg');
+      var urls=scenes.map(function(s){return s.img;}).filter(Boolean);
+      brioPreloadImgs(urls).then(function(assets){ if(msg) msg.textContent='Préparation de la voix…';
+        return brioMakeVideo(scenes.map(function(s){ return {t:s.title,p:[],say:s.say,kind:s.kind||'',img:s.img||'',title:s.title,tag:s.tag,bullets:s.bullets||[],eyebrow:s.eyebrow||''}; }), 'fr', titre,
+          function(p){ if(bar)bar.style.width=Math.round(p*100)+'%'; if(msg){ msg.textContent=p<0.4?'Préparation de la voix…':'Enregistrement de la vidéo…'; } },
+          {draw:brioDrawPromo, music:true, gap:1.15, assets:assets, silentOnFail:true}); })
+      .then(function(out){ var url=URL.createObjectURL(out.blob), ext=out.mime.indexOf('mp4')>=0?'mp4':'webm', fn=brioSafeName(titre)+'.'+ext;
+        el.innerHTML=head+'<video class="bm-video" controls playsinline preload="metadata" src="'+url+'"></video><button class="bm-dl" type="button">⬇ Télécharger la vidéo ('+ext.toUpperCase()+')</button>';
+        el.querySelector('.bm-dl').addEventListener('click',function(){ try{ agDownload(out.blob,fn); toast('Vidéo enregistrée.'); }catch(_){} }); })
+      .catch(function(){ el.innerHTML=head+'<div class="bm-note">La création de la vidéo a échoué (réseau ou navigateur). Réessaie en gardant l’onglet ouvert et au premier plan.</div>'; });
+    });
+  }
   // ---------- CARTE MENTALE (mind map) — SVG élégant, persistant, téléchargeable ----------
   function brioMmEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   function brioMmWrap(s,n){ s=String(s||'').trim(); var w=s.split(/\s+/),out=[],cur=''; for(var i=0;i<w.length;i++){ var t=cur?cur+' '+w[i]:w[i]; if(t.length>n&&cur){ out.push(cur); cur=w[i]; } else cur=t; } if(cur) out.push(cur); return out.length?out:['']; }
@@ -1889,6 +2045,15 @@ function agWantsPage(t){ var s=(t||'').toLowerCase(); if(/\bplanning\b|emploi du
   if(!m) return null; var subj=(m[2]||'').trim().replace(/[.?!]+$/,''); return subj?subj.slice(0,60):'Nouvelle page'; }
 
 /* Détecte l'intention « média » (carte mentale / vidéo / MP3) pour forcer l'outil correspondant. */
+/* L'élève demande une VIDÉO DE PRÉSENTATION / PUBLICITAIRE du site (montrant les onglets).
+   Il faut : une intention « vidéo/présentation/pub » + une référence au site/à Brio/aux onglets. */
+function agWantsPromo(t){ var s=(t||'').toString().toLowerCase();
+  var kind=/\bvid[ée]os?\b|\bpub(licit[ée]s?|licitaire)?\b|\bpromo(tionnelle?)?\b|b[ae]nde[\s-]?annonce|\bteaser\b|\btrailer\b|\bspot\b|pr[ée]sentation|\bd[ée]mo\b|vitrine|clip\s+de\s+pr[ée]sentation/.test(s);
+  var about=/\bsite\b|\bbrio\b|\bappli(cation)?\b|la\s+plateforme|(toutes?|tous?)\s+(les?\s+)?(onglets?|pages?)|\bonglets?\b/.test(s);
+  var promoish=/pub(licit[ée]s?|licitaire)?|promo|promotionnelle?|b[ae]nde[\s-]?annonce|teaser|trailer|\bspot\b|pr[ée]sent|vitrine|\bd[ée]mo\b|montre[rz]?\s+(le\s+site|brio|tout|tous?\s+les?\s+onglets?|toutes?\s+les?\s+pages?)/.test(s);
+  if(!about) return false;
+  if(kind && (promoish || /\bvid[ée]o/.test(s))) return true;
+  return false; }
 function agWantsMedia(t){ var s=(t||'').toString().toLowerCase();
   if(/carte\s+(mentale|heuristique|conceptuelle|des\s+id[ée]es)|mind[\s-]?map|sch[ée]ma\s+(mental|d['’]?id[ée]es|conceptuel)/.test(s)) return 'mindmap';
   if(/\bvid[ée]os?\b|capsule\s+vid|en\s+vid[ée]o|mini[\s-]?cours\s+en\s+vid/.test(s)) return 'video';
