@@ -119,7 +119,10 @@
   function files(){ return flip?['h','g','f','e','d','c','b','a']:['a','b','c','d','e','f','g','h']; }
   function kingSq(color){ var b=g.board(); for(var r=0;r<8;r++)for(var c=0;c<8;c++){ var p=b[r][c]; if(p&&p.type==='k'&&p.color===color) return 'abcdefgh'[c]+(8-r); } return null; }
   var SIZES={s:'360px',m:'480px',l:'620px'};
-  function applyStyle(){ if(!boardEl) return; boardEl.className='chess-board thb-'+theme+' pcs-'+pcs; boardEl.style.setProperty('--bs','min(94vw,'+(SIZES[size]||SIZES.m)+')'); }
+  function applyStyle(){ if(!boardEl) return; boardEl.className='chess-board thb-'+theme+' pcs-'+pcs;
+    var _bs='min(calc(100vw - 76px),'+(SIZES[size]||SIZES.m)+')';
+    var _host=(boardEl.closest&&boardEl.closest('.chess-main'))||boardEl; _host.style.setProperty('--bs',_bs);
+    boardEl.style.setProperty('--bs',_bs); }
   function glyphs(){ return pcs==='plein'?GLY.plein:GLY.classic; }
   /* colonne/rangée visuelles (0..7) d'une case, en tenant compte du retournement */
   function sqToXY(sq){ var f='abcdefgh'.indexOf(sq[0]), r=parseInt(sq[1],10)-1; var x=flip?(7-f):f; var y=flip?r:(7-r); return {x:x,y:y}; }

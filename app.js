@@ -118,6 +118,7 @@
   var msgsEl=document.getElementById('chatMsgs'),input=document.getElementById('chatInput'),send=document.getElementById('chatSend');
   var full=document.getElementById('chatFull'),cfList=document.getElementById('cfList'),cfMsgs=document.getElementById('cfMsgs'),cfInput=document.getElementById('cfInput'),cfSend=document.getElementById('cfSend'),cfTitle=document.getElementById('cfTitle');
   var selAsk=document.getElementById('selAsk'); var busy=false; var pendingForcePage=null; var pendingForceQuiz=false; var pendingForceMedia=null; var pendingMediaMin=0;
+  var thinking=false, thinkPlan=null;
   function uid(){ return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
   var convos=[], curId=null;
   function byId(id){ for(var i=0;i<convos.length;i++) if(convos[i].id===id) return convos[i]; return null; }
@@ -192,7 +193,9 @@
         var _b=document.createElement('button'); _b.className='fc-dl'; _b.textContent='Télécharger'; _b.addEventListener('click',function(e){ e.stopPropagation(); try{ agZipFromText(spoken, agGuessTitle(spoken)||'code'); }catch(_){} }); fc.appendChild(_b); d.appendChild(fc); }catch(_e){} }
       }
     return d; }
-  function fillBox(box,c){ if(!box)return; box.innerHTML='';
+  function fillBox(box,c){ if(!box)return;
+    try{ Array.prototype.forEach.call(box.querySelectorAll('.brio-think'),function(n){ if(n._iv){ clearInterval(n._iv); n._iv=null; } }); }catch(_){}
+    box.innerHTML='';
     if(!c.msgs.length){
       if(!document.getElementById('pbHelloCss')){
         var _hs=document.createElement('style'); _hs.id='pbHelloCss';
@@ -229,7 +232,9 @@
     c.msgs.forEach(function(m){
       if(m.media && typeof brioMediaRender==='function'){ try{ box.appendChild(brioMediaRender(m.media)); return; }catch(_){} }
       box.appendChild(bubbleEl(m.role==='assistant'?'ai':'user',m.content,m.img));
-    }); box.scrollTop=box.scrollHeight; }
+    });
+    if(thinking && thinkPlan){ try{ thinkBubble(box); }catch(_){} }
+    box.scrollTop=box.scrollHeight; }
   function renderMsgs(){ var c=cur(); fillBox(msgsEl,c); fillBox(cfMsgs,c); if(cfTitle) cfTitle.textContent=c.title||'Brio'; }
   function renderList(){ if(!cfList)return; cfList.innerHTML=''; convos.slice().sort(function(a,b){return b.t-a.t;}).forEach(function(c){
     var it=document.createElement('div'); it.className='cf-item'+(c.id===curId?' on':'');
@@ -437,21 +442,33 @@
     if(h(/qui es[- ]?tu|c\'est quoi brio|ton nom|comment tu t\'appelles|tu es qui/)) return {focus:'à ma réponse', steps:['Je réfléchis…','Je prépare une réponse claire…']};
     return {focus:'sur ta question', steps:['Je lis ta question attentivement…','Je réfléchis à la meilleure explication…','Je prépare une réponse claire…']};
   }
+  // Construit une bulle « Brio réfléchit… » dans une boîte, animée, à partir de thinkPlan.
+  function thinkBubble(box){
+    if(!box || !thinkPlan) return null;
+    var t=document.createElement('div'); t.className='cp-msg ai brio-think';
+    t.innerHTML='<span class="bt-orb" aria-hidden="true"></span><div class="bt-body"><div class="bt-head">Brio <em class="bt-focus"></em></div><div class="bt-step" aria-live="polite"></div></div>';
+    var fx=t.querySelector('.bt-focus'), st=t.querySelector('.bt-step');
+    if(fx) fx.textContent='réfléchit '+thinkPlan.focus;
+    var i=0;
+    function show(){ if(!st) return; st.style.opacity='0'; setTimeout(function(){ if(!thinkPlan) return; st.textContent=thinkPlan.steps[i%thinkPlan.steps.length]; st.style.opacity='1'; i++; },170); }
+    show(); t._iv=setInterval(show, 1650);
+    box.appendChild(t); box.scrollTop=box.scrollHeight;
+    return t;
+  }
   function addTyping(text, hasImg){
-    var plan=brioThinkPlan(text, hasImg); var nodes=[];
-    [msgsEl,cfMsgs].forEach(function(box){ if(!box)return;
-      var t=document.createElement('div'); t.className='cp-msg ai brio-think';
-      t.innerHTML='<span class="bt-orb" aria-hidden="true"></span><div class="bt-body"><div class="bt-head">Brio <em class="bt-focus"></em></div><div class="bt-step" aria-live="polite"></div></div>';
-      var fx=t.querySelector('.bt-focus'), st=t.querySelector('.bt-step');
-      if(fx) fx.textContent='réfléchit '+plan.focus;
-      var i=0;
-      function show(){ if(!st) return; st.style.opacity='0'; setTimeout(function(){ st.textContent=plan.steps[i%plan.steps.length]; st.style.opacity='1'; i++; },170); }
-      show(); t._iv=setInterval(show, 1650);
-      box.appendChild(t); box.scrollTop=box.scrollHeight; nodes.push(t);
-    });
+    thinkPlan=brioThinkPlan(text, hasImg); thinking=true; var nodes=[];
+    [msgsEl,cfMsgs].forEach(function(box){ var n=thinkBubble(box); if(n) nodes.push(n); });
     return nodes;
   }
-  function rmTyping(nodes){ nodes.forEach(function(n){ if(n){ if(n._iv){ clearInterval(n._iv); n._iv=null; } if(n.parentNode) n.parentNode.removeChild(n); } }); }
+  // Arrête l'état « réflexion » et retire TOUTE bulle .brio-think des deux boîtes (pas seulement les nœuds passés),
+  // pour qu'un re-rendu (ex. passage plein écran) ne laisse aucun indicateur orphelin ni intervalle en fuite.
+  function rmTyping(nodes){
+    thinking=false; thinkPlan=null;
+    [msgsEl,cfMsgs].forEach(function(box){ if(!box)return;
+      try{ Array.prototype.forEach.call(box.querySelectorAll('.brio-think'),function(n){ if(n._iv){ clearInterval(n._iv); n._iv=null; } if(n.parentNode) n.parentNode.removeChild(n); }); }catch(_){}
+    });
+    if(nodes) nodes.forEach(function(n){ if(n){ if(n._iv){ clearInterval(n._iv); n._iv=null; } if(n.parentNode) n.parentNode.removeChild(n); } });
+  }
   function activeInput(){ return (full&&!full.hidden)?cfInput:input; }
   async function ask(text, raw){ text=(text||'').trim(); var imgs=pendingImgs.slice(); var img=imgs[0]||null; if((!text&&!imgs.length)||busy) return;
     pendingForceQuiz=false; pendingForceMedia=null;
