@@ -127,3 +127,100 @@ window.PB_EXAMS.push({
     ]}
   ]
 });
+
+/* ---------- Français — Régional Fès-Meknès 2022 (session normale) ---------- */
+window.PB_EXAMS.push({
+  id:"fr-fesmeknes-2022", subject:"francais", matiere:"Français", coef:4, official:true,
+  region:"Fès-Meknès", annee:2022, session:"Ordinaire",
+  label:"Régional Fès-Meknès 2022 — officiel",
+  durationMin:120, total:20,
+  consignes:"Examen régional unifié, 1ère année du baccalauréat, Académie Fès-Meknès (session ordinaire 2022). Durée : 2 h. Lis attentivement le texte, puis traite l'étude de texte et la production écrite.",
+  texte:{
+    titre:"Texte",
+    html:"<p><i>Les gardes sont sortis, précédés par le petit page. Créon et Antigone sont seuls l'un en face de l'autre.</i></p>"
+      +"<p>- <b>CRÉON</b> : Avais-tu parlé de ton projet à quelqu'un ?<br>- <b>ANTIGONE</b> : Non.<br>- <b>CRÉON</b> : As-tu rencontré quelqu'un sur ta route ?<br>- <b>ANTIGONE</b> : Non, personne.<br>- <b>CRÉON</b> : Tu es bien sûre ?<br>- <b>ANTIGONE</b> : Oui.</p>"
+      +"<p>- <b>CRÉON</b> : Alors, écoute : tu vas rentrer chez toi, te coucher, dire que tu es malade, que tu n'es pas sortie depuis hier. Ta nourrice dira comme toi. Je ferai disparaître ces trois hommes.<br>- <b>ANTIGONE</b> : Pourquoi ? Puisque vous savez bien que je recommencerai.</p>"
+      +"<p style=\"text-align:center\"><i>Un silence. Ils se regardent.</i></p>"
+      +"<p>- <b>CRÉON</b> : Pourquoi as-tu tenté d'enterrer ton frère ?<br>- <b>ANTIGONE</b> : Je le devais.<br>- <b>CRÉON</b> : Je l'avais interdit.</p>"
+      +"<p>- <b>ANTIGONE</b>, <i>doucement</i> : Je le devais tout de même. Ceux qu'on n'enterre pas errent éternellement sans jamais trouver de repos. Si mon frère vivant était rentré harassé<sup>1</sup> d'une longue chasse, je lui aurais enlevé ses chaussures, je lui aurais fait à manger, je lui aurais préparé son lit... Polynice aujourd'hui a achevé sa chasse. Il rentre à la maison où mon père et ma mère, et Étéocle aussi, l'attendent. Il a droit au repos.</p>"
+      +"<p>- <b>CRÉON</b> : C'était un révolté et un traître, tu le savais.<br>- <b>ANTIGONE</b> : C'était mon frère.<br>- <b>CRÉON</b> : Tu avais entendu proclamer l'édit aux carrefours, tu avais lu l'affiche sur tous les murs de la ville ?<br>- <b>ANTIGONE</b> : Oui.<br>- <b>CRÉON</b> : Tu savais le sort qui était promis à celui, quel qu'il soit, qui oserait lui rendre les honneurs funèbres ?<br>- <b>ANTIGONE</b> : Oui, je le savais.</p>"
+      +"<p>- <b>CRÉON</b> : Tu as peut-être cru que d'être la fille d'Œdipe, la fille de l'orgueil d'Œdipe, c'était assez pour être au-dessus de la loi.<br>- <b>ANTIGONE</b> : Non. Je n'ai pas cru cela.</p>"
+      +"<p class=\"fn\"><sup>1</sup> Très fatigué.</p>",
+    source:"Jean Anouilh, « Antigone » — support de l'examen régional (Fès-Meknès, 2022)."
+  },
+  sections:[
+    { titre:"I. Étude de texte", points:10, questions:[
+      { q:"Recopiez puis complétez la présentation suivante par les informations qui conviennent (0,25×4) : « Jean Anouilh est un dramaturge français qui a vécu au (…) siècle. Sa pièce intitulée (…) est une mise en scène la confrontation tragique de deux nécessités : celle d'(…) son frère pour Antigone, et celle pour (…), de faire respecter la loi. »", points:1, lines:4,
+        correction:"<b>XXᵉ (20ᵉ)</b> siècle (0,25) · <b>Antigone</b> (0,25) · d'<b>enterrer</b> (0,25) · pour <b>Créon</b> (0,25)." },
+      { q:"a) Cette scène se situe-t-elle après que : – Antigone a été surprise par la nourrice ? – Hémon a été surpris par Antigone ? – Antigone a été surprise par les gardes ? (Recopiez la bonne réponse.) (0,5)  b) Combien de fois Antigone a-t-elle tenté de couvrir le cadavre de Polynice ? (0,5)", points:1, lines:3,
+        correction:"a) Cette scène se situe après qu'<b>Antigone a été surprise par les gardes</b>. (0,5)  b) Antigone l'a tenté <b>deux fois</b>. (0,5)" },
+      { q:"a) Relevez la didascalie (l'indication scénique) montrant qu'il s'agit d'une nouvelle scène. (0,5)  b) Par ses premières questions adressées à Antigone, Créon est-il : inquiet ? hésitant ? furieux ? (0,5)", points:1, lines:3,
+        correction:"a) La didascalie est : « <b>Les gardes sont sortis,</b> (0,25) <b>précédés par le petit page.</b> » (0,25)  b) Créon est <b>inquiet</b>. (0,5)" },
+      { q:"Répondez par « vrai » ou « faux » en justifiant votre réponse à partir du texte (0,25×4). Pour chaque affirmation du tableau : a) Antigone ne veut pas que le cadavre de son frère soit dévoré par les bêtes. b) Créon rappelle à sa nièce la peine à laquelle elle s'expose en accomplissant un tel acte.", points:1, lines:4,
+        qHtml:"<table><thead><tr><th>Affirmation</th><th>Vrai</th><th>Faux</th><th>Justification du texte</th></tr></thead><tbody><tr><td>a) Antigone ne veut pas que le cadavre de son frère soit dévoré par les bêtes.</td><td class=\"fill\">……</td><td class=\"fill\">……</td><td class=\"fill\">«&nbsp;……………&nbsp;»</td></tr><tr><td>b) Créon rappelle à sa nièce la peine à laquelle elle s'expose en accomplissant un tel acte.</td><td class=\"fill\">……</td><td class=\"fill\">……</td><td class=\"fill\">«&nbsp;……………&nbsp;»</td></tr></tbody></table>",
+        correction:"a) <b>Faux</b>. (0,25) Justification : « Ceux qu'on n'enterre pas errent éternellement sans jamais trouver de repos. » ou « Il a droit au repos. » (0,25)<br>b) <b>Vrai</b>. (0,25) Justification : « Tu avais entendu proclamer l'édit aux carrefours. » ou « tu avais lu l'affiche sur tous les murs de la ville ? » ou « Tu savais le sort qui était promis à celui, quel qu'il soit, qui oserait lui rendre les honneurs funèbres ? » (0,25)" },
+      { q:"Que veut savoir Créon juste après la 2ᵉ didascalie ? Répondez au discours indirect à cette question en commençant par : « Créon voulait savoir … »", points:1.5, lines:2,
+        correction:"Créon voulait savoir <b>pourquoi</b> (0,25) <b>elle/Antigone</b> (0,25) <b>avait tenté</b> (0,25) <b>d'enterrer son</b> (0,25) <b>frère</b> (0,25). <i>(NB : + 0,5 pour la bonne réponse de sens.)</i>" },
+      { q:"La réplique d'Antigone : « Je le devais » et celle de Créon : « Je l'avais interdit » illustrent bien la confrontation de deux nécessités principales ; précisez lesquelles. (0,5×2)", points:1, lines:3,
+        correction:"La 1ʳᵉ nécessité : le <b>devoir fraternel, familial / religieux</b>, etc. (0,5)  La 2ᵉ nécessité : le <b>devoir politique / la raison d'État / le respect de la loi</b>, etc. (0,5) <i>(Acceptez toute autre formulation allant dans ce sens.)</i>" },
+      { q:"Dans l'énoncé de sa tirade allant de « Si… » à « …son lit », la figure de style employée par Antigone pour prouver à Créon sa fidélité inconditionnelle et totale à la mémoire de son frère est-elle : – une métaphore ? – une énumération ? – une personnification ? (0,5)", points:0.5, lines:2,
+        correction:"La figure de style employée dans cet énoncé est : l'<b>énumération</b>. (0,5)" },
+      { q:"a) Les courtes répliques d'Antigone sont-elles : exclamatives, impératives ou déclaratives ? (0,5)  b) Quel trait de caractère d'Antigone ce type de phrase met-il en valeur ? (0,5)", points:1, lines:3,
+        correction:"a) Les courtes répliques d'Antigone sont : <b>déclaratives</b>. (0,5)  b) Ce type de phrases exprime : sa <b>détermination / son intransigeance / sa ténacité / son obstination</b>, etc. (0,5) <i>(Accepter tout synonyme ou formulation du même sens.)</i>" },
+      { q:"Dans ce face-à-face entre les deux personnages, aimeriez-vous être à la place de Créon ou plutôt à la place d'Antigone ? (0,5) Justifiez votre réponse par un argument pertinent. (0,5)", points:1, lines:4,
+        correction:"<b>Accepter tout point de vue</b> (0,5) justifié de façon <b>pertinente</b> (0,5)." },
+      { q:"Pour mieux convaincre quelqu'un, faut-il, selon vous, parler peu ou parler beaucoup ? (0,5) Justifiez votre opinion par un argument personnel. (0,5)", points:1, lines:4,
+        correction:"<b>Accepter tout point de vue</b> (0,5) justifié de façon <b>adéquate</b> (0,5)." }
+    ]},
+    { titre:"II. Production écrite", points:10, questions:[
+      { q:"Sujet : « Lors de leur célèbre face à face, Antigone défend une conception du bonheur tout à fait différente de celle que lui propose son oncle Créon. » Et vous, à votre avis, qu'est-ce qui pourrait vous rendre heureux ou heureuse ? Rédigez un texte dans lequel vous développerez votre point de vue à l'aide d'arguments pertinents et d'exemples appropriés.", points:10, redaction:true, lines:18,
+        correction:"<b>Barème officiel de la production écrite (10 pts).</b><br>A – Respect de la consigne (ne traiter que ce qui est demandé dans le sujet) : 1 pt · B – Organisation et cohérence de l'argumentation : 2 pts · C – Qualité et pertinence des arguments : 2 pts · D – Correction de la langue (construction des phrases, orthographe, vocabulaire approprié…) : 5 pts.<br><br><b>Conseils.</b> Prends clairement position dès l'introduction (ce qui pourrait te rendre heureux). Développe 2 ou 3 arguments, chacun illustré d'un exemple précis, reliés par des connecteurs (d'abord, de plus, en effet, par exemple, enfin). Conclus en résumant ton point de vue. La moitié de la note porte sur la langue : relis-toi." }
+    ]}
+  ]
+});
+
+/* ---------- العربية — الامتحان الجهوي فاس-مكناس 2022 (الدورة العادية) ---------- */
+window.PB_EXAMS.push({
+  id:"ar-fesmeknes-2022", subject:"arabe", matiere:"اللغة العربية", coef:2, official:true,
+  region:"Fès-Meknès", annee:2022, session:"Ordinaire", lang:"ar",
+  label:"الجهوي فاس-مكناس 2022 — رسمي",
+  durationMin:120, total:20,
+  consignes:"الامتحان الجهوي الموحّد للباكالوريا، السنة الأولى من سلك البكالوريا، الأكاديمية الجهوية فاس-مكناس (الدورة العادية 2022). مدة الإنجاز: ساعتان. اقرأ النص قراءة متأنية، ثم أجب عن أسئلة المجالات الآتية.",
+  texte:{
+    titre:"نص الانطلاق — الشباب والتنمية",
+    html:"<p>إن التحدّيات العالمية التي تواجه جهود التنمية كثيرة، وبشكل خاص تلك التي تواجه الأطفال والشباب، فقد تم إحراز تقدّم كبير، على مدى العقود القليلة الماضية، في مجالات الحدّ من الفقر وحقوق الإنسان والتنمية. إلا أنّه لا تزال هناك تحدّيات عميقة، نتجت عن السعي لتحقيق الأهداف التنموية، التي أدّت إلى تحقيق تقدّم ملموس، ولكنه غير كافٍ. فالعديد من الشباب في جميع أنحاء العالم لا يزالون عُرضةً لأشكالٍ مُختلفة من التمييز، ويُعانون من مستويات مرتفعة من الفقر، وكذلك محدودية الوصول إلى خدمات الرعاية الصحّية الأساسية أو التعليم الجيّد، وهو بمُجمله يُؤثّر سَلبا في فرص العمل المتاحة لهم. يوجد في العالم اليوم أكبر جيل من الشباب من حيث العدد على مرّ التاريخ، حيث يبلغ عددهم 1.8 مليار شاب تتراوح أعمارهم بين عشرة وأربعة وعشرين عاما، ويمثّلون حوالي 24% من سكان العالم. وفي العالم العربي وحده، حيث يمثّل الشباب الفئة السكانية الأسرع نموّا، يتجاوز الذين هم تحت سن ثلاثين عاما نسبة 60% من عدد السكان.</p>"
+      +"<p>واعترافا بإمكانيات الشباب في قدرتهم على تنفيذ «برنامج التنمية المستدامة»، وضعت الأمم المتحدة عام 2018 استراتيجية للشباب بعنوان «شباب 2030»، تهدف هذه الاستراتيجية الطموحة إلى توسيع نطاق الإجراءات الوطنية والإقليمية والعالمية، من أجل مساعدة الشباب على تلبية احتياجاتهم، وضمان حقوقهم وتسخير طاقاتهم ومواهبهم وقدراتهم لتحقيق الأهداف المنشودة التي تتمثّل في الوصول إلى عالم أكثر ازدهارا وتنمية بحلول عام 2030. وتؤكّد خطة أهداف التنمية المستدامة 2030 على دور الشباب في إحداث التغيير وتحقيق التنمية الشاملة، خاصة إذا ما تمّ تمكينهم من التعليم المناسب والوظائف وفرص تنظيم المشاريع.</p>"
+      +"<p>إن تحقيق أهداف التنمية المستدامة غاية منشودة لكل الدول، لأنها تشكّل تحدّيا كبيرا لجهودها المبذولة، لذلك يجب أن يتجاوز دور الشباب مجرّد الوقوف موقف المتفرّج وانتظار نتائج برنامج «شباب 2030»، إلى المشاركة بفعالية في تنفيذ مشاريع هذا البرنامج. إن الشباب اليوم قادر بالفعل على التفكير والإبداع وصنع التغيير، إذ يُمكنهم المساهمة في بناء مشروع التنمية الشاملة الذي نحلم به، من خلال فسح المجال أمامهم لإبراز طاقاتهم وإبداعاتهم.</p>",
+    source:"تقرير مركز الشباب العربي: «الشباب العربي والاستدامة»، الإمارات العربية المتحدة، 2019، ص 16 وما بعدها (بتصرّف)."
+  },
+  sections:[
+    { titre:"أولا: مجال درس النصوص", points:10, questions:[
+      { q:"حدّد علاقة مضمون الفقرة الثالثة من النص بالعنوان. (1ن)", points:1, lines:3,
+        correction:"علاقة مضمون الفقرة الثالثة بعنوان النص: علاقة <b>توضيح / تفسير</b>… <i>(تُقبل كل إجابة مناسبة)</i>." },
+      { q:"حدّد القضية المحورية التي يعالجها النص. (1ن)", points:1, lines:3,
+        correction:"القضية المحورية التي يعالجها النص: <b>دور الشباب في تحقيق التنمية</b>… <i>(تُقبل كل إجابة مناسبة)</i>." },
+      { q:"اشرح، في حدود ثلاثة أسطر، القولة الآتية الواردة في النص: «… فالعديد من الشباب في جميع أنحاء العالم لا يزالون عُرضةً لأشكالٍ مختلفة من التمييز ويُعانون من مستويات مرتفعة من الفقر». (1ن)", points:1, lines:4,
+        correction:"<i>يُقبل كل جواب بيّن فيه المترشّح فهمه للقولة مع الالتزام بالحجم المطلوب.</i> (الفكرة: معاناة فئة واسعة من الشباب عبر العالم من مختلف أشكال التمييز ومن الفقر، مما يحدّ من فرصهم.)" },
+      { q:"استخرج من النص عبارتين دالّتين على حقل الشباب، وعبارتين دالّتين على حقل التنمية، ثم حدّد العلاقة بينهما مستعينا بالجدول الآتي. (1.5ن)", points:1.5, lines:4,
+        qHtml:"<table><thead><tr><th>عبارتان دالّتان على الشباب (0.5ن)</th><th>عبارتان دالّتان على التنمية (0.5ن)</th><th>العلاقة بين الحقلين (0.5ن)</th></tr></thead><tbody><tr><td class=\"fill\">………<br>………</td><td class=\"fill\">………<br>………</td><td class=\"fill\">………</td></tr></tbody></table>",
+        correction:"<b>عبارتان دالّتان على الشباب</b> (0.5): «يوجد في العالم اليوم أكبر جيل من الشباب»؛ «من أجل مساعدة الشباب على تلبية احتياجاتهم».<br><b>عبارتان دالّتان على التنمية</b> (0.5): «تنفيذ برنامج التنمية المستدامة»؛ «الوصول إلى عالم أكثر ازدهارا وتنمية».<br><b>العلاقة بين الحقلين</b> (0.5): علاقة <b>سببية / تكامل</b>… <i>(تُقبل كل إجابة مناسبة)</i>." },
+      { q:"حدّد، انطلاقا من النص، هدفين أساسيين لبرنامج «شباب 2030». (1ن)", points:1, lines:3,
+        correction:"هدفان أساسيان لبرنامج «شباب 2030»:<br>• توسيع نطاق الإجراءات الوطنية والإقليمية والعالمية من أجل مساعدة الشباب على تلبية احتياجاتهم (0.5)؛<br>• ضمان حقوقهم وتسخير طاقاتهم ومواهبهم وقدراتهم لتحقيق الأهداف المنشودة (0.5). <i>(يُحدّد المترشّح هدفين اثنين.)</i>" },
+      { q:"تهيمن على النص لغة تقريرية مباشرة، مَثّل لها بمثالين من النص وأبرز وظيفتها. (1.5ن) — المثال الأول: … — المثال الثاني: … — الوظيفة: …", points:1.5, lines:4,
+        correction:"<b>المثال الأول</b>: «إن التحدّيات العالمية التي تواجه جهود التنمية كثيرة»؛<br><b>المثال الثاني</b>: «يبلغ عددهم 1.8 مليار شاب تتراوح أعمارهم بين 10 و24 عاما»؛<br><b>الوظيفة</b>: <b>تفسيرية / إقناعية</b>." },
+      { q:"اكتب فقرة مركّزة تلخّص فيها قضايا النص، مبديا رأيك الشخصي في دور الشباب في تحقيق التنمية. (3ن)", points:3, redaction:true, lines:10,
+        correction:"<b>سلّم التنقيط (3ن).</b> يُراعى في كتابة الفقرة المركّزة وإبداء الرأي الشخصي:<br>• تلخيص قضايا النص؛<br>• حضور الرأي الشخصي حول دور الشباب في التنمية؛<br>• سلامة اللغة والالتزام بالحجم المطلوب." }
+    ]},
+    { titre:"ثانيا: مكوّن علوم اللغة", points:4, questions:[
+      { q:"استخرج من النص جملتين: الأولى لمُمَيَّز ملفوظ (تمييز مفرد)، والثانية لمُمَيَّز ملحوظ (تمييز جملة)، مع ملء الجدول بما يناسب. (2ن)", points:2, lines:3,
+        qHtml:"<table><thead><tr><th>الجملة</th><th>التمييز</th><th>نوعه</th><th>حكمه الإعرابي</th></tr></thead><tbody><tr><td class=\"rowh\">1 —</td><td class=\"fill\">………</td><td class=\"fill\">………</td><td class=\"fill\">………</td></tr><tr><td class=\"rowh\">2 —</td><td class=\"fill\">………</td><td class=\"fill\">………</td><td class=\"fill\">………</td></tr></tbody></table>",
+        correction:"<b>1</b> — الجملة: «تتراوح أعمارهم بين عشرة وأربعة وعشرين عاما» (أو «هم تحت سن ثلاثين عاما») · التمييز: <b>عاما</b> · نوعه: <b>تمييز مفرد (ذات/عدد)</b> · حكمه الإعرابي: <b>النصب</b>.<br><b>2</b> — الجملة: «الوصول إلى عالم أكثر ازدهارا وتنمية» · التمييز: <b>ازدهارا / تنمية</b> · نوعه: <b>تمييز جملة (نسبة)</b> · حكمه الإعرابي: <b>النصب</b>." },
+      { q:"ركّب جملتين مفيدتين، من إنتاجك الشخصي، تتضمّن الأولى نهيا يفيد النصح والإرشاد، والثانية استفهاما بأداة تفيد التصوّر. (2ن) — الجملة الأولى: … — الجملة الثانية: …", points:2, lines:3,
+        correction:"<i>يُنتج المترشّح جملتين مفيدتين تتضمّن كلٌّ منهما الظاهرة اللغوية المطلوبة:</i><br>• الأولى: <b>نهي يفيد النصح والإرشاد</b> (مثال: لا تُهملْ دراستَك)؛<br>• الثانية: <b>استفهام بأداة تفيد التصوّر</b> (مثال: أمجتهدٌ أنت أم كسولٌ؟)." }
+    ]},
+    { titre:"ثالثا: مجال التعبير والإنشاء", points:6, questions:[
+      { q:"«… تمثّل فئةُ الشباب مستقبلَ التنمية في المغرب، لِما تتوفّر عليه من طاقات ومواهب …». انطلق من هذه الفكرة، واكتب موضوعا منسجما تستثمر فيه مكتسباتك في مهارة «توسيع فكرة»، وذلك في ما لا يقل عن عشرة أسطر، مراعيا: الالتزام بالمطلوب وتوظيف تقنيات المهارة؛ تسلسل الأفكار وترابطها؛ سلامة اللغة ووضع علامات الترقيم المناسبة.", points:6, redaction:true, lines:18,
+        correction:"<b>سلّم التنقيط (6ن).</b> يُراعى في تقويم الإنجاز:<br>• الالتزام بالمطلوب وتوظيف تقنيات مهارة «توسيع فكرة»: 3ن؛<br>• تسلسل الأفكار وترابطها: 1ن؛<br>• سلامة اللغة ووضع علامات الترقيم المناسبة: 1.5ن؛<br>• الالتزام بالحجم المطلوب: 0.5ن.<br><br><b>نصيحة.</b> وسّع الفكرة بالشرح والتمثيل والتعليل والمقارنة، مع مقدمة وعرض وخاتمة." }
+    ]}
+  ]
+});
