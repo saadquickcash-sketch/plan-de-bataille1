@@ -1187,25 +1187,35 @@
   ];
   // Nappe musicale douce et discrète, synthétisée (aucun fichier, aucun droit d'auteur) — passe sous la voix off.
   function brioBgMusic(ac, dests, startAt, dur){
+    // Nappe douce + petit arpège « cloche » — dans le MÉDIUM (audible sur haut-parleur de téléphone),
+    // nettement sous la voix off. (L'ancienne version jouait une octave trop bas et trop faible : inaudible.)
     var master=ac.createGain(); master.gain.value=0.0001;
-    var lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=950; lp.Q.value=0.2;
+    var lp=ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=2200; lp.Q.value=0.3;
     master.connect(lp); (dests||[]).forEach(function(d){ try{ lp.connect(d); }catch(_){} });
-    var vol=0.05, end=startAt+dur;
+    var vol=0.17, end=startAt+dur;
     master.gain.setValueAtTime(0.0001,startAt);
-    master.gain.exponentialRampToValueAtTime(vol, startAt+2.4);
-    master.gain.setValueAtTime(vol, Math.max(startAt+2.4, end-2.6));
+    master.gain.exponentialRampToValueAtTime(vol, startAt+2.2);
+    master.gain.setValueAtTime(vol, Math.max(startAt+2.2, end-3));
     master.gain.exponentialRampToValueAtTime(0.0001, end);
-    // progression douce en La mineur : Am – F – C – G (une octave plus bas, chaud et feutré)
-    var chords=[[220.00,261.63,329.63],[174.61,220.00,261.63],[196.00,246.94,329.63],[146.83,196.00,246.94]];
+    // progression douce en La mineur : Am – F – C – G (dans le médium, chaud mais présent)
+    var chords=[[220.00,261.63,329.63],[174.61,220.00,261.63],[196.00,246.94,329.63],[196.00,246.94,293.66]];
     var step=7.2, nCh=Math.ceil(dur/step);
-    for(var c=0;c<nCh;c++){ var ch=chords[c%chords.length], cs=startAt+c*step, cd=Math.min(step, end-cs)+0.7;
+    var pad=ac.createGain(); pad.gain.value=0.5; pad.connect(master);
+    for(var c=0;c<nCh;c++){ var ch=chords[c%chords.length], cs=startAt+c*step, cd=Math.min(step, end-cs)+0.8;
       if(cd<=0.3) break;
-      var cg=ac.createGain(); cg.gain.value=0; cg.connect(master);
-      cg.gain.setValueAtTime(0,cs); cg.gain.linearRampToValueAtTime(1, cs+1.3);
-      cg.gain.setValueAtTime(1, Math.max(cs+1.3, cs+cd-1.3)); cg.gain.linearRampToValueAtTime(0, cs+cd);
-      for(var n=0;n<ch.length;n++){ var o=ac.createOscillator(); o.type=(n===0?'triangle':'sine'); o.frequency.value=ch[n]/2;
-        var og=ac.createGain(); og.gain.value=(n===0?0.5:0.3); o.connect(og); og.connect(cg);
-        try{ o.start(cs); o.stop(cs+cd+0.05); }catch(_){} } }
+      var cg=ac.createGain(); cg.gain.value=0; cg.connect(pad);
+      cg.gain.setValueAtTime(0,cs); cg.gain.linearRampToValueAtTime(1, cs+1.2);
+      cg.gain.setValueAtTime(1, Math.max(cs+1.2, cs+cd-1.4)); cg.gain.linearRampToValueAtTime(0, cs+cd);
+      for(var n=0;n<ch.length;n++){ var o=ac.createOscillator(); o.type=(n===0?'triangle':'sine'); o.frequency.value=ch[n];
+        var og=ac.createGain(); og.gain.value=(n===0?0.42:0.3); o.connect(og); og.connect(cg);
+        try{ o.start(cs); o.stop(cs+cd+0.05); }catch(_){} }
+      // arpège « cloche » doux (une octave au-dessus) pour un vrai côté musical
+      var bell=ac.createGain(); bell.gain.value=0.6; bell.connect(master);
+      for(var k=0;k<4;k++){ var bt=cs+0.3+k*1.5; if(bt>=cs+cd-0.2||bt>=end) break;
+        var bo=ac.createOscillator(); bo.type='sine'; bo.frequency.value=ch[k%ch.length]*2;
+        var bg=ac.createGain(); bg.gain.setValueAtTime(0.0001,bt); bg.gain.exponentialRampToValueAtTime(0.5,bt+0.04); bg.gain.exponentialRampToValueAtTime(0.0001, bt+1.1);
+        bo.connect(bg); bg.connect(bell); try{ bo.start(bt); bo.stop(bt+1.2); }catch(_){} }
+    }
   }
   function brioPromoBg(ctx,W,H){
     var g=ctx.createLinearGradient(0,0,W,H); g.addColorStop(0,'#141027'); g.addColorStop(0.55,'#1b1640'); g.addColorStop(1,'#241a4d');
