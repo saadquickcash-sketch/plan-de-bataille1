@@ -1,14 +1,43 @@
 /* ===== Espace d'examen — Régional 1ère Bac (programme marocain) =====
-   Sujets officiels (Académie Fès-Meknès) : texte support, questions, barème et corrigé officiels.
+   Sujets officiels : texte support, questions, barème et corrigé officiels.
    Extraits littéraires reproduits à des fins strictement pédagogiques (courts extraits, usage scolaire),
    avec attribution à l'œuvre et à l'auteur.
-   Schéma : { id, subject, matiere, coef, label, official, durationMin, total, consignes,
-     texte:{titre, html, source}?, sections:[ {titre, points, questions:[ {q, points, lines?, redaction?, correction} ] } ] } */
+
+   ┌───────────────────────────────────────────────────────────────────────────┐
+   │  POUR AJOUTER UN EXAMEN (toutes matières / années / régions)                │
+   │  Copie ce modèle et remplis-le. Le CORRECTEUR INTELLIGENT fonctionne tout   │
+   │  seul pour chaque question : il note sur le barème, explique pourquoi c'est  │
+   │  faux et donne la mention — rien d'autre à coder.                            │
+   │                                                                             │
+   │  window.PB_EXAMS.push({                                                      │
+   │    id:"maths-casa-2023",          // identifiant unique                      │
+   │    subject:"maths",               // clé matière : maths, pc, svt, francais, │
+   │                                   //   arabe, philo, hg, anglais, islam…     │
+   │    matiere:"Mathématiques",       // libellé affiché                         │
+   │    region:"Casablanca-Settat",    // région (pour le filtre)                 │
+   │    annee:2023, session:"Ordinaire", // année + session (pour le filtre)      │
+   │    coef:7, official:true, label:"Régional Casablanca 2023 — officiel",       │
+   │    durationMin:120, total:20,                                               │
+   │    consignes:"…",                                                           │
+   │    texte:{ titre:"…", html:"<p>…</p>", source:"…" },   // facultatif         │
+   │    sections:[                                                                │
+   │      { titre:"Exercice 1", points:4, questions:[                             │
+   │        { q:"Énoncé de la question…", points:2, lines:4,                      │
+   │          correction:"Réponse/barème officiel (le correcteur s'y compare)." },│
+   │        …                                                                     │
+   │      ]},                                                                     │
+   │      …                                                                       │
+   │    ]                                                                         │
+   │  });                                                                         │
+   │  Champs question : q, points, lines? (hauteur zone réponse),                 │
+   │     redaction?:true (sujet de rédaction), correction (corrigé officiel).     │
+   └───────────────────────────────────────────────────────────────────────────┘ */
 window.PB_EXAMS = window.PB_EXAMS || [];
 
 /* ---------- Français — Régional Fès-Meknès 2024 (session ordinaire) ---------- */
 window.PB_EXAMS.push({
   id:"fr-fesmeknes-2024", subject:"francais", matiere:"Français", coef:4, official:true,
+  region:"Fès-Meknès", annee:2024, session:"Ordinaire",
   label:"Régional Fès-Meknès 2024 — officiel",
   durationMin:120, total:20,
   consignes:"Examen régional unifié, 1ère année du baccalauréat, Académie Fès-Meknès (session ordinaire 2024). Durée : 2 h. Lis attentivement le texte, puis traite l'étude de texte et la production écrite. Attribue-toi les points à la fin en te comparant au corrigé officiel.",
@@ -57,6 +86,7 @@ window.PB_EXAMS.push({
 /* ---------- Français — Régional Fès-Meknès 2023 (session ordinaire) ---------- */
 window.PB_EXAMS.push({
   id:"fr-fesmeknes-2023", subject:"francais", matiere:"Français", coef:4, official:true,
+  region:"Fès-Meknès", annee:2023, session:"Ordinaire",
   label:"Régional Fès-Meknès 2023 — officiel",
   durationMin:120, total:20,
   consignes:"Examen régional unifié, 1ère année du baccalauréat, Académie Fès-Meknès (session ordinaire 2023). Durée : 2 h. Lis attentivement le texte, puis traite l'étude de texte et la production écrite. Attribue-toi les points à la fin en te comparant au corrigé officiel.",

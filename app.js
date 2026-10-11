@@ -385,6 +385,8 @@
     try{ var ok=await ensurePuter(); if(ok){ var r=await puter.ai.chat(msgs); var t=extract(r); if(t&&t.trim()) return t.trim(); } }catch(_){}
     try{ var res=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:msgs})}); if(res.ok){ var j=await res.json(); var t2=extract(j); if(t2&&t2.trim()) return t2.trim(); } }catch(_){}
     return ''; }
+  // Appel IA brut réutilisable (premium -> gratuit), hors quota chat : utilisé par le correcteur d'examen.
+  window.PB_rawAI=function(msgs){ return callRawAI(msgs); };
   // Respect de la durée demandée : si la narration est bien trop courte, on ajoute des sections (1-2 appels).
   function agVideoWords(ss){ var w=0; (ss||[]).forEach(function(s){ w+=String(s.say||'').split(/\s+/).filter(Boolean).length; }); return w; }
   async function agExtendVideo(slides, mins, userText){

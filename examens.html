@@ -1,6 +1,62 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Vrais examens régionaux par région (AlloSchool) + examens blancs originaux avec corrigés."><meta name="theme-color" content="#1f3a5f"><title>Examens — 1ère Bac SM</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"><link rel="stylesheet" href="styles.css?v=129"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icons/icon-192.png"><link rel="icon" type="image/svg+xml" href="icons/brio.svg"><link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png"><script src="data.js?v=129"></script><script src="examens.js?v=129"></script></head><body><script>window.PB_PAGE={id:"exam",label:"Examens"};</script><nav class="sitenav"><div class="in"><a class="brand" href="index.html"><span class="m"><svg class="brio-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c.45 3.2 1.35 5.4 2.95 7 1.6 1.6 3.8 2.5 7 2.95-3.2.45-5.4 1.35-7 2.95-1.6 1.6-2.5 3.8-2.95 7-.45-3.2-1.35-5.4-2.95-7-1.6-1.6-3.8-2.5-7-2.95 3.2-.45 5.4-1.35 7-2.95 1.6-1.6 2.5-3.8 2.95-7z"/></svg></span><span class="t2">Brio</span></a><a class="lnk" href="index.html">Accueil</a><a class="lnk" href="revision.html">Cours</a><a class="lnk" href="qcm.html">QCM</a><a class="lnk" href="flashcards.html">Cartes</a><a class="lnk" href="outils.html">Outils</a><a class="lnk" href="progres.html">Progrès</a><a class="lnk active" href="examens.html">Examens</a><a class="lnk" href="echecs.html">&#9822; Échecs</a><a class="lnk" href="code.html">&#9001;/&#9002; Code</a><a class="lnk" href="youssef.html">Coran</a><a class="lnk lnk-prem" href="premium.html" title="Compte Premium">&#9733; Premium</a><a class="lnk nav-pages" href="#" title="Pages créées par Brio">&#10022; Cr&eacute;ations <span class="nav-pages-badge"></span></a><span class="sp"></span><button class="theme-btn" id="themeBtn" aria-label="Thème"><span id="themeIcon">◐</span><span id="themeTxt">Thème</span></button><button class="acct-btn" id="acctBtn" aria-label="Compte"><span class="acct-av" id="acctAv">&#128100;</span><span id="acctLabel">Compte</span></button></div></nav><div class="auth-modal" id="authModal" hidden><div class="auth-in"><button class="auth-x" id="authClose" aria-label="Fermer">&times;</button><div class="auth-brand"><span class="m"><svg class="brio-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c.45 3.2 1.35 5.4 2.95 7 1.6 1.6 3.8 2.5 7 2.95-3.2.45-5.4 1.35-7 2.95-1.6 1.6-2.5 3.8-2.95 7-.45-3.2-1.35-5.4-2.95-7-1.6-1.6-3.8-2.5-7-2.95 3.2-.45 5.4-1.35 7-2.95 1.6-1.6 2.5-3.8 2.95-7z"/></svg></span> Brio</div><div id="authForms"><div class="auth-tabs"><button class="auth-tab on" data-tab="login">Se connecter</button><button class="auth-tab" data-tab="signup">S’inscrire</button></div><button class="auth-google" id="authGoogle"><span class="g-ic">G</span> Continuer avec Google</button><div class="auth-or"><span>ou</span></div><label class="auth-l" id="nameWrap" hidden>Nom (facultatif)<input type="text" id="authName" autocomplete="name"></label><label class="auth-l">Adresse e-mail<input type="email" id="authEmail" autocomplete="email" placeholder="ton@email.com"></label><label class="auth-l">Mot de passe<input type="password" id="authPass" autocomplete="current-password" placeholder="au moins 6 caractères"></label><button class="btn ask auth-submit" id="authSubmit">Se connecter</button><button class="auth-reset" id="authReset" hidden>Mot de passe oublié ?</button><div class="auth-msg" id="authMsg"></div></div><div id="authProfile" hidden><div class="auth-hi">Connecté</div><div class="auth-who"><span class="auth-avatar" id="profAv">S</span><div><div class="auth-name" id="profName"></div><div class="auth-email" id="profEmail"></div></div></div><a class="auth-prem" href="premium.html">&#9733; Passer à Premium — IA puissante & illimitée</a><a class="auth-admin" id="authAdmin" href="admin.html" hidden>&#127915; Générer des codes Premium</a><p class="auth-note">Tes conversations avec le tuteur IA sont enregistrées sur ton compte et te suivent sur tous tes appareils.</p><button class="btn auth-logout" id="authLogout">Se déconnecter</button></div><div class="auth-setup" id="authSetup" hidden>Les comptes ne sont pas encore activés. Ouvre le fichier <b>COMPTE-configuration.txt</b> (dans le dossier du site) pour connecter une base Firebase gratuite en 5 minutes.</div></div></div><header class="phero"><div class="in"><div class="eyebrow" style="color:var(--accent);font-family:JetBrains Mono,monospace;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase">Entraînement</div><h1>Examens du régional</h1><p>Deux ressources : les <b>vrais examens régionaux</b> de plusieurs régions et années (liens officiels vers AlloSchool, plus bas), et nos <b>examens blancs originaux</b> avec corrigés, au format du régional. Méthode : traite un sujet seul en temps limité, puis compare au corrigé.</p></div></header><main class="wrap"><div class="exam-wrap">
-<div class="exam-note">📋 <b>Sujets conformes au format officiel du régional</b>, avec correction détaillée. Chronomètre-toi en conditions réelles, puis compare au corrigé et attribue-toi les points. Tu peux aussi demander à Brio de corriger ta copie en détail.</div>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Vrais examens régionaux par région (AlloSchool) + examens blancs originaux avec corrigés."><meta name="theme-color" content="#1f3a5f"><title>Examens — 1ère Bac SM</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"><link rel="stylesheet" href="styles.css?v=130"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icons/icon-192.png"><link rel="icon" type="image/svg+xml" href="icons/brio.svg"><link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png"><script src="data.js?v=130"></script><script src="examens.js?v=130"></script></head><body><script>window.PB_PAGE={id:"exam",label:"Examens"};</script><nav class="sitenav"><div class="in"><a class="brand" href="index.html"><span class="m"><svg class="brio-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c.45 3.2 1.35 5.4 2.95 7 1.6 1.6 3.8 2.5 7 2.95-3.2.45-5.4 1.35-7 2.95-1.6 1.6-2.5 3.8-2.95 7-.45-3.2-1.35-5.4-2.95-7-1.6-1.6-3.8-2.5-7-2.95 3.2-.45 5.4-1.35 7-2.95 1.6-1.6 2.5-3.8 2.95-7z"/></svg></span><span class="t2">Brio</span></a><a class="lnk" href="index.html">Accueil</a><a class="lnk" href="revision.html">Cours</a><a class="lnk" href="qcm.html">QCM</a><a class="lnk" href="flashcards.html">Cartes</a><a class="lnk" href="outils.html">Outils</a><a class="lnk" href="progres.html">Progrès</a><a class="lnk active" href="examens.html">Examens</a><a class="lnk" href="echecs.html">&#9822; Échecs</a><a class="lnk" href="code.html">&#9001;/&#9002; Code</a><a class="lnk" href="youssef.html">Coran</a><a class="lnk lnk-prem" href="premium.html" title="Compte Premium">&#9733; Premium</a><a class="lnk nav-pages" href="#" title="Pages créées par Brio">&#10022; Cr&eacute;ations <span class="nav-pages-badge"></span></a><span class="sp"></span><button class="theme-btn" id="themeBtn" aria-label="Thème"><span id="themeIcon">◐</span><span id="themeTxt">Thème</span></button><button class="acct-btn" id="acctBtn" aria-label="Compte"><span class="acct-av" id="acctAv">&#128100;</span><span id="acctLabel">Compte</span></button></div></nav><div class="auth-modal" id="authModal" hidden><div class="auth-in"><button class="auth-x" id="authClose" aria-label="Fermer">&times;</button><div class="auth-brand"><span class="m"><svg class="brio-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c.45 3.2 1.35 5.4 2.95 7 1.6 1.6 3.8 2.5 7 2.95-3.2.45-5.4 1.35-7 2.95-1.6 1.6-2.5 3.8-2.95 7-.45-3.2-1.35-5.4-2.95-7-1.6-1.6-3.8-2.5-7-2.95 3.2-.45 5.4-1.35 7-2.95 1.6-1.6 2.5-3.8 2.95-7z"/></svg></span> Brio</div><div id="authForms"><div class="auth-tabs"><button class="auth-tab on" data-tab="login">Se connecter</button><button class="auth-tab" data-tab="signup">S’inscrire</button></div><button class="auth-google" id="authGoogle"><span class="g-ic">G</span> Continuer avec Google</button><div class="auth-or"><span>ou</span></div><label class="auth-l" id="nameWrap" hidden>Nom (facultatif)<input type="text" id="authName" autocomplete="name"></label><label class="auth-l">Adresse e-mail<input type="email" id="authEmail" autocomplete="email" placeholder="ton@email.com"></label><label class="auth-l">Mot de passe<input type="password" id="authPass" autocomplete="current-password" placeholder="au moins 6 caractères"></label><button class="btn ask auth-submit" id="authSubmit">Se connecter</button><button class="auth-reset" id="authReset" hidden>Mot de passe oublié ?</button><div class="auth-msg" id="authMsg"></div></div><div id="authProfile" hidden><div class="auth-hi">Connecté</div><div class="auth-who"><span class="auth-avatar" id="profAv">S</span><div><div class="auth-name" id="profName"></div><div class="auth-email" id="profEmail"></div></div></div><a class="auth-prem" href="premium.html">&#9733; Passer à Premium — IA puissante & illimitée</a><a class="auth-admin" id="authAdmin" href="admin.html" hidden>&#127915; Générer des codes Premium</a><p class="auth-note">Tes conversations avec le tuteur IA sont enregistrées sur ton compte et te suivent sur tous tes appareils.</p><button class="btn auth-logout" id="authLogout">Se déconnecter</button></div><div class="auth-setup" id="authSetup" hidden>Les comptes ne sont pas encore activés. Ouvre le fichier <b>COMPTE-configuration.txt</b> (dans le dossier du site) pour connecter une base Firebase gratuite en 5 minutes.</div></div></div><header class="phero"><div class="in"><div class="eyebrow" style="color:var(--accent);font-family:JetBrains Mono,monospace;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase">Entraînement</div><h1>Examens du régional</h1><p>Deux ressources : les <b>vrais examens régionaux</b> de plusieurs régions et années (liens officiels vers AlloSchool, plus bas), et nos <b>examens blancs originaux</b> avec corrigés, au format du régional. Méthode : traite un sujet seul en temps limité, puis compare au corrigé.</p></div></header><style>
+/* ===== Tableau de bord Examens ===== */
+.exam-dash{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:14px;margin:2px 0 14px}
+.ed-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px;box-sizing:border-box;min-width:0}
+.ed-hero{background:linear-gradient(135deg,var(--royal,#4a3ea0),#241c44);color:#fff;border:0;position:relative;overflow:hidden}
+.ed-lbl{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;opacity:.85;font-family:'JetBrains Mono',monospace;margin-bottom:8px}
+.ed-moy{font-family:'JetBrains Mono',monospace;font-size:2.7rem;font-weight:800;line-height:1}
+.ed-moy small{font-size:1rem;opacity:.75;font-weight:600}
+.ed-obj{margin-top:14px}
+.ed-obj .lab{display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:5px;opacity:.95}
+.ed-barw{height:10px;border-radius:99px;background:rgba(255,255,255,.2);overflow:hidden}
+.ed-barw>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#ffd36b,#86e3ad);width:0;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.ed-mini{display:flex;gap:20px;margin-top:14px;flex-wrap:wrap}
+.ed-mini .m{font-size:.76rem;opacity:.9}
+.ed-mini .m b{display:block;font-size:1.25rem;font-family:'JetBrains Mono',monospace;font-weight:800}
+.ed-subs-h{font-size:.78rem;font-weight:700;color:var(--muted);margin:0 0 8px}
+.es{display:flex;align-items:center;gap:10px;margin:8px 0}
+.es .nm{flex:0 0 108px;font-size:.84rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.es .sb{flex:1;min-width:0;height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.es .sb>i{display:block;height:100%;border-radius:99px;transition:width .6s}
+.es .vv{flex:0 0 auto;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--muted)}
+.ed-evo-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.ed-evo svg{display:block;width:100%;height:56px;overflow:visible}
+.ed-empty{color:var(--muted);font-size:.9rem;line-height:1.5}
+/* Examen recommandé */
+.exam-reco{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:linear-gradient(135deg,color-mix(in srgb,var(--royal) 14%,var(--surface)),var(--surface));border:1px solid color-mix(in srgb,var(--royal) 35%,var(--border));border-radius:16px;padding:14px 18px;margin:14px 0}
+.exam-reco .rc-ic{font-size:1.6rem;flex:0 0 auto}
+.exam-reco .rc-main{flex:1 1 220px;min-width:0}
+.exam-reco .rc-k{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-family:'JetBrains Mono',monospace}
+.exam-reco .rc-t{font-family:Newsreader,serif;font-size:1.12rem;font-weight:600;margin:2px 0}
+.exam-reco .rc-w{font-size:.82rem;color:var(--muted)}
+.exam-reco .btn{flex:0 0 auto}
+/* Filtres */
+.exam-filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 10px}
+.exam-filters select,.exam-filters input{font-family:inherit;font-size:.86rem;padding:8px 11px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);max-width:100%;min-width:0;box-sizing:border-box}
+.exam-filters input{flex:1 1 180px}
+.exam-filters .ef-count{margin-left:auto;font-size:.78rem;color:var(--muted);white-space:nowrap}
+.exam-grouphd{font-size:.74rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px;display:flex;align-items:center;gap:8px}
+.exam-grouphd::after{content:"";flex:1;height:1px;background:var(--border)}
+/* Badges */
+.exam-badges{margin:22px 0 8px}
+.exam-badges-h{font-size:.84rem;font-weight:700;color:var(--muted);margin-bottom:10px}
+.badge-row{display:flex;gap:10px;flex-wrap:wrap}
+.badge{display:flex;align-items:center;gap:9px;border:1px solid var(--border);border-radius:13px;padding:9px 13px;background:var(--surface);min-width:0}
+.badge .bi{font-size:1.3rem;flex:0 0 auto}
+.badge .bt{font-size:.82rem;font-weight:700;line-height:1.15}
+.badge .bd{font-size:.72rem;color:var(--muted)}
+.badge.on{border-color:color-mix(in srgb,var(--good,#1a8f5c) 55%,var(--border));background:color-mix(in srgb,var(--good,#1a8f5c) 10%,var(--surface))}
+.badge.off{opacity:.55}
+.badge.off .bi{filter:grayscale(1)}
+@media(max-width:720px){ .exam-dash{grid-template-columns:minmax(0,1fr)} }
+</style>
+<main class="wrap"><div class="exam-wrap">
+<div class="exam-dash" id="examDash"></div>
+<div class="exam-note">📋 <b>Sujets au format officiel du régional</b>, avec <b>correcteur intelligent</b>. Compose en temps limité : dès que tu cliques « Terminer », Brio corrige ta copie question par question, te met une <b>note sur 20 avec la mention</b>, t'explique <b>pourquoi</b> chaque réponse est fausse, et ajoute tes erreurs à ton carnet pour ne plus les refaire.</div>
+<div class="exam-reco" id="examReco" hidden></div>
+<div class="exam-filters" id="examFilters" hidden></div>
 <div class="exam-list" id="examList"></div>
+<div class="exam-badges" id="examBadges" hidden></div>
 </div></main>
 <div class="exam-mode" id="examMode" hidden></div>
 <div class="exam-mode" id="examCorr" hidden></div>
@@ -17,14 +73,128 @@ document.addEventListener('DOMContentLoaded',function(){
   function findExam(id){ for(var i=0;i<EX.length;i++) if(EX[i].id===id) return EX[i]; return null; }
   function ansKey(id){ return 'pb_exam_ans_'+id; }
   function fmt(s){ s=Math.max(0,s); var h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=s%60; return (h>0?h+':':'')+((m<10&&h>0)?'0':'')+m+':'+(x<10?'0':'')+x; }
-  function renderList(){
-    if(!EX.length){ listEl.innerHTML='<div class="exam-empty">Aucun sujet pour le moment.</div>'; return; }
-    listEl.innerHTML=EX.map(function(x){ var di=doneInfo(x.id);
-      return '<div class="exam-card"><div class="ec-main"><span class="exam-badge">'+esc(x.matiere)+' · coef '+x.coef+'</span>'+(x.official?' <span class="exam-official">✓ Sujet officiel</span>':'')+'<h3>'+esc(x.label)+'</h3><div class="exam-meta"><span>⏱ <b>'+x.durationMin+' min</b></span><span>📝 barème <b>/'+x.total+'</b></span><span>📄 '+x.sections.length+' parties</span>'+(di?'<span class="exam-done-tag">Fait · '+di.score+'/'+x.total+'</span>':'')+'</div></div><div class="exam-actions"><button class="btn ask" data-start="'+x.id+'">▶ Commencer l\'épreuve</button><button class="btn" data-review="'+x.id+'">Voir le corrigé</button></div></div>';
-    }).join('');
+  /* ===== Tableau de bord, recommandation, filtres, badges ===== */
+  var EXAM_GOAL=17.5;
+  function n20of(e){ return (e&&e.total)? e.score/e.total*20 : 0; }
+  function examStats(){
+    var latest={}; log.forEach(function(e){ if(!latest[e.id]||e.t>latest[e.id].t) latest[e.id]=e; });
+    var done=[]; for(var k in latest){ if(latest.hasOwnProperty(k)) done.push(latest[k]); }
+    done.sort(function(a,b){return a.t-b.t;});
+    var moy=done.length? done.reduce(function(a,e){return a+n20of(e);},0)/done.length : 0;
+    var subj={}; done.forEach(function(e){ (subj[e.matiere]=subj[e.matiere]||[]).push(n20of(e)); });
+    var bySub=[]; for(var m in subj){ if(!subj.hasOwnProperty(m))continue; var arr=subj[m]; bySub.push({matiere:m,moy:arr.reduce(function(a,b){return a+b;},0)/arr.length,n:arr.length}); }
+    bySub.sort(function(a,b){return b.moy-a.moy;});
+    var best=null; done.forEach(function(e){ if(!best||n20of(e)>n20of(best)) best=e; });
+    return {done:done, moy:moy, bySub:bySub, evo:done.map(n20of), best:best, nDone:done.length};
+  }
+  function barColor(v20){ return v20>=14?'#1a8f5c':(v20>=10?'#caa20a':'#c0392b'); }
+  function dec1(n){ return (Math.round(n*10)/10).toFixed(1).replace('.',','); }
+  function renderDash(){
+    var el=document.getElementById('examDash'); if(!el) return; var st=examStats();
+    if(!st.nDone){
+      el.innerHTML='<div class="ed-card ed-hero"><div class="ed-lbl">Ta progression</div><div class="ed-moy">—<small> /20</small></div><div class="ed-obj"><div class="lab"><span>Objectif : moyenne '+String(EXAM_GOAL).replace('.',',')+'</span><span>0 %</span></div><div class="ed-barw"><i style="width:0"></i></div></div><div class="ed-mini"><div class="m"><b>0</b>examen fait</div></div></div>'
+        +'<div class="ed-card"><div class="ed-empty"><b>Compose ton premier examen</b> pour voir apparaître ici ta moyenne générale, ta progression par matière et ton évolution dans le temps. Choisis un sujet ci-dessous et clique « Commencer l\'épreuve ».</div></div>';
+      return;
+    }
+    var pct=Math.max(0,Math.min(100,Math.round(st.moy/EXAM_GOAL*100)));
+    var bm=st.best?mentionOf(n20of(st.best)):null;
+    var hero='<div class="ed-card ed-hero"><div class="ed-lbl">Moyenne générale</div>'
+      +'<div class="ed-moy">'+dec1(st.moy)+'<small> /20</small></div>'
+      +'<div class="ed-obj"><div class="lab"><span>Objectif : moyenne '+String(EXAM_GOAL).replace('.',',')+'</span><span>'+pct+' %</span></div><div class="ed-barw"><i style="width:'+pct+'%"></i></div></div>'
+      +'<div class="ed-mini"><div class="m"><b>'+st.nDone+'</b>examen'+(st.nDone>1?'s':'')+' fait'+(st.nDone>1?'s':'')+'</div>'
+      +(bm?'<div class="m"><b>'+bm.e+'</b>meilleure&nbsp;: '+esc(bm.t)+'</div>':'')
+      +'</div></div>';
+    var subs='<div class="ed-subs-h">Par matière</div>'+st.bySub.map(function(s){ var w=Math.max(4,Math.min(100,Math.round(s.moy/20*100)));
+      return '<div class="es"><span class="nm">'+esc(s.matiere)+'</span><span class="sb"><i style="width:'+w+'%;background:'+barColor(s.moy)+'"></i></span><span class="vv">'+dec1(s.moy)+'</span></div>'; }).join('');
+    var evo=''; if(st.evo.length>=2){ evo='<div class="ed-evo"><div class="ed-evo-h"><span class="ed-subs-h" style="margin:0">Évolution</span><span class="vv">'+st.evo.length+' notes</span></div>'+sparkline(st.evo)+'</div>'; }
+    el.innerHTML=hero+'<div class="ed-card">'+subs+evo+'</div>';
+  }
+  function sparkline(vals){
+    var W=300,H=56,pad=5,mx=20,n=vals.length; if(n<2) return '';
+    var step=(W-pad*2)/(n-1);
+    var pts=vals.map(function(v,i){ var x=pad+i*step, y=H-pad-(Math.max(0,Math.min(mx,v))/mx)*(H-pad*2); return [x,y]; });
+    var d=pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ');
+    var area=d+' L '+pts[n-1][0].toFixed(1)+' '+(H-pad)+' L '+pts[0][0].toFixed(1)+' '+(H-pad)+' Z';
+    var c=barColor(vals[n-1]);
+    var dots=pts.map(function(p){return '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.4" fill="'+c+'"/>';}).join('');
+    var gy=H-pad-(Math.min(mx,EXAM_GOAL)/mx)*(H-pad*2);
+    return '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" role="img" aria-label="Évolution des notes">'
+      +'<defs><linearGradient id="evg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+c+'" stop-opacity=".30"/><stop offset="1" stop-color="'+c+'" stop-opacity="0"/></linearGradient></defs>'
+      +'<line x1="'+pad+'" y1="'+gy.toFixed(1)+'" x2="'+(W-pad)+'" y2="'+gy.toFixed(1)+'" stroke="#8a86a0" stroke-width="1" stroke-dasharray="4 4" opacity=".55"/>'
+      +'<path d="'+area+'" fill="url(#evg)"/><path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'+dots+'</svg>';
+  }
+  function renderReco(){
+    var el=document.getElementById('examReco'); if(!el) return;
+    if(!EX.length){ el.hidden=true; return; }
+    var doneMap={}; examStats().done.forEach(function(e){ doneMap[e.id]=e; });
+    var reco=null, why='';
+    var notDone=EX.filter(function(x){ return !doneMap[x.id]; });
+    if(notDone.length){ reco=notDone[0]; why='Nouveau sujet — teste-toi en conditions réelles.'; }
+    else { var arr=[]; for(var id in doneMap){ if(doneMap.hasOwnProperty(id)) arr.push(doneMap[id]); } arr.sort(function(a,b){return (a.score/a.total)-(b.score/b.total);}); if(arr[0]){ reco=findExam(arr[0].id); why='À retenter pour progresser (dernière note : '+arr[0].score+'/'+(arr[0].total||20)+').'; } }
+    if(!reco){ el.hidden=true; return; } el.hidden=false;
+    el.innerHTML='<span class="rc-ic">🎯</span><div class="rc-main"><div class="rc-k">Recommandé pour toi</div><div class="rc-t">'+esc(reco.label)+'</div><div class="rc-w">'+esc(reco.matiere)+(reco.region?' · '+esc(reco.region):'')+(reco.annee?' · '+reco.annee:'')+' — '+esc(why)+'</div></div><button class="btn ask" data-start="'+reco.id+'">▶ Commencer</button>';
+    var b=el.querySelector('[data-start]'); if(b) b.addEventListener('click',function(){ startExam(reco.id); });
+  }
+  var examFilter={matiere:'',region:'',annee:'',q:''};
+  function distinctBy(get){ var s={},o=[]; EX.forEach(function(x){ var v=get(x); if(v!=null&&v!==''&&!s[v]){s[v]=1;o.push(v);} }); return o; }
+  function renderFilters(){
+    var el=document.getElementById('examFilters'); if(!el) return;
+    if(EX.length<2){ el.hidden=true; return; } el.hidden=false;
+    var mats=distinctBy(function(x){return x.matiere;}).sort();
+    var regs=distinctBy(function(x){return x.region;}).sort();
+    var yrs=distinctBy(function(x){return x.annee;}).sort(function(a,b){return b-a;});
+    function opts(list,sel,all){ return '<option value="">'+all+'</option>'+list.map(function(v){return '<option value="'+esc(String(v))+'"'+(String(sel)===String(v)?' selected':'')+'>'+esc(String(v))+'</option>';}).join(''); }
+    var h='<select id="fMat" aria-label="Matière">'+opts(mats,examFilter.matiere,'Toutes les matières')+'</select>';
+    if(regs.length) h+='<select id="fReg" aria-label="Région">'+opts(regs,examFilter.region,'Toutes les régions')+'</select>';
+    if(yrs.length) h+='<select id="fYr" aria-label="Année">'+opts(yrs,examFilter.annee,'Toutes les années')+'</select>';
+    h+='<input type="search" id="fQ" placeholder="Rechercher un sujet…" value="'+esc(examFilter.q)+'"><span class="ef-count" id="fCount"></span>';
+    el.innerHTML=h;
+    function upd(){ var g=function(id){var e=document.getElementById(id);return e?e.value:'';}; examFilter.matiere=g('fMat'); examFilter.region=g('fReg'); examFilter.annee=g('fYr'); examFilter.q=g('fQ'); renderCards(); }
+    ['fMat','fReg','fYr'].forEach(function(id){ var s=document.getElementById(id); if(s) s.addEventListener('change',upd); });
+    var q=document.getElementById('fQ'); if(q) q.addEventListener('input',upd);
+  }
+  function cardHTML(x){ var di=doneInfo(x.id);
+    var loc=[x.region,x.annee].filter(Boolean).join(' · ');
+    var meta='<span>⏱ <b>'+x.durationMin+' min</b></span><span>📝 barème <b>/'+x.total+'</b></span><span>📄 '+x.sections.length+' partie'+(x.sections.length>1?'s':'')+'</span>'+(loc?'<span>📍 '+esc(loc)+'</span>':'');
+    return '<div class="exam-card"><div class="ec-main"><span class="exam-badge">'+esc(x.matiere)+' · coef '+x.coef+'</span>'+(x.official?' <span class="exam-official">✓ Sujet officiel</span>':'')+'<h3>'+esc(x.label)+'</h3><div class="exam-meta">'+meta+(di?'<span class="exam-done-tag">Fait · '+di.score+'/'+(di.total||x.total)+(di.mention?' · '+esc(di.mention):'')+'</span>':'')+'</div></div><div class="exam-actions"><button class="btn ask" data-start="'+x.id+'">▶ Commencer l\'épreuve</button><button class="btn" data-review="'+x.id+'">Voir le corrigé</button></div></div>';
+  }
+  function renderCards(){
+    if(!EX.length){ listEl.innerHTML='<div class="exam-empty">Aucun sujet pour le moment. Ajoute des examens dans <b>examens.js</b> (un modèle prêt à remplir est en haut du fichier).</div>'; return; }
+    var f=examFilter, q=(f.q||'').toLowerCase().trim();
+    var list=EX.filter(function(x){
+      if(f.matiere && x.matiere!==f.matiere) return false;
+      if(f.region && String(x.region||'')!==f.region) return false;
+      if(f.annee && String(x.annee||'')!==f.annee) return false;
+      if(q){ var hay=((x.label||'')+' '+(x.matiere||'')+' '+(x.region||'')+' '+(x.annee||'')).toLowerCase(); if(hay.indexOf(q)<0) return false; }
+      return true;
+    });
+    var cnt=document.getElementById('fCount'); if(cnt) cnt.textContent=list.length+' sujet'+(list.length>1?'s':'');
+    if(!list.length){ listEl.innerHTML='<div class="exam-empty">Aucun sujet ne correspond à ta recherche.</div>'; return; }
+    var groups={}, order=[]; list.forEach(function(x){ var g=x.matiere||'Autres'; if(!groups[g]){groups[g]=[];order.push(g);} groups[g].push(x); });
+    var multi=order.length>1, html='';
+    order.forEach(function(g){ if(multi) html+='<div class="exam-grouphd">'+esc(g)+'</div>'; groups[g].sort(function(a,b){ return (b.annee||0)-(a.annee||0); }); html+=groups[g].map(cardHTML).join(''); });
+    listEl.innerHTML=html;
     listEl.querySelectorAll('[data-start]').forEach(function(b){ b.addEventListener('click',function(){ startExam(b.getAttribute('data-start')); }); });
     listEl.querySelectorAll('[data-review]').forEach(function(b){ b.addEventListener('click',function(){ openCorrection(b.getAttribute('data-review'), true); }); });
   }
+  function renderBadges(){
+    var el=document.getElementById('examBadges'); if(!el) return; var st=examStats();
+    var errs=0; try{ errs=(ls('errors',[])||[]).filter(function(e){return e.fromExam && !e.done;}).length; }catch(e){}
+    var bestN20=st.best?n20of(st.best):0;
+    var defs=[
+      {ic:'🎓',t:'Premier pas',d:'1 examen passé',on:st.nDone>=1},
+      {ic:'🔥',t:'Assidu',d:'5 examens',on:st.nDone>=5},
+      {ic:'🏅',t:'Marathon',d:'10 examens',on:st.nDone>=10},
+      {ic:'✨',t:'Mention Bien',d:'une note ≥ 14',on:bestN20>=14},
+      {ic:'🌟',t:'Excellence',d:'une note ≥ 17,5',on:bestN20>=17.5},
+      {ic:'🎯',t:'Zéro rechute',d:'aucune erreur en attente',on:(st.nDone>=1 && errs===0)}
+    ];
+    if(!st.nDone){ el.hidden=true; return; } el.hidden=false;
+    el.innerHTML='<div class="exam-badges-h">🏆 Tes badges</div><div class="badge-row">'+defs.map(function(b){
+      return '<div class="badge '+(b.on?'on':'off')+'"><span class="bi">'+b.ic+'</span><div><div class="bt">'+esc(b.t)+'</div><div class="bd">'+esc(b.d)+'</div></div></div>';
+    }).join('')+'</div>';
+  }
+  function renderList(){ try{renderDash();}catch(e){} try{renderReco();}catch(e){} try{renderFilters();}catch(e){} renderCards(); try{renderBadges();}catch(e){} }
   function startExam(id){ var x=findExam(id); if(!x)return; var ans=ls(ansKey(id),{});
     var body='<div class="exam-inner"><div class="exam-consignes"><b>Consignes.</b> '+esc(x.consignes)+'</div>';
     if(x.texte){ body+='<div class="exam-texte"><h4>'+esc(x.texte.titre)+'</h4>'+x.texte.html+(x.texte.note?'<div class="src">'+esc(x.texte.note)+'</div>':'')+(x.texte.source?'<div class="src">'+esc(x.texte.source)+'</div>':'')+'</div>'; }
@@ -44,32 +214,168 @@ document.addEventListener('DOMContentLoaded',function(){
   }
   function stopTimer(){ if(timerId){ clearInterval(timerId); timerId=null; } }
   function finishExam(x){ stopTimer(); mode.hidden=true; document.body.classList.remove('noscroll'); openCorrection(x.id,false); }
-  function openCorrection(id, reviewOnly){ var x=findExam(id); if(!x)return; var ans=ls(ansKey(id),{});
-    var body='<div class="exam-inner exam-corr">';
-    if(!reviewOnly){ body+='<div class="exam-result"><div class="rn" id="corrScoreView">— / '+x.total+'</div><div class="rl">Ta note (auto-évaluée) — attribue-toi les points partie par partie</div></div>'; }
-    body+='<div class="exam-consignes">'+(reviewOnly?'Voici le corrigé détaillé de ce sujet. Lance « Commencer l\'épreuve » pour le composer en conditions réelles.':'Compare tes réponses au corrigé, puis attribue-toi les points pour chaque partie. Tu peux aussi demander à Brio de corriger ta copie en détail.')+'</div>';
-    var qc=0;
-    x.sections.forEach(function(sec,si){ body+='<div class="exam-sec"><h3>'+esc(sec.titre)+'<span class="pts">/'+sec.points+'</span></h3>';
-      sec.questions.forEach(function(q,qi){ qc++; var key=si+'-'+qi;
-        body+='<div class="exam-q"><div class="qh"><span class="qn">'+qc+'.</span><span class="qt">'+esc(q.q)+'</span><span class="qp">'+q.points+' pt'+(q.points>1?'s':'')+'</span></div>';
-        if(!reviewOnly){ body+='<div class="corr-ans"><span class="lab">Ta réponse</span>'+(ans[key]?esc(ans[key]):'<i>(pas de réponse)</i>')+'</div>'; }
-        body+='<div class="corr-model"><span class="lab">✓ Corrigé</span>'+q.correction+'</div></div>';
-      });
-      if(!reviewOnly){ body+='<div class="corr-score"><b>'+esc(sec.titre.split('.')[0]||sec.titre)+'</b> — je m\'attribue <input type="number" min="0" max="'+sec.points+'" step="0.5" data-sec="'+si+'" placeholder="0"> / '+sec.points+' pts</div>'; }
-      body+='</div>'; });
-    body+='<div class="exam-foot" style="gap:10px;flex-wrap:wrap">'+(reviewOnly?'':'<button class="btn ask" id="corrAI">🤖 Faire corriger ma copie par Brio</button><button class="btn" id="corrSave">💾 Enregistrer ma note</button>')+'<button class="btn" id="corrClose">Fermer</button></div></div>';
-    corr.innerHTML='<div class="exam-top"><div class="et-l"><span class="et-mat">'+esc(x.matiere)+' · corrigé</span><span class="et-tit">'+esc(x.label)+'</span></div><button class="btn" id="corrX">Fermer</button></div><div class="exam-body">'+body+'</div>';
-    corr.hidden=false; document.body.classList.add('noscroll'); corr.scrollTop=0;
-    function recompute(){ var tot=0; corr.querySelectorAll('input[data-sec]').forEach(function(i){ tot+=parseFloat(i.value)||0; }); var v=document.getElementById('corrScoreView'); if(v) v.textContent=(Math.round(tot*10)/10)+' / '+x.total; return tot; }
-    corr.querySelectorAll('input[data-sec]').forEach(function(i){ i.addEventListener('input',recompute); });
-    function close(){ corr.hidden=true; document.body.classList.remove('noscroll'); renderList(); }
-    var cx=document.getElementById('corrX'); if(cx)cx.addEventListener('click',close);
-    var cc=document.getElementById('corrClose'); if(cc)cc.addEventListener('click',close);
-    var cs=document.getElementById('corrSave'); if(cs)cs.addEventListener('click',function(){ var tot=recompute(); var lg=ls('exam_log',[]); lg.push({id:x.id,subject:x.subject,matiere:x.matiere,score:Math.round(tot*10)/10,total:x.total,date:new Date().toISOString().slice(0,10)}); ss('exam_log',lg); log=lg; if(window.PB_award)window.PB_award(30,'Examen terminé'); alert('Note enregistrée : '+(Math.round(tot*10)/10)+'/'+x.total+' ✓'); });
-    var ca=document.getElementById('corrAI'); if(ca)ca.addEventListener('click',function(){ var txt='Corrige ma copie d\'examen de '+x.matiere+' (« '+x.label+' »). Pour chaque question : dis si ma réponse est juste, corrige-la, attribue-moi une note sur le barème indiqué, puis donne une note globale sur '+x.total+' et 3 conseils personnalisés pour progresser.\n\n';
-      var c=0; x.sections.forEach(function(sec,si){ txt+='\n['+sec.titre+']\n'; sec.questions.forEach(function(q,qi){ c++; txt+=c+'. '+q.q+' ('+q.points+' pts)\nMa réponse : '+(ans[si+'-'+qi]||'(vide)')+'\n'; }); });
-      try{ if(window.PB_ASK) window.PB_ASK(txt); else { var f=document.getElementById('fab'); if(f)f.click(); } }catch(e){} });
+
+  /* ===== Correcteur d'examen intelligent (IA) ===== */
+  function stripHtml(h){ var d=document.createElement('div'); d.innerHTML=String(h||''); return (d.textContent||d.innerText||'').replace(/\s+/g,' ').trim(); }
+  function round2(n){ return Math.round((+n||0)*100)/100; }
+  function mentionOf(n20){
+    if(n20>=18) return {t:'Excellent',e:'🏆',c:'#1a8f5c',m:'Niveau remarquable — garde ce cap !'};
+    if(n20>=16) return {t:'Très bien',e:'🌟',c:'#1a8f5c',m:'Très solide. Peaufine les derniers détails.'};
+    if(n20>=14) return {t:'Bien',e:'✨',c:'#2e7d32',m:'Bon travail — quelques points à consolider.'};
+    if(n20>=12) return {t:'Assez bien',e:'👍',c:'#b58a00',m:'Des bases correctes. Retravaille les erreurs ci-dessous.'};
+    if(n20>=10) return {t:'Passable',e:'🙂',c:'#c47d0a',m:'La moyenne est là — on vise plus haut au prochain essai.'};
+    if(n20>=8)  return {t:'Insuffisant',e:'💪',c:'#c0392b',m:'Accroche-toi : revois les points faibles et retente.'};
+    return {t:'À retravailler',e:'📚',c:'#c0392b',m:'On reprend les bases — chaque erreur te fait progresser.'};
   }
+  var VERD={ juste:{t:'Juste',c:'#1a8f5c',bg:'rgba(34,168,110,.13)',ic:'✓'},
+    partiel:{t:'Partiellement juste',c:'#b07d00',bg:'rgba(200,150,0,.15)',ic:'◐'},
+    faux:{t:'À revoir',c:'#c0392b',bg:'rgba(192,57,43,.12)',ic:'✗'},
+    vide:{t:'Sans réponse',c:'#7a7a86',bg:'rgba(130,130,130,.12)',ic:'—'} };
+  function normVerdict(v, pts, max){ v=(v||'').toString().toLowerCase();
+    if(/incorrect|faux|erron|mauvais/.test(v)) return 'faux';
+    if(/partiel|incomplet|moiti|presque/.test(v)) return 'partiel';
+    if(/just|correct|bon|exact|parfait|vrai/.test(v)) return 'juste';
+    return pts>=max*0.85?'juste':(pts>0?'partiel':'faux'); }
+  function parseGrade(raw, max){
+    try{ var i=String(raw).indexOf('{'), j=String(raw).lastIndexOf('}'); if(i<0||j<=i) return null;
+      var o=JSON.parse(String(raw).slice(i,j+1)); var p=parseFloat(o.points); if(isNaN(p)) return null;
+      p=Math.max(0,Math.min(max,p)); return { points:round2(p), verdict:normVerdict(o.verdict,p,max), feedback:(o.feedback||'').toString().trim() };
+    }catch(e){ return null; } }
+  async function gradeOne(x, q, ans){
+    var max=+q.points||0, a=String(ans||'').trim();
+    if(!a) return { points:0, verdict:'vide', feedback:(q.redaction?'Aucune rédaction. Il fallait écrire un texte argumenté : introduction (prise de position), 2-3 arguments avec exemples reliés par des connecteurs, conclusion.':'Pas de réponse. Réponse attendue : '+stripHtml(q.correction).slice(0,260)) };
+    if(typeof window.PB_rawAI!=='function') return null;
+    var sys='Tu es un correcteur d\'examen régional marocain (1ère année Bac), juste, précis et bienveillant. Matière : '+x.matiere+'. '
+      +'Corrige LA réponse de l\'élève en te basant STRICTEMENT sur le corrigé/barème officiel fourni. Barème de cette question : '+max+' point(s). '
+      +'Attribue un nombre de points (multiples de 0,25) entre 0 et '+max+'. '
+      +'Choisis un verdict : "juste" (réponse complète/correcte), "partiel" (partiellement correcte ou incomplète), "faux" (incorrecte). '
+      +'Écris un feedback TRÈS court (1 à 3 phrases, français simple) : si c\'est partiel ou faux, explique POURQUOI c\'est faux et donne clairement la BONNE réponse attendue ; si c\'est juste, valide en une phrase. '
+      +'Pour une rédaction, note selon les critères du barème (idées/structure/langue) et dis concrètement quoi améliorer. '
+      +'RÉPONDS UNIQUEMENT par un objet JSON valide, sans texte autour : {"points":<nombre>,"verdict":"juste|partiel|faux","feedback":"<texte>"}';
+    var usr='QUESTION ('+max+' pts) : '+q.q+'\n\nCORRIGÉ / BARÈME OFFICIEL : '+stripHtml(q.correction)+'\n\nRÉPONSE DE L\'ÉLÈVE : '+a;
+    var raw=''; try{ raw=await window.PB_rawAI([{role:'system',content:sys},{role:'user',content:usr}]); }catch(e){ raw=''; }
+    var g=raw?parseGrade(raw,max):null;
+    if(!g){ try{ raw=await window.PB_rawAI([{role:'system',content:sys+' IMPORTANT : réponds en JSON pur uniquement.'},{role:'user',content:usr}]); g=parseGrade(raw,max); }catch(e){} }
+    return g; }
+  async function runPool(items, n, worker){ var i=0;
+    async function one(){ while(i<items.length){ var cur=i++; try{ await worker(items[cur],cur); }catch(e){} } }
+    var rs=[]; for(var k=0;k<Math.min(n,items.length);k++) rs.push(one()); await Promise.all(rs); }
+
+  function openCorrection(id, reviewOnly){ var x=findExam(id); if(!x)return; var ans=ls(ansKey(id),{});
+    var totalMax=x.total||0; if(!totalMax){ x.sections.forEach(function(s){ s.questions.forEach(function(q){ totalMax+=(+q.points||0); }); }); }
+    function close(){ corr.hidden=true; document.body.classList.remove('noscroll'); renderList(); }
+    /* ----- Corrigé seul (consultation) ----- */
+    if(reviewOnly){
+      var b='<div class="exam-inner exam-corr"><div class="exam-consignes">Voici le corrigé détaillé de ce sujet. Lance « Composer en conditions réelles » : à la fin, Brio corrige automatiquement ta copie, te met une note et t\'explique chaque erreur.</div>';
+      var qc0=0;
+      x.sections.forEach(function(sec,si){ b+='<div class="exam-sec"><h3>'+esc(sec.titre)+'<span class="pts">/'+sec.points+'</span></h3>';
+        sec.questions.forEach(function(q,qi){ qc0++; b+='<div class="exam-q"><div class="qh"><span class="qn">'+qc0+'.</span><span class="qt">'+esc(q.q)+'</span><span class="qp">'+q.points+' pt'+(q.points>1?'s':'')+'</span></div><div class="corr-model"><span class="lab">✓ Corrigé</span>'+q.correction+'</div></div>'; });
+        b+='</div>'; });
+      b+='<div class="exam-foot" style="gap:10px;flex-wrap:wrap"><button class="btn ask" id="corrStart">▶ Composer en conditions réelles</button><button class="btn" id="corrClose">Fermer</button></div></div>';
+      corr.innerHTML='<div class="exam-top"><div class="et-l"><span class="et-mat">'+esc(x.matiere)+' · corrigé</span><span class="et-tit">'+esc(x.label)+'</span></div><button class="btn" id="corrX">Fermer</button></div><div class="exam-body">'+b+'</div>';
+      corr.hidden=false; document.body.classList.add('noscroll'); corr.scrollTop=0;
+      document.getElementById('corrX').addEventListener('click',close);
+      document.getElementById('corrClose').addEventListener('click',close);
+      document.getElementById('corrStart').addEventListener('click',function(){ corr.hidden=true; document.body.classList.remove('noscroll'); startExam(x.id); });
+      return;
+    }
+    /* ----- Correction automatique (après l'épreuve) ----- */
+    var items=[]; x.sections.forEach(function(sec,si){ sec.questions.forEach(function(q,qi){ items.push({si:si,qi:qi,q:q,key:si+'-'+qi}); }); });
+    var body='<div class="exam-inner exam-corr">';
+    body+='<div class="exam-result grading" id="examResult"><div class="rn" id="rnNote">…</div><div class="rl" id="rnLabel">Brio corrige ta copie…</div><div class="grade-prog"><div class="gp-bar"><i id="gpBar"></i></div><span id="gpTxt">0 / '+items.length+' questions</span></div></div>';
+    body+='<div class="exam-bilan" id="examBilan" hidden></div>';
+    var qc=0;
+    x.sections.forEach(function(sec,si){ body+='<div class="exam-sec"><h3>'+esc(sec.titre)+'<span class="pts" id="secpts-'+si+'">/'+sec.points+'</span></h3>';
+      sec.questions.forEach(function(q,qi){ qc++; var key=si+'-'+qi;
+        body+='<div class="exam-q" id="q-'+key+'"><div class="qh"><span class="qn">'+qc+'.</span><span class="qt">'+esc(q.q)+'</span><span class="qp" id="qp-'+key+'">/'+q.points+'</span></div>'
+          +'<div class="corr-ans"><span class="lab">Ta réponse</span>'+(ans[key]?esc(ans[key]):'<i>(pas de réponse)</i>')+'</div>'
+          +'<div class="corr-fb" id="fb-'+key+'"><span class="gspin"></span> Correction en cours…</div>'
+          +'<details class="corr-official"><summary>Voir le corrigé officiel</summary><div class="corr-model">'+q.correction+'</div></details></div>';
+      }); body+='</div>'; });
+    body+='<div class="exam-foot" id="examActions" style="gap:10px;flex-wrap:wrap"><span class="gnote">🤖 Correction automatique par Brio — une estimation pédagogique fiable ; sur un examen officiel, la note peut légèrement varier.</span></div></div>';
+    corr.innerHTML='<div class="exam-top"><div class="et-l"><span class="et-mat">'+esc(x.matiere)+' · correction</span><span class="et-tit">'+esc(x.label)+'</span></div><button class="btn" id="corrX">Fermer</button></div><div class="exam-body">'+body+'</div>';
+    corr.hidden=false; document.body.classList.add('noscroll'); corr.scrollTop=0;
+    document.getElementById('corrX').addEventListener('click',close);
+
+    var secTot={}, total=0, done=0, weak=[];
+    function setNote(){ var el=document.getElementById('rnNote'); if(el) el.textContent=round2(total)+' / '+totalMax; }
+    runPool(items, 3, async function(it){
+      var g=await gradeOne(x, it.q, ans[it.key]);
+      var fb=document.getElementById('fb-'+it.key), qp=document.getElementById('qp-'+it.key), qEl=document.getElementById('q-'+it.key);
+      if(!g){ if(fb){ fb.className='corr-fb manual'; fb.innerHTML='<b>Correction auto indisponible.</b> Compare au corrigé ci-dessous et attribue-toi : <input type="number" min="0" max="'+it.q.points+'" step="0.25" data-man="'+it.key+'"> / '+it.q.points+' pts'; } }
+      else {
+        var v=VERD[g.verdict]||VERD.faux; total+=g.points; secTot[it.si]=(secTot[it.si]||0)+g.points;
+        if(qp) qp.textContent=round2(g.points)+' / '+it.q.points;
+        if(qEl) qEl.className='exam-q v-'+g.verdict;
+        if(fb){ fb.className='corr-fb v-'+g.verdict; fb.style.background=v.bg; fb.style.borderColor=v.c;
+          fb.innerHTML='<span class="vbadge" style="color:'+v.c+'">'+v.ic+' '+v.t+' · '+round2(g.points)+'/'+it.q.points+'</span>'+(g.feedback?'<div class="fbtxt">'+esc(g.feedback)+'</div>':''); }
+        var sp=document.getElementById('secpts-'+it.si); if(sp) sp.textContent=round2(secTot[it.si])+' / '+x.sections[it.si].points;
+        if(g.verdict!=='juste') weak.push({it:it,g:g});
+      }
+      done++; var gp=document.getElementById('gpBar'), gt=document.getElementById('gpTxt');
+      if(gp) gp.style.width=Math.round(done/items.length*100)+'%'; if(gt) gt.textContent=done+' / '+items.length+' questions'; setNote();
+    }).then(function(){ finalizeGrade(x, total, totalMax, weak, ans); });
+  }
+
+  function finalizeGrade(x, total, totalMax, weak, ans){
+    var res=document.getElementById('examResult'); if(res) res.classList.remove('grading');
+    var gp=document.getElementById('grade-prog'); var prog=corr.querySelector('.grade-prog'); if(prog) prog.style.display='none';
+    function recompute(){ var t=total; corr.querySelectorAll('input[data-man]').forEach(function(i){ t+=parseFloat(i.value)||0; }); return round2(t); }
+    function paint(n){ var n20=totalMax?n/totalMax*20:0, m=mentionOf(n20);
+      var nn=document.getElementById('rnNote'); if(nn) nn.textContent=n+' / '+totalMax;
+      var lbl=document.getElementById('rnLabel'); if(lbl) lbl.innerHTML='<span class="ment" style="background:'+m.c+'">'+m.e+' '+m.t+'</span><span class="mentmsg">'+m.m+'</span>';
+      if(res) res.style.background='linear-gradient(135deg,'+m.c+' 0%,#241c44 100%)'; }
+    corr.querySelectorAll('input[data-man]').forEach(function(i){ i.addEventListener('input',function(){ paint(recompute()); }); });
+    var note=recompute(); paint(note);
+    try{ buildBilan(x, weak, note, totalMax); }catch(e){}
+    try{ addToCarnet(x, weak); }catch(e){}
+    var act=document.getElementById('examActions');
+    if(act) act.insertAdjacentHTML('afterbegin',
+      '<button class="btn ask" id="aRetry">↻ Recommencer l\'épreuve</button>'
+      +(weak.length?'<button class="btn" id="aWeak">🎯 Réviser mes erreurs ('+weak.length+')</button>':'')
+      +'<button class="btn" id="aReview">📖 Revoir le corrigé</button>'
+      +'<button class="btn" id="aClose">Fermer</button>');
+    var n20=totalMax?note/totalMax*20:0, mf=mentionOf(n20);
+    var lg=ls('exam_log',[]); lg.push({id:x.id,subject:x.subject,matiere:x.matiere,score:note,total:totalMax,mention:mf.t,date:new Date().toISOString().slice(0,10),t:Date.now(),auto:true}); ss('exam_log',lg); log=lg;
+    try{ if(window.PB_award) window.PB_award(20+Math.round(n20*3),'Examen corrigé — '+x.matiere+' '+note+'/'+totalMax); }catch(e){}
+    try{ toast('Note enregistrée : '+note+'/'+totalMax+' · '+mf.t); }catch(e){}
+    function close(){ corr.hidden=true; document.body.classList.remove('noscroll'); renderList(); }
+    var a1=document.getElementById('aRetry'); if(a1) a1.addEventListener('click',function(){ if(confirm('Recommencer ? Tes réponses actuelles seront effacées.')){ try{ localStorage.removeItem(ansKey(x.id)); }catch(e){} corr.hidden=true; document.body.classList.remove('noscroll'); startExam(x.id); } });
+    var a2=document.getElementById('aWeak'); if(a2) a2.addEventListener('click',function(){ askReviseWeak(x, weak); });
+    var a3=document.getElementById('aReview'); if(a3) a3.addEventListener('click',function(){ corr.hidden=true; document.body.classList.remove('noscroll'); openCorrection(x.id,true); });
+    var a4=document.getElementById('aClose'); if(a4) a4.addEventListener('click',close);
+  }
+
+  async function buildBilan(x, weak, note, totalMax){
+    var el=document.getElementById('examBilan'); if(!el) return; el.hidden=false;
+    var head='<div class="bil-h"><b>📊 Bilan de Brio</b><span class="bil-n">'+round2(note)+' / '+totalMax+'</span></div>';
+    if(!weak.length){ el.innerHTML=head+'<div class="bilan-tips">🎉 Copie sans erreur, félicitations ! Essaie un sujet d\'une autre matière, ou un examen plus exigeant pour continuer à progresser.</div>'; return; }
+    el.innerHTML=head+'<div class="bilan-tips"><span class="gspin"></span> Brio prépare tes conseils personnalisés…</div>';
+    var box=el.querySelector('.bilan-tips');
+    if(typeof window.PB_rawAI==='function'){
+      try{
+        var errs=weak.slice(0,8).map(function(w,i){ return (i+1)+'. '+stripHtml(w.it.q.q).slice(0,120)+' → '+(w.g.feedback||'').slice(0,160); }).join('\n');
+        var sys='Tu es un professeur marocain bienveillant. Un élève vient de passer un examen de '+x.matiere+' et a eu '+round2(note)+'/'+totalMax+'. À partir de ses erreurs, écris un bilan BREF et motivant en français : une phrase sur le niveau, puis "À revoir en priorité :" avec 2-3 notions (tirets), puis "Conseils :" avec 2 conseils concrets pour ne plus refaire ces erreurs. Sois concis, pas de blabla.';
+        var rep=await window.PB_rawAI([{role:'system',content:sys},{role:'user',content:'Erreurs de l\'élève :\n'+errs}]);
+        if(rep && rep.trim()){ box.innerHTML=esc(rep.trim()).replace(/\n/g,'<br>'); return; }
+      }catch(e){}
+    }
+    box.innerHTML='<b>À revoir en priorité :</b><br>'+weak.slice(0,5).map(function(w){ return '• '+esc(stripHtml(w.it.q.q).slice(0,90)); }).join('<br>')+'<br><br>Astuce : reprends chaque question ratée avec le corrigé, puis refais l\'épreuve.';
+  }
+
+  function addToCarnet(x, weak){ if(!weak.length) return;
+    try{ var arr=ls('errors',[]);
+      weak.forEach(function(w){ var tag=x.label+' · Q'+(w.it.si+1)+'.'+(w.it.qi+1);
+        if(arr.some(function(e){ return e.k===x.subject && e.ch===tag; })) return;
+        arr.unshift({ k:x.subject, ch:tag, er:stripHtml(w.it.q.q).slice(0,180), co:(w.g.feedback||stripHtml(w.it.q.correction)).slice(0,300), done:false, t:Date.now(), fromExam:true });
+      });
+      ss('errors',arr);
+    }catch(e){} }
+
+  function askReviseWeak(x, weak){
+    var topics=weak.slice(0,6).map(function(w){ return stripHtml(w.it.q.q).slice(0,90); }).join(' ; ');
+    var prompt='Je viens de passer l\'examen « '+x.label+' » ('+x.matiere+') et j\'ai fait des erreurs sur : '+topics+'. Explique-moi clairement les notions concernées, avec la méthode et un exemple corrigé pour chacune, pour que je ne refasse plus ces erreurs.';
+    try{ if(window.PB_ASK) window.PB_ASK(prompt); else { var f=document.getElementById('fab'); if(f) f.click(); } }catch(e){} }
   renderList();
 });
-</script><div class="toast" id="toast" role="status" aria-live="polite"></div><button class="fab" id="fab">&#129302; Brio</button><div class="chatpanel" id="chatpanel"><div class="cp-head"><h3>Brio</h3><div class="cp-hbtns"><button class="cp-ic" id="chatExpand" title="Plein écran">&#10530;</button><button class="cp-ic" id="chatNew" title="Nouvelle conversation">&#8635;</button><button class="cp-ic" id="chatClose" title="Fermer">&times;</button></div></div><div class="sub">Pose ta question — je sais sur quelle page tu es.</div><div class="preset"><button data-ask="Explique-moi ce chapitre clairement, étape par étape, avec un exemple et 2 exercices corrigés : ">Explique un chapitre</button><button data-ask="Donne-moi une série de 5 exercices progressifs avec correction détaillée sur : ">Exercices + correction</button><button data-ask="Fais-moi passer un QCM interactif de 6 questions (je clique mes réponses, tu corriges) sur : ">Teste-moi (QCM interactif)</button><button data-ask="Corrige TOUTES les erreurs de mon travail (langue, méthode, raisonnement), explique chacune et donne une version corrigée. Voici mon travail : ">Corrige mon travail</button><button data-ask="Construis-moi un planning de révision de la semaine, personnalisé et imprimable (avec un tableau par jour). Priorités : Maths et Physique-Chimie. Voici mes contraintes : ">🗓️ Fais-moi un planning</button><button data-ask="Lance un QCM de maths">🧭 Lance un QCM</button></div><div class="cp-msgs" id="chatMsgs"></div><div class="cp-imgprev" id="cpImgPrev"></div><div class="cp-in"><button class="io-btn attach-btn" id="chatAttach" title="Joindre une photo">&#128206;</button><button class="io-btn mic-btn" id="chatMic" title="Dicter à la voix">&#127908;</button><button class="io-btn gen-btn" id="chatGen" title="Générer une image">&#127912;</button><textarea id="chatInput" rows="2" spellcheck="true" lang="fr" placeholder="Écris, dicte 🎤, photo 📎, image 🎨…"></textarea><button class="btn ask send" id="chatSend" aria-label="Envoyer">&#10148;</button></div><div class="cp-note">Réponses par une IA — vérifie les points importants.</div><input type="file" id="chatFile" accept="image/*" hidden></div><div class="chatfull" id="chatFull" hidden><aside class="cf-side"><div class="cf-brand"><span class="m"><svg class="brio-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c.45 3.2 1.35 5.4 2.95 7 1.6 1.6 3.8 2.5 7 2.95-3.2.45-5.4 1.35-7 2.95-1.6 1.6-2.5 3.8-2.95 7-.45-3.2-1.35-5.4-2.95-7-1.6-1.6-3.8-2.5-7-2.95 3.2-.45 5.4-1.35 7-2.95 1.6-1.6 2.5-3.8 2.95-7z"/></svg></span> Brio</div><button class="cf-new" id="cfNew">&#43; Nouvelle conversation</button><div class="cf-list" id="cfList"></div><div class="cf-side-foot" id="cfUser">Brio</div></aside><main class="cf-main"><header class="cf-top"><button class="cp-ic cf-menu" id="cfMenu" title="Conversations">&#9776;</button><div class="cf-title" id="cfTitle">Brio</div><div class="cp-hbtns"><button class="cp-ic" id="cfReduce" title="Réduire">&#10529;</button><button class="cp-ic" id="cfClose" title="Fermer">&times;</button></div></header><div class="cf-msgs" id="cfMsgs"></div><div class="cf-inwrap"><div class="cf-imgprev" id="cfImgPrev"></div><div class="cf-in"><button class="io-btn attach-btn" id="cfAttach" title="Joindre une photo">&#128206;</button><button class="io-btn mic-btn" id="cfMic" title="Dicter à la voix">&#127908;</button><button class="io-btn gen-btn" id="cfGen" title="Générer une image">&#127912;</button><textarea id="cfInput" rows="1" spellcheck="true" lang="fr" placeholder="Écris, dicte 🎤, photo 📎, image 🎨…"></textarea><button class="cf-send" id="cfSend" aria-label="Envoyer">&#10148;</button></div><div class="cf-note">Brio — ton tuteur IA : il connaît la page où tu es, lit tes photos et écoute ta voix. Réponses à vérifier.</div></div></main></div><button class="selask" id="selAsk" hidden>&#129302; Demander à l’IA</button><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script><script src="firebase-config.js"></script><script src="premium.js"></script><script src="app.js?v=129"></script><script src="auth.js?v=129"></script></body></html>
+</script><div class="toast" id="toast" role="status" aria-live="polite"></div><button class="fab" id="fab">&#129302; Brio</button><div class="chatpanel" id="chatpanel"><div class="cp-head"><h3>Brio</h3><div class="cp-hbtns"><button class="cp-ic" id="chatExpand" title="Plein écran">&#10530;</button><button class="cp-ic" id="chatNew" title="Nouvelle conversation">&#8635;</button><button class="cp-ic" id="chatClose" title="Fermer">&times;</button></div></div><div class="sub">Pose ta question — je sais sur quelle page tu es.</div><div class="preset"><button data-ask="Explique-moi ce chapitre clairement, étape par étape, avec un exemple et 2 exercices corrigés : ">Explique un chapitre</button><button data-ask="Donne-moi une série de 5 exercices progressifs avec correction détaillée sur : ">Exercices + correction</button><button data-ask="Fais-moi passer un QCM interactif de 6 questions (je clique mes réponses, tu corriges) sur : ">Teste-moi (QCM interactif)</button><button data-ask="Corrige TOUTES les erreurs de mon travail (langue, méthode, raisonnement), explique chacune et donne une version corrigée. Voici mon travail : ">Corrige mon travail</button><button data-ask="Construis-moi un planning de révision de la semaine, personnalisé et imprimable (avec un tableau par jour). Priorités : Maths et Physique-Chimie. Voici mes contraintes : ">🗓️ Fais-moi un planning</button><button data-ask="Lance un QCM de maths">🧭 Lance un QCM</button></div><div class="cp-msgs" id="chatMsgs"></div><div class="cp-imgprev" id="cpImgPrev"></div><div class="cp-in"><button class="io-btn attach-btn" id="chatAttach" title="Joindre une photo">&#128206;</button><button class="io-btn mic-btn" id="chatMic" title="Dicter à la voix">&#127908;</button><button class="io-btn gen-btn" id="chatGen" title="Générer une image">&#127912;</button><textarea id="chatInput" rows="2" spellcheck="true" lang="fr" placeholder="Écris, dicte 🎤, photo 📎, image 🎨…"></textarea><button class="btn ask send" id="chatSend" aria-label="Envoyer">&#10148;</button></div><div class="cp-note">Réponses par une IA — vérifie les points importants.</div><input type="file" id="chatFile" accept="image/*" hidden></div><div class="chatfull" id="chatFull" hidden><aside class="cf-side"><div class="cf-brand"><span class="m"><svg class="brio-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c.45 3.2 1.35 5.4 2.95 7 1.6 1.6 3.8 2.5 7 2.95-3.2.45-5.4 1.35-7 2.95-1.6 1.6-2.5 3.8-2.95 7-.45-3.2-1.35-5.4-2.95-7-1.6-1.6-3.8-2.5-7-2.95 3.2-.45 5.4-1.35 7-2.95 1.6-1.6 2.5-3.8 2.95-7z"/></svg></span> Brio</div><button class="cf-new" id="cfNew">&#43; Nouvelle conversation</button><div class="cf-list" id="cfList"></div><div class="cf-side-foot" id="cfUser">Brio</div></aside><main class="cf-main"><header class="cf-top"><button class="cp-ic cf-menu" id="cfMenu" title="Conversations">&#9776;</button><div class="cf-title" id="cfTitle">Brio</div><div class="cp-hbtns"><button class="cp-ic" id="cfReduce" title="Réduire">&#10529;</button><button class="cp-ic" id="cfClose" title="Fermer">&times;</button></div></header><div class="cf-msgs" id="cfMsgs"></div><div class="cf-inwrap"><div class="cf-imgprev" id="cfImgPrev"></div><div class="cf-in"><button class="io-btn attach-btn" id="cfAttach" title="Joindre une photo">&#128206;</button><button class="io-btn mic-btn" id="cfMic" title="Dicter à la voix">&#127908;</button><button class="io-btn gen-btn" id="cfGen" title="Générer une image">&#127912;</button><textarea id="cfInput" rows="1" spellcheck="true" lang="fr" placeholder="Écris, dicte 🎤, photo 📎, image 🎨…"></textarea><button class="cf-send" id="cfSend" aria-label="Envoyer">&#10148;</button></div><div class="cf-note">Brio — ton tuteur IA : il connaît la page où tu es, lit tes photos et écoute ta voix. Réponses à vérifier.</div></div></main></div><button class="selask" id="selAsk" hidden>&#129302; Demander à l’IA</button><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script><script src="firebase-config.js"></script><script src="premium.js"></script><script src="app.js?v=130"></script><script src="auth.js?v=130"></script></body></html>
