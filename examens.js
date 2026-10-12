@@ -730,3 +730,151 @@ window.PB_EXAMS.push({
     ]}
   ]
 });
+
+/* ---------- Français — Régional Fès-Meknès 2021 (session ordinaire) ---------- */
+window.PB_EXAMS.push({
+  id:"fr-fesmeknes-2021", subject:"francais", matiere:"Français", coef:4, official:true,
+  region:"Fès-Meknès", annee:2021, session:"Ordinaire",
+  label:"Régional Fès-Meknès 2021 — officiel",
+  durationMin:120, total:20,
+  consignes:"Examen régional unifié de la 1ère année du baccalauréat, Académie régionale de Fès-Meknès (session ordinaire 2021). Durée : 2 heures. Coefficient : 4. Lis attentivement le texte, puis réponds aux questions.",
+  texte:{
+    titre:"Texte — La Boîte à Merveilles (Ahmed Sefrioui)",
+    html:"<p>Son pas résonna dans l'escalier. Je quittai ma marche et j'allai me changer.</p>"
+      +"<p>Le souk des bijoutiers ressemblait à l'entrée d'une fourmilière¹. On s'y bousculait, on s'affairait dans toutes les directions. [...] Ma mère et Fatma Bziouya nous suivaient, mon père et moi, à petits pas, étroitement enveloppées dans leurs haïks blancs. Les boutiques très surélevées offraient à nos yeux le clinquant² des bijoux d'argent tout neufs qui semblaient coupés dans du vulgaire³ fer-blanc, des diadèmes et des ceintures d'or d'un travail si prétentieux qu'ils en perdaient toute noblesse, ces bijoux ne ressemblaient point aux fleurs. Aucun mystère ne les baignait. Des mains humaines les avaient fabriqués sans amour pour contenter la vanité des riches. Ils avaient raison, tous ces boutiquiers, de les vendre au poids, comme des épices. J'en avais mal au cœur. De nombreux chalands⁴ s'agitaient d'une boutique à l'autre. Leurs yeux luisaient d'avidité et de convoitise. D'autres personnages, hommes et femmes, groupés çà et là, refoulaient⁵ leurs larmes.</p>"
+      +"<p>Plus tard, j'ai saisi tout le sens de leur mélancolie. J'ai senti moi-même cette humiliation de venir offrir à la rapacité indifférente des hommes ce qu'on tenait pour son bien le plus précieux. Des bijoux auxquels s'attachaient des souvenirs, des ornements de fête qui prenaient part à toutes nos joies deviennent sur un marché comme celui-ci de pauvres choses qu'on pèse, qu'on renifle, qu'on tourne et qu'on retourne entre les doigts pour finalement en offrir la moitié de leur prix réel.</p>"
+      +"<p class=\"fn\">1 Habitation commune où vivent les fourmis. 2 D'un éclat faux et trompeur. 3 Ordinaire. 4 Clients. 5 Cachaient.</p>"
+  },
+  sections:[
+    { titre:"I. Étude de texte", points:10, questions:[
+      { q:"Complète le tableau suivant après l'avoir reproduit sur ta copie. (0,25 × 4)", points:1, lines:2,
+        qHtml:"<table><thead><tr><th>Nom de l'auteur</th><th>Titre de l'œuvre</th><th>Genre du roman</th><th>Date de publication</th></tr></thead><tbody><tr><td><input class=\"tcell\" data-cell=\"Auteur\" aria-label=\"Auteur\"></td><td><input class=\"tcell\" data-cell=\"Titre\" aria-label=\"Titre\"></td><td><input class=\"tcell\" data-cell=\"Genre\" aria-label=\"Genre\"></td><td><input class=\"tcell\" data-cell=\"Date\" aria-label=\"Date\"></td></tr></tbody></table>",
+        correction:"<b>Nom de l'auteur</b> : Ahmed Sefrioui · <b>Titre de l'œuvre</b> : La Boîte à merveilles · <b>Genre</b> : roman autobiographique · <b>Date de publication</b> : 1954. <i>(0,25 par case.)</i>" },
+      { q:"D'après ta connaissance de l'œuvre, le père est retourné à la maison pour : a) acheter une trompette à son fils ? b) acheter des cierges au fqih ? c) acheter des bracelets à sa femme ? (Recopie la bonne réponse.) (1)", points:1, lines:2,
+        correction:"<b>c) acheter des bracelets à sa femme.</b>" },
+      { q:"a) Relève la comparaison employée pour caractériser le souk des bijoutiers. (0,5) b) À partir de cette comparaison, complète le tableau suivant. (0,25 × 4)", points:1.5, lines:2,
+        qHtml:"<div><b>a)</b> La comparaison : <input class=\"tcell\" data-cell=\"Comparaison\" aria-label=\"Comparaison\"></div><div style=\"margin-top:6px\"><b>b)</b> Le tableau :</div><table><thead><tr><th>Comparé</th><th>Outil de comparaison</th><th>Comparant</th><th>Point de ressemblance (du texte)</th></tr></thead><tbody><tr><td><input class=\"tcell\" data-cell=\"Comparé\" aria-label=\"Comparé\"></td><td><input class=\"tcell\" data-cell=\"Outil\" aria-label=\"Outil\"></td><td><input class=\"tcell\" data-cell=\"Comparant\" aria-label=\"Comparant\"></td><td><textarea class=\"tcell\" data-cell=\"Ressemblance\" rows=\"2\" aria-label=\"Ressemblance\"></textarea></td></tr></tbody></table>",
+        correction:"<b>a)</b> « Le souk des bijoutiers ressemblait à l'entrée d'une fourmilière. » (0,5)<br><b>b)</b> Comparé : <b>le souk des bijoutiers</b> · Outil : <b>ressemblait à</b> · Comparant : <b>(l'entrée d')une fourmilière</b> · Point de ressemblance : « On s'y bousculait… » / « on s'affairait dans toutes les directions. » <i>(0,25 par case.)</i>" },
+      { q:"a) Le narrateur décrit-il de manière valorisante ou dévalorisante les bijoux tout neufs exposés par les boutiquiers ? (0,25) b) Relève dans le 1er paragraphe un adjectif pour justifier ta réponse. (0,25)", points:0.5, lines:3,
+        correction:"<b>a)</b> De manière <b>dévalorisante</b>. (0,25)<br><b>b)</b> L'adjectif : « … <b>vulgaire</b> fer-blanc… » ou « si <b>prétentieux</b>… ». (0,25)" },
+      { q:"Le narrateur pense que les bijoux présentés par les boutiquiers ne ressemblaient pas aux fleurs pour deux raisons, lesquelles ? (0,5 × 2)", points:1, lines:3,
+        correction:"Les deux raisons : « <b>Aucun mystère ne les baignait</b> » et « <b>Des mains humaines les avaient fabriqués sans amour</b>. » <i>(Accepter aussi : « ils perdaient toute noblesse ».)</i>" },
+      { q:"Par l'emploi de l'expression « J'en avais mal au cœur », le narrateur éprouvait-il un sentiment : de dégoût, de pitié ou d'admiration ? (0,5)", points:0.5, lines:2,
+        correction:"Un sentiment de <b>dégoût</b>." },
+      { q:"a) Pourquoi certains hommes et femmes se sentaient-ils tristes et humiliés en vendant des bijoux qui constituaient leur bien le plus précieux ? (1) b) Cette situation crée-t-elle un effet comique, ironique ou pathétique ? (0,5)", points:1.5, lines:4,
+        correction:"<b>a)</b> Parce qu'ils vendaient des bijoux auxquels s'attachaient des souvenirs, des ornements de fête qui prenaient part à toutes leurs joies — contraints de les offrir à bas prix à la rapacité indifférente des hommes. (1) <i>(Accepter toute formulation allant dans ce sens.)</i><br><b>b)</b> Un effet <b>pathétique</b>. (0,5)" },
+      { q:"« J'ai saisi tout le sens de leur mélancolie. » Transforme cette phrase au discours indirect, en commençant par : « Le narrateur déclara … ». (1)", points:1, lines:2,
+        correction:"« Le narrateur déclara <b>qu'il avait saisi</b> tout le sens de leur mélancolie. » <i>(0,25 : qu' / il / avait saisi / le sens de leur…)</i>" },
+      { q:"À ton avis, est-il bon d'acheter un objet à très bas prix à une personne obligée de le vendre ? (0,5) Dis pourquoi en une phrase. (0,5)", points:1, lines:3,
+        correction:"<i>Accepter tout point de vue (0,5) justifié d'une manière pertinente (0,5).</i>" },
+      { q:"Aimerais-tu, toi aussi, vendre un objet auquel tu tiens beaucoup ? (0,5) Justifie ta réponse par un argument pertinent. (0,5)", points:1, lines:3,
+        correction:"<i>Accepter tout jugement personnel (0,5) justifié de manière adéquate (0,5).</i>" }
+    ]},
+    { titre:"II. Production écrite", points:10, questions:[
+      { q:"Sujet : L'achat en ligne (sur Internet) est une activité qui se développe de plus en plus dans notre pays à travers des sites comme Avito, JUMIA, Amazon, etc. Pour acheter quelque chose, préfères-tu le faire en ligne ou plutôt aller le faire sur place ? Rédige un texte dans lequel tu justifies ton choix à l'aide d'arguments variés et d'exemples précis.", points:10, redaction:true, lines:20,
+        correction:"<b>Barème (10 points)</b> :<br>• Respect de la consigne (traiter le sujet proposé) : 1<br>• Organisation et cohérence de l'argumentation : 2<br>• Richesse et pertinence des arguments : 2<br>• Correction de la langue (construction des phrases, vocabulaire riche et approprié, orthographe, conjugaison, ponctuation) : 5." }
+    ]}
+  ]
+});
+
+/* ---------- اللغة العربية — الجهوي فاس-مكناس 2021 (الدورة العادية) ---------- */
+window.PB_EXAMS.push({
+  id:"ar-fesmeknes-2021", subject:"arabe", matiere:"اللغة العربية", coef:2, official:true,
+  region:"Fès-Meknès", annee:2021, session:"Ordinaire", lang:"ar",
+  label:"الجهوي فاس-مكناس 2021 — رسمي",
+  durationMin:120, total:20,
+  consignes:"الامتحان الجهوي الموحّد للبكالوريا، السنة الأولى من سلك البكالوريا، الأكاديمية الجهوية فاس-مكناس (الدورة العادية 2021). مادة: اللغة العربية — جميع الشعب العلمية والتقنية. مدة الإنجاز: ساعتان. المعامل: 2. اقرأ النص قراءة متأنية، ثم أجب عن أسئلة المجالات الآتية.",
+  texte:{
+    titre:"نص الانطلاق — من التواصل المباشر إلى التواصل الافتراضي",
+    html:"<p>اتّخذ التواصل لقرون متتالية شكلا مباشرا يقتضي التقاء الأطراف المعنية بعملية التواصل في زمان ومكان معيّنين لتحقيق هذه الغاية. فالحياة لا يتحقّق معناها الحقيقي إلا من خلال التبادل مع الآخرين. غير أن التطوّر الذي شهدته الإنسانية في القرون الأخيرة، أفرز أشكالا جديدة من التواصل، بدءا بلحظة اختراع «ألكسندر جراهام بيل» للهاتف في عام 1876 وما أحدثه من ثورة اتصالية هائلة في التاريخ البشري، إذ أصبح بإمكان البشر أن يتواصلوا عبر الصوت فحسب، ودون الوجود المباشر في المكان والزمان ذاتهما، وانتهاء بالقفزة الاتصالية الخارقة التي تسارعت وتيرتها منذ القرن العشرين من خلال المذياع والتلفزيون والهاتف المحمول. وهي اختراعات يسّرت للإنسان في بيته وفي مقرّ عمله أو في أي مكان من الكون أن يتّصل ويتواصل مع الآخر الذي لم يلتقه مطلقا. وستبلغ هذه الثورة الاتصالية الكونية في بداية القرن الواحد والعشرين ذروتها مع البريد الإلكتروني واكتشاف وسائل التواصل الاجتماعي مثل «تويتر» و«واتساب» و«فيسبوك»…</p>"
+      +"<p>لقد نجحت هذه التقنيات الحديثة في تقريب المسافات بين البشر وجعلت من العالم قرية صغيرة، بل بيتا واحدا يلمّ شمل كل سكان الكون، فيكفي أن يضغطوا على زرّ واحد حتى ينجحوا في الوصول إلى أي نقطة يريدون بلوغها… وفي هذا المستوى يتّخذ التواصل الافتراضي طابعا ترفيهيا غايته الفرد في اكتشاف عوالم أخرى والترفيه والاستمتاع بما تتيحه التكنولوجيا من طيّ للمسافات، إذ أصبح الفرد لا يحيا ضرورة في ومع محيطه فحسب، بل خلق له عالما موازيا وحياة افتراضية يغوص فيها رويدا رويدا حتى كاد ينسى الواقع الحياتي الذي ينتمي إليه.</p>"
+      +"<p>وهكذا تعالت صيحات الفزع من هذا الغول الافتراضي الذي يتربّص بمعاني الحياة السوية بما تقتضيه من تفاعل حقيقي وتواصل مادي مباشر، وغدت العلاقات مفكّكة حتى أصبح الفرد غريبا عن واقعه المادي منتميا إلى عالم آخر افتراضي أخطبوطي يُطبق عليه. لكن هل يعني هذا أن الحياة الافتراضية شرّ مطلق يتربّص بالمنخرط فيه؟ لقد كشفت جائحة «كوفيد 19» التي ضربت العالم منذ انتشارها في «ووهان» الصينية إلى حين انخراط أغلب دول العالم في حجر صحّي ذاتي؛ أن العالم الافتراضي وما يوفّره من تطبيقات وبرمجيات ووسائل تواصل اجتماعي يمكن أن يكون بديلا جيدا عن التنقّل والتواصل المباشر، استطاع أن يضمن استمرار الحياة وعدم توقّف مختلف أنشطتها.</p>",
+    source:"حنان الرحيمي: «الحياة الافتراضية بين الضرورة والاختيار»، المجلة العربية، العدد 530، نونبر 2020، ص 36 وما بعدها (بتصرّف)."
+  },
+  sections:[
+    { titre:"أولا: مجال درس النصوص", points:10, questions:[
+      { q:"حدّد علاقة الفقرة الأولى بعنوان النص. (1ن)", points:1, lines:3,
+        correction:"علاقة الفقرة الأولى بعنوان النص: علاقة <b>تفسير / توضيح</b>… <i>(تُقبل كل إجابة مناسبة)</i>." },
+      { q:"حدّد القضية المحورية التي يعالجها النص. (1ن)", points:1, lines:3,
+        correction:"القضية المحورية التي يعالجها النص: <b>تطوّر مفهوم التواصل وإيجابيات وسلبيات التواصل الافتراضي</b>… <i>(تُقبل كل إجابة مناسبة)</i>." },
+      { q:"اشرح، في حدود ثلاثة أسطر، القولة الآتية الواردة في النص: «… لقد نجحت هذه التقنيات الحديثة في تقريب المسافات بين البشر وجعلت من العالم قرية صغيرة، بل بيتا واحدا يلمّ شمل كل سكان الكون …». (1ن)", points:1, lines:4,
+        correction:"<i>يُقبل كل جواب يبيّن فيه المترشّح فهمه للقولة مع الالتزام بالحجم المطلوب.</i> (الفكرة: نجحت تكنولوجيا الاتصال الحديثة في إلغاء حواجز الزمان والمكان وتقريب البشر بعضهم من بعض حتى صار العالم كأنه قرية صغيرة أو بيت واحد يجمع سكان الأرض.)" },
+      { q:"استخرج من النص عبارتين دالّتين على مجال التواصل المباشر، وعبارتين دالّتين على مجال التواصل الافتراضي، ثم حدّد العلاقة بينهما مستعينا بالجدول الآتي. (1.5ن)", points:1.5, lines:4,
+        qHtml:"<table><thead><tr><th>التواصل المباشر (0.5ن)</th><th>التواصل الافتراضي (0.5ن)</th><th>العلاقة بين الحقلين (0.5ن)</th></tr></thead><tbody><tr><td><textarea class=\"tcell\" data-cell=\"التواصل المباشر\" rows=\"3\" aria-label=\"التواصل المباشر\"></textarea></td><td><textarea class=\"tcell\" data-cell=\"التواصل الافتراضي\" rows=\"3\" aria-label=\"التواصل الافتراضي\"></textarea></td><td><textarea class=\"tcell\" data-cell=\"العلاقة بين الحقلين\" rows=\"3\" aria-label=\"العلاقة بين الحقلين\"></textarea></td></tr></tbody></table>",
+        correction:"<b>التواصل المباشر</b> (0.5): «اتّخذ التواصل لقرون متتالية شكلا مباشرا»؛ «التقاء الأطراف المعنية بعملية التواصل في زمان ومكان معيّنين».<br><b>التواصل الافتراضي</b> (0.5): «يتواصل مع الآخر الذي لم يلتقه مطلقا»؛ «خلق له عالما موازيا وحياة افتراضية».<br><b>العلاقة بين الحقلين</b> (0.5): علاقة <b>تضادّ / اختلاف / تعارض</b>." },
+      { q:"أبرز من خلال النص سلبيات التواصل الافتراضي. (1ن)", points:1, lines:4,
+        correction:"<b>سلبيات التواصل الافتراضي</b> (تُقبل كل إجابة مناسبة): كاد الإنسان أن ينسى الواقع الحياتي الذي ينتمي إليه؛ هو «غول افتراضي» يتربّص بمعاني الحياة السوية بما تقتضيه من تفاعل حقيقي وتواصل مادي مباشر؛ أصبحت العلاقات مفكّكة حتى صار الفرد غريبا عن واقعه المادي." },
+      { q:"وظّف الكاتب مجموعة من الأساليب الحجاجية في النص، استخرج مثالا للأسلوبين الآتيين، ثم بيّن وظيفتهما في سياق النص. (1.5ن) — أسلوب التأكيد: … — أسلوب التمثيل: … — الوظيفة: …", points:1.5, lines:5,
+        correction:"<b>أسلوب التأكيد</b>: «لقد نجحت هذه التقنيات الحديثة في تقريب المسافات بين البشر…» (توكيد باللام و«قد»)؛<br><b>أسلوب التمثيل</b>: «وسائل التواصل الاجتماعي مثل تويتر وواتساب وفيسبوك» (أو: المذياع والتلفزيون والهاتف المحمول)؛<br><b>الوظيفة</b>: <b>إقناعية</b>." },
+      { q:"اكتب فقرة مركّزة تلخّص فيها قضايا النص مبديا رأيك الشخصي في «التواصل الافتراضي»، وذلك في حدود خمسة أسطر. (3ن)", points:3, redaction:true, lines:10,
+        correction:"<b>سلّم التنقيط (3ن).</b> يُراعى في كتابة الفقرة المركّزة وإبداء الرأي الشخصي:<br>• تلخيص قضايا النص؛<br>• حضور الرأي الشخصي حول التواصل الافتراضي؛<br>• سلامة اللغة والالتزام بالحجم المطلوب." }
+    ]},
+    { titre:"ثانيا: مجال علوم اللغة", points:4, questions:[
+      { q:"املأ الجدول الآتي مع الشكل (المصادر وأوزانها). (2ن)", points:2, lines:3,
+        qHtml:"<table><thead><tr><th>الفعل</th><th>المصدر</th><th>وزن المصدر</th></tr></thead><tbody>"
+          +"<tr><td><input class=\"tcell\" data-cell=\"فعل 1\" aria-label=\"فعل 1\"></td><td>الْتِقاء</td><td><input class=\"tcell\" data-cell=\"وزن 1\" aria-label=\"وزن 1\"></td></tr>"
+          +"<tr><td>تَرَبَّصَ</td><td><input class=\"tcell\" data-cell=\"مصدر 2\" aria-label=\"مصدر 2\"></td><td><input class=\"tcell\" data-cell=\"وزن 2\" aria-label=\"وزن 2\"></td></tr>"
+          +"</tbody></table>",
+        correction:"<b>الصف 1</b> — الفعل: <b>الْتَقَى</b> · المصدر: الْتِقاء · الوزن: <b>افْتِعال</b>.<br><b>الصف 2</b> — الفعل: تَرَبَّصَ · المصدر: <b>تَرَبُّص</b> · الوزن: <b>تَفَعُّل</b>. <i>(0.5ن لكل خانة.)</i>" },
+      { q:"ركّب جملتين مفيدتين، من إنتاجك الخاص، تتضمّنان ما يلي: تمييزا لعدد مركّب؛ استفهاما بأداة تفيد التصديق. (2ن) — الجملة الأولى: … — الجملة الثانية: …", points:2, lines:4,
+        correction:"<i>يُنتج المترشّح جملتين مفيدتين تتضمّن كلٌّ منهما الظاهرة اللغوية المطلوبة:</i><br>• الأولى: <b>تمييز لعدد مركّب</b> (مثال: قرأتُ أحد عشرَ كتابًا)؛<br>• الثانية: <b>استفهام بأداة تفيد التصديق</b> (مثال: هل أنجزتَ واجبك؟)." }
+    ]},
+    { titre:"ثالثا: مجال التعبير والإنشاء", points:6, questions:[
+      { q:"«… لقد كشفت جائحة «كوفيد 19» التي ضربت العالم أن العالم الافتراضي وما يوفّره من تطبيقات وبرمجيات ووسائل تواصل اجتماعي يمكن أن يكون بديلا جيدا عن التنقّل والتواصل المباشر …». انطلق من هذه الفكرة، واكتب موضوعا منسجما تستثمر فيه مكتسباتك في مهارة «توسيع فكرة»، وذلك في ما لا يقلّ عن عشرة أسطر، مراعيا: الالتزام بالمطلوب وتوظيف تقنيات المهارة؛ تسلسل الأفكار وترابطها؛ سلامة اللغة واحترام علامات الترقيم.", points:6, redaction:true, lines:18,
+        correction:"<b>سلّم التنقيط (6ن).</b> يُراعى في تقويم الإنجاز:<br>• الالتزام بالمطلوب وتوظيف تقنيات مهارة «توسيع فكرة»: 3ن؛<br>• تسلسل الأفكار وترابطها: 1ن؛<br>• سلامة اللغة واحترام علامات الترقيم: 1.5ن؛<br>• الالتزام بالحجم المطلوب: 0.5ن.<br><br><b>نصيحة.</b> وسّع الفكرة بالشرح والتمثيل والتعليل والمقارنة، مع مقدمة وعرض وخاتمة." }
+    ]}
+  ]
+});
+
+/* ---------- التربية الإسلامية — الجهوي فاس-مكناس 2021 (الدورة العادية) ---------- */
+window.PB_EXAMS.push({
+  id:"isl-fesmeknes-2021", subject:"islam", matiere:"التربية الإسلامية", coef:2, official:true,
+  region:"Fès-Meknès", annee:2021, session:"Ordinaire", lang:"ar",
+  label:"الجهوي فاس-مكناس 2021 — رسمي",
+  durationMin:90, total:20,
+  consignes:"الامتحان الجهوي الموحّد للبكالوريا، السنة الأولى من سلك البكالوريا، الأكاديمية الجهوية فاس-مكناس (الدورة العادية 2021). مادة: التربية الإسلامية — مسلك العلوم والمسالك المهنية. مدة الإنجاز: ساعة ونصف. المعامل: 2. تأمّل سياق الوضعية مع الأسناد ثم أجب عن الأسئلة.",
+  texte:{
+    titre:"الوضعية التقويمية وأسنادها",
+    html:"<div class=\"docn\">سياق الوضعية:</div>"
+      +"<p>فوجئت برسالة إلكترونية وصلتك من صديقك الأجنبي جاء فيها: «صديقي العزيز، تبيّن لي من خلال صفحتك الإلكترونية (على الفايس بوك) أنك مسلم، ولذلك أستمحك في مناقشة بعض الأمور معك: أرى أن دينكم يقوم على الخرافة والأساطير، إذ تؤمنون بالوحي والملائكة والصراط، وأنتم بذلك لا تحترمون عقولكم ولا حتى حواسكم. ولا شك أنكم تتبعون رسولكم في هذا، فهو الذي جمع صحابته وخرج لدخول مكة لمجرّد رؤيا رآها. ثم إني لا أعرف ما الذي يجعلكم تقبلون التقيّد بالزواج ومسؤولياته، إذا كان الإنسان يستطيع تلبية حاجاته بلا عقد أو ميثاق. ثم تناقضون أنفسكم وتبيحون الطلاق، وتدّعون الحرص على رعاية الأطفال. فكم أنا محظوظ بانتمائي للحضارة الغربية، حضارة الحرية والعقلانية وتقدير الإنسان.» فقرّرت البحث في الموضوع للرد عليه وتصحيح تصوّره السلبي حول الإسلام.</p>"
+      +"<div class=\"docn\">الأسناد:</div>"
+      +"<p><b>السند 1</b> — قال تعالى: ﴿قَالَ يَا بُنَيَّ لَا تَقْصُصْ رُؤْيَاكَ عَلَىٰ إِخْوَتِكَ فَيَكِيدُوا لَكَ كَيْدًا ۖ إِنَّ الشَّيْطَانَ لِلْإِنْسَانِ عَدُوٌّ مُبِينٌ ۝ وَكَذَٰلِكَ يَجْتَبِيكَ رَبُّكَ وَيُعَلِّمُكَ مِنْ تَأْوِيلِ الْأَحَادِيثِ وَيُتِمُّ نِعْمَتَهُ عَلَيْكَ وَعَلَىٰ آلِ يَعْقُوبَ كَمَا أَتَمَّهَا عَلَىٰ أَبَوَيْكَ مِنْ قَبْلُ إِبْرَاهِيمَ وَإِسْحَاقَ ۚ إِنَّ رَبَّكَ عَلِيمٌ حَكِيمٌ﴾ [سورة يوسف: 5-6].</p>"
+      +"<p><b>السند 2</b> — قال رسول الله صلى الله عليه وسلم: «لم تظهر الفاحشة في قوم قطّ حتى يُعلنوا بها إلا فشا فيهم الطاعون والأوجاع التي لم تكن مضت في أسلافهم الذين مضوا» رواه ابن ماجه في سننه.</p>"
+      +"<p><b>السند 3</b> — «وكذلك الأمر في كل عوالم الغيب الموجودة في الكون التي جعلها الله مغيّبة عن البشر فلا تدركها حواسهم وقواهم التي منحهم الله إياها في الدنيا، ومن ذلك عالم الملائكة وعالم الجن والروح، فمعرفة الإنسان بهذه العوالم لا تتجاوز المعرفة المجملة، ومهما كان فيها من تفصيل الصفات والأعمال والأحداث، فهي لا تتجاوز حدود ما يصل به الخبر الصادق لفظا ومعنى دون الكيف، إذ ليس للعقل والحواس مدخل في هذه الغيبيات». كتاب أصول الإيمان بالغيب وأثره، ص 42، للدكتورة فوز بنت عبد اللطيف الكردي.</p>"
+      +"<p><b>السند 4</b> — «لا ينبغي اللجوء إلى حلّ ميثاق الزوجية بالطلاق أو بالتطليق إلا استثناء، وفي حدود الأخذ بقاعدة أخفّ الضررين، لما في ذلك من تفكيك الأسرة والإضرار بالأطفال». المادة 70 من مدوّنة الأسرة.</p>"
+  },
+  sections:[
+    { titre:"الوضعية التقويمية", points:20, questions:[
+      { q:"حدّد مشكلة الوضعية. (1ن)", points:1, lines:3,
+        correction:"<b>مشكلة الوضعية</b>: الفهم الخاطئ لبعض الناس (غير المسلمين) للدين الإسلامي وما فيه من أحكام كالإيمان بالغيب والزواج والطلاق ورعاية الأطفال. <i>(يُقبل ما هو قريب من هذا المعنى.)</i>" },
+      { q:"عرّف المفهومين الآتيين تعريفا اصطلاحيا. (2ن)", points:2, lines:3,
+        qHtml:"<table><thead><tr><th>المفهوم</th><th>تعريفه</th></tr></thead><tbody>"
+          +"<tr><td>المسؤولية</td><td><textarea class=\"tcell\" data-cell=\"تعريف المسؤولية\" rows=\"3\" aria-label=\"تعريف المسؤولية\"></textarea></td></tr>"
+          +"<tr><td>رعاية الأطفال</td><td><textarea class=\"tcell\" data-cell=\"تعريف رعاية الأطفال\" rows=\"3\" aria-label=\"تعريف رعاية الأطفال\"></textarea></td></tr>"
+          +"</tbody></table>",
+        correction:"<b>المسؤولية</b>: قدرة الإنسان على رعاية وحفظ ما كُلّف به من أمور، وتحمّله لتبعات ذلك.<br><b>رعاية الأطفال</b>: العناية بهم وبشؤونهم بتوفير حاجياتهم المادية والمعنوية، وحمايتهم مما قد يهدّدهم من مخاطر بهدف تكوين شخصية سليمة ومتوازنة. <i>(1ن لكل تعريف؛ يراعى ذكر العناصر الأساسية.)</i>" },
+      { q:"يعتقد صديقك أننا في الإسلام لا نحترم العقل والحواس بسبب إيماننا بالغيب؛ بيّن خطأ رأيه انطلاقا من السند 3. (1ن)", points:1, lines:5,
+        correction:"يبيّن المترشّح أن إدراك الغيب لا علاقة له بالعقل أو الحواس وإنما يُدرك <b>بالخبر الصادق</b> (الوحي)؛ فالغيبيات (الملائكة، الجن، الروح…) جعلها الله مغيّبة عن حواس البشر وقواهم، والإيمان بها لا يتعارض مع العقل بل هو من كماله. <i>(عبارة سليمة واضحة تستثمر السند بوضوح.)</i>" },
+      { q:"كان للرؤيا التي رآها الرسول صلى الله عليه وسلم نتائج عظيمة؛ اذكر أربعة منها. (1ن)", points:1, lines:4,
+        correction:"من نتائج رؤيا الرسول صلى الله عليه وسلم (ربع نقطة لكل نتيجة): عقد صلح الحديبية؛ تفرّغ الرسول صلى الله عليه وسلم لنشر الدعوة (مراسلة الملوك)؛ دخول العديد من كبار كفار قريش إلى الإسلام كخالد بن الوليد؛ فتح مكة." },
+      { q:"بيّن لصديقك حكم الطلاق في الإسلام معتمدا على السند الرابع. (1ن)", points:1, lines:4,
+        correction:"يبيّن المترشّح أن الأصل في العلاقة الزوجية هو <b>الاستمرار والدوام</b>، وأن حكم الطلاق الأصلي هو <b>الإباحة</b>، لكنه استثناء لا يُلجأ إليه إلا في حالة الضرورة القصوى وفق قاعدة «أخفّ الضررين»، لما فيه من إضرار بالأطفال خاصة والأسرة عامة. <i>(عبارة سليمة واضحة.)</i>" },
+      { q:"يتّهم صديقك الإسلام بأنه دين الخرافة والأساطير؛ بيّن له مكانة العلم في الإسلام مستدلا بنص شرعي. (1.5ن)", points:1.5, lines:5,
+        correction:"يبيّن المترشّح أن الإسلام يُعلي من مكانة العلم ولا يعارض نتائجه بل يدعو إلى التمسّك به والبحث والتفكّر؛ <b>الاستدلال</b> (تُقبل جميع النصوص الشرعية الدالة على قيمة العلم): قال تعالى ﴿يَرْفَعِ اللَّهُ الَّذِينَ آمَنُوا مِنكُمْ وَالَّذِينَ أُوتُوا الْعِلْمَ دَرَجَاتٍ﴾، أو ﴿قُلْ هَلْ يَسْتَوِي الَّذِينَ يَعْلَمُونَ وَالَّذِينَ لَا يَعْلَمُونَ﴾، أو حديث «طلب العلم فريضة على كل مسلم». <i>(للتعبير عن المكانة، وللاستشهاد السليم.)</i>" },
+      { q:"وضّح لصديقك تقدير الإسلام للزواج، وعرّفه بمعايير حسن اختيار الزوج والزوجة. (1ن)", points:1, lines:4,
+        correction:"يعبّر المترشّح عن مدى اهتمام الإسلام بالزواج من خلال شروطه وأحكامه بصفة عامة (0.25)؛ ويبيّن معايير حسن الاختيار: <b>الدين والخلق والكفاءة</b> (0.25 عن ذكر كل معيار)." },
+      { q:"يشير السند الرابع إلى اعتماد قاعدة «أخفّ الضررين» في تشريع الطلاق؛ مثّل لهذه القاعدة من مواقف يوسف عليه السلام مع الاستشهاد من السورة. (1.5ن)", points:1.5, lines:5,
+        correction:"<b>الموقف</b> (0.5): استعمال يوسف عليه السلام للقاعدة عند اختياره السجن على الوقوع في الفاحشة.<br><b>الاستشهاد</b> (1): قال تعالى: ﴿رَبِّ السِّجْنُ أَحَبُّ إِلَيَّ مِمَّا يَدْعُونَنِي إِلَيْهِ ۖ وَإِلَّا تَصْرِفْ عَنِّي كَيْدَهُنَّ أَصْبُ إِلَيْهِنَّ وَأَكُنْ مِنَ الْجَاهِلِينَ﴾." },
+      { q:"تحتاج لتدبير علاقتك مع صديقك الأجنبي إلى قيمتي الصبر والتسامح؛ بيّن كيف يمكن لهاتين القيمتين مساعدتك على ذلك. (1.5ن)", points:1.5, lines:6,
+        correction:"يبيّن المترشّح أهمية الصبر والتسامح في تدبير العلاقات الاجتماعية، وأثرهما في تقبّل الآخر وحسن الإنصات له والتعبير عن الرأي معه، مع الاحتفاظ بحق الردّ والتوضيح في جوّ هادئ بعيدا عن العنف اللفظي أو الجسدي. <i>(يراعى الربط بوضوح بحالة الصديق الأجنبي.)</i>" },
+      { q:"انتقد قول صديقك: «لا أعرف ما يجعلكم تقبلون التقيّد بالزواج ومسؤولياته، إذا كان الإنسان يستطيع تلبية حاجاته بلا عقد أو ميثاق» مبيّنا له أثر تلبية الإنسان لحاجاته خارج الإطار الشرعي على الفرد والمجتمع، اعتمادا على السند رقم 2. (2ن)", points:2, lines:7,
+        correction:"يؤكّد المترشّح على علاقة تلبية الإنسان لحاجاته بلا عقد أو ميثاق بانتشار الفواحش؛ ويوظّف السند الثاني ليبيّن أن من آثار انتشار الفواحش على الفرد والمجتمع <b>انتشار الأمراض والأوبئة والتعفّنات المنقولة جنسيا</b> (الطاعون والأوجاع). <i>(الاعتماد على السند في الجواب، سلامة الأفكار واللغة والأسلوب.)</i>" },
+      { q:"اكتب رسالة ترد فيها على صديقك باستعمال المفاهيم والقيم التالية: الإيمان بالغيب، العفة، المسؤولية، حق الغير، رعاية الأطفال. (2.5ن)", points:2.5, redaction:true, lines:10,
+        correction:"<b>سلّم التنقيط (2.5ن)</b> — يكتب المترشّح رسالة يردّ فيها على مغالطات صديقه موظّفا المفاهيم والقيم المقترحة؛ مثلا:<br>• الإيمان بالغيب من صفات المتّقين؛<br>• تحقيق العفّة من أهمّ مقاصد الزواج وصمام أمان لوقاية المجتمع من الفواحش؛<br>• رعاية الأطفال مسؤولية؛ والمسؤولية مقرونة في ديننا بالمحاسبة؛<br>• الغرض الأسمى من التشريعات الإسلامية هو حفظ الحقوق ومن أهمّها حق الغير.<br><i>(يقدّر المصحّح مدى قدرة المتعلّم على التركيب والتعبير عن الرأي بوضوح.)</i>" },
+      { q:"تأمّل السند (1) من سورة يوسف، ثم أجب: أ) حدّد مضمونا مناسبا للآيات. (1ن) ب) استخرج من آيات السند عبرة وقيمة. (1ن)", points:2, lines:5,
+        correction:"<b>أ) المضمون</b> (1): تأويل يعقوب عليه السلام لرؤيا يوسف عليه السلام ونهيُه له عن قصّها على إخوته خوفا من كيدهم.<br><b>ب)</b> <b>العبرة</b> (0.5): رؤيا الأنبياء حقّ ووحي من الله / من واجب الأبناء تجاه الآباء النصح والتوجيه والحماية من المخاطر. <b>القيمة</b> (0.5): النصيحة." },
+      { q:"استشهد على المضمون الآتي بما يناسب من سورة يوسف: «دعوة يوسف عليه السلام السجينَين إلى عقيدة التوحيد». (2ن)", points:2, redaction:true, lines:8,
+        correction:"<b>الاستشهاد</b>: قال تعالى: ﴿يَا صَاحِبَيِ السِّجْنِ أَأَرْبَابٌ مُتَفَرِّقُونَ خَيْرٌ أَمِ اللَّهُ الْوَاحِدُ الْقَهَّارُ ۝ مَا تَعْبُدُونَ مِنْ دُونِهِ إِلَّا أَسْمَاءً سَمَّيْتُمُوهَا أَنْتُمْ وَآبَاؤُكُمْ مَا أَنْزَلَ اللَّهُ بِهَا مِنْ سُلْطَانٍ ۚ إِنِ الْحُكْمُ إِلَّا لِلَّهِ ۚ أَمَرَ أَلَّا تَعْبُدُوا إِلَّا إِيَّاهُ ۚ ذَٰلِكَ الدِّينُ الْقَيِّمُ وَلَٰكِنَّ أَكْثَرَ النَّاسِ لَا يَعْلَمُونَ﴾ [سورة يوسف: 39-40]. <i>(تُخصم ربع نقطة لكل خطأ: نسيان كلمة أو تحريف.)</i>" }
+    ]}
+  ]
+});
