@@ -1,0 +1,62 @@
+======================================================================
+  AUDIENCE & STATISTIQUES — Guide rapide (propriétaire)
+======================================================================
+
+À QUOI ÇA SERT
+--------------
+Savoir ce qui intéresse vraiment tes visiteurs : combien de personnes
+viennent, QUEL ONGLET elles consultent et COMBIEN DE TEMPS elles y
+passent, sur quel appareil, d'où elles viennent, nouveaux vs habitués.
+Objectif : décider quels axes développer en priorité.
+
+Réservé à TON compte : saad.quickcash@gmail.com. Personne d'autre ne
+peut voir ces statistiques (ni les élèves, ni un autre compte).
+
+
+OÙ VOIR LES STATS
+-----------------
+1) Connecte-toi sur le site avec saad.quickcash@gmail.com.
+2) Clique « Compte » → le lien « 📊 Audience & statistiques » apparaît
+   (visible uniquement pour toi).  — ou va directement sur /stats.html
+3) Choisis la période (24 h / 7 j / 30 j / Tout) et explore :
+   • Visiteurs uniques, visites, temps total et moyen.
+   • Temps passé PAR ONGLET (le graphique principal).
+   • Appareils, langue & région, nouveaux vs récurrents.
+   • Tableau des visiteurs : clique une ligne pour le détail par onglet.
+
+
+UNE SEULE CHOSE À FAIRE (2 min) : publier la règle Firestore
+-------------------------------------------------------------
+Sans ça, la page affichera « Firestore refuse la lecture ».
+Firebase → Firestore Database → onglet « Règles » → colle le bloc
+COMPLET fourni dans PREMIUM-guide.txt (il contient déjà les 2 nouvelles
+sections analytics_sessions / analytics_visitors) → « Publier ».
+
+La lecture est réservée à ton e-mail ; l'écriture est ouverte (normal :
+beaucoup de visiteurs ne sont pas connectés).
+
+
+CE QUI EST COLLECTÉ (et ce qui NE l'est PAS)
+--------------------------------------------
+Collecté : temps par page, pages vues, appareil / système / navigateur,
+taille d'écran, langue, fuseau horaire (région approximative), provenance,
+nouveau vs récurrent. Pour un élève CONNECTÉ : son nom et son e-mail
+(ceux qu'il a saisis en créant son compte) reliés à son usage.
+
+NON collecté : aucun numéro de téléphone, aucune adresse, aucune
+géolocalisation précise, aucune donnée que le visiteur n'a pas fournie.
+Les visiteurs non connectés restent anonymes (identifiant aléatoire).
+
+Une courte note informe les visiteurs de cette mesure d'audience dans la
+fenêtre « Compte » — c'est ce qu'exige la loi marocaine 09-08 (CNDP) sur
+la protection des données personnelles. Garde-la.
+
+
+COÛT
+----
+Le suivi écrit dans Firestore de façon très économe (écritures espacées).
+Pour un site scolaire, cela reste dans le quota GRATUIT de Firebase
+(plan Spark). Si tu es sur le plan Spark, Firebase ne facture jamais :
+il s'arrête au quota. (Rien à voir avec la voix Google Cloud d'avant,
+qui était un service payant séparé.)
+======================================================================

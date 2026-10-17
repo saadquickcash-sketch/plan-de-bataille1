@@ -102,6 +102,20 @@ Dans Firebase → Firestore → Règles. Vérifie que l'e-mail admin
               && request.resource.data.active == false
               && request.resource.data.usedBy == request.auth.uid);
       }
+
+      // Mesure d'audience (stats du site).
+      // Écriture OUVERTE : les visiteurs ne sont pas toujours connectés.
+      // LECTURE réservée au propriétaire (toi) → personne d'autre ne voit ces données.
+      match /analytics_sessions/{id} {
+        allow create, update: if true;
+        allow read:   if request.auth != null && request.auth.token.email == 'saad.quickcash@gmail.com';
+        allow delete: if false;
+      }
+      match /analytics_visitors/{id} {
+        allow create, update: if true;
+        allow read:   if request.auth != null && request.auth.token.email == 'saad.quickcash@gmail.com';
+        allow delete: if false;
+      }
     }
   }
 

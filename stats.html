@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Audience — Brio</title>
+<link rel="icon" type="image/svg+xml" href="icons/brio.svg"><link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<style>
+:root{
+  --bg:#0f1226;--bg2:#141937;--card:#171c3a;--card2:#1c2246;--border:#2a3160;--text:#eef0ff;--muted:#9aa0c8;
+  --accent:#6c8cff;--accent2:#8b5cf6;--good:#2fd08a;--warn:#ffcf6b;--bad:#ff6b8b;--chip:#232a52;
+  --grad:linear-gradient(135deg,#6c8cff,#8b5cf6);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(1200px 600px at 80% -10%,#1b2250 0,var(--bg) 60%);color:var(--text);line-height:1.5;min-height:100vh;padding:22px 16px 60px}
+.wrap{max-width:1060px;margin:0 auto}
+a{color:var(--accent);text-decoration:none}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:1.25rem}
+.brand svg{width:26px;height:26px;fill:#fff;filter:drop-shadow(0 2px 8px rgba(108,140,255,.6))}
+.sub{color:var(--muted);font-size:.92rem;margin:2px 0 18px}
+.sp{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:11px;padding:10px 16px;font-weight:800;font-size:.92rem;cursor:pointer;font-family:inherit;background:var(--grad);color:#fff;box-shadow:0 8px 22px rgba(108,92,231,.35)}
+.btn:hover{filter:brightness(1.08)}.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:var(--chip);border:1px solid var(--border);color:var(--text);box-shadow:none}
+.card{background:linear-gradient(180deg,var(--card),var(--bg2));border:1px solid var(--border);border-radius:18px;padding:18px 18px;margin-bottom:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.card h2{font-size:1rem;margin:0 0 14px;display:flex;align-items:center;gap:8px}
+input{width:100%;padding:11px 13px;border:1px solid var(--border);border-radius:11px;font-size:1rem;font-family:inherit;background:#10142e;color:var(--text)}
+label{display:block;font-size:.8rem;color:var(--muted);margin:10px 0 4px;font-weight:700}
+.msg{font-size:.9rem;margin-top:10px;min-height:1.1em}.msg.ok{color:var(--good)}.msg.bad{color:var(--bad)}
+.hide{display:none!important}
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--border);border-radius:16px;padding:15px 16px}
+.kpi .k{font-size:.74rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.kpi .v{font-size:1.7rem;font-weight:800;margin-top:4px;line-height:1.1}
+.kpi .v small{font-size:.9rem;color:var(--muted);font-weight:700}
+.kpi.accent{background:linear-gradient(135deg,rgba(108,140,255,.22),rgba(139,92,246,.18));border-color:#3b4488}
+/* bar chart */
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar{display:grid;grid-template-columns:150px 1fr auto;align-items:center;gap:10px}
+.bar .lab{font-size:.86rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .track{height:16px;background:var(--chip);border-radius:9px;overflow:hidden}
+.bar .fill{height:100%;border-radius:9px;background:var(--grad);min-width:3px;transition:width .5s ease}
+.bar .val{font-size:.82rem;color:var(--muted);font-weight:700;white-space:nowrap}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:720px){.split{grid-template-columns:1fr}.bar{grid-template-columns:110px 1fr auto}}
+/* table */
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;margin-top:4px;font-size:.88rem}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
+th{color:var(--muted);font-weight:800;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:rgba(108,140,255,.07)}
+.who{display:flex;align-items:center;gap:9px}
+.av{width:28px;height:28px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.8rem;color:#fff;background-size:cover;background-position:center;flex:none}
+.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.72rem;font-weight:800}
+.pill.in{background:rgba(47,208,138,.16);color:var(--good)}
+.pill.anon{background:var(--chip);color:var(--muted)}
+.detail{background:#10142e}
+.detail td{padding:14px 16px}
+.mini{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.mini .bar{grid-template-columns:150px 1fr auto}
+.dim{color:var(--muted)}
+.foot{color:var(--muted);font-size:.8rem;margin-top:10px}
+.warn{background:rgba(255,207,107,.08);border:1px solid #5b4c1e;border-radius:12px;padding:12px 14px;font-size:.86rem;color:#ffe3a3;margin-top:10px}
+.seg{display:inline-flex;background:var(--chip);border:1px solid var(--border);border-radius:11px;overflow:hidden}
+.seg button{background:transparent;border:0;color:var(--muted);font-weight:700;font-family:inherit;padding:8px 13px;cursor:pointer;font-size:.85rem}
+.seg button.on{background:var(--grad);color:#fff}
+.hint{color:var(--muted);font-size:.82rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <span class="brand"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c.45 3.2 1.35 5.4 2.95 7 1.6 1.6 3.8 2.5 7 2.95-3.2.45-5.4 1.35-7 2.95-1.6 1.6-2.5 3.8-2.95 7-.45-3.2-1.35-5.4-2.95-7-1.6-1.6-3.8-2.5-7-2.95 3.2-.45 5.4-1.35 7-2.95 1.6-1.6 2.5-3.8 2.95-7z"/></svg> Audience Brio</span>
+    <span class="sp"></span>
+    <a class="btn ghost" href="index.html">← Retour au site</a>
+  </div>
+  <p class="sub">Tableau de bord privé du propriétaire — ce qui intéresse les visiteurs et le temps passé sur chaque onglet.</p>
+
+  <!-- Connexion -->
+  <div class="card" id="loginCard">
+    <h2>🔒 Connexion propriétaire</h2>
+    <div id="loggedOut">
+      <label>Adresse e-mail</label>
+      <input type="email" id="email" placeholder="ton@email.com" autocomplete="email">
+      <label>Mot de passe</label>
+      <input type="password" id="pass" placeholder="ton mot de passe" autocomplete="current-password">
+      <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" id="loginBtn">Se connecter</button>
+        <button class="btn ghost" id="googleBtn">Continuer avec Google</button>
+      </div>
+      <div class="msg" id="loginMsg"></div>
+    </div>
+    <div id="loggedIn" class="hide">
+      <div>Connecté : <b id="who"></b></div>
+      <div class="msg" id="adminStatus"></div>
+      <div style="margin-top:6px"><button class="btn ghost" id="logoutBtn">Se déconnecter</button></div>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dash" class="hide">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+      <div class="seg" id="rangeSeg">
+        <button data-d="1" >24 h</button>
+        <button data-d="7" class="on">7 jours</button>
+        <button data-d="30">30 jours</button>
+        <button data-d="0">Tout</button>
+      </div>
+      <span class="sp"></span>
+      <button class="btn ghost" id="refreshBtn">🔄 Rafraîchir</button>
+    </div>
+    <div class="msg" id="dashMsg"></div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="card">
+      <h2>⏱️ Temps passé par onglet <span class="hint" style="font-weight:600">— là où les visiteurs passent leur temps</span></h2>
+      <div class="bars" id="tabBars"></div>
+    </div>
+
+    <div class="split">
+      <div class="card">
+        <h2>📱 Appareils</h2>
+        <div class="bars" id="deviceBars"></div>
+      </div>
+      <div class="card">
+        <h2>🌍 Langue & région</h2>
+        <div class="bars" id="regionBars"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>👥 Visiteurs <span class="hint" style="font-weight:600">— clique une ligne pour le détail par onglet</span></h2>
+      <div class="tablewrap">
+        <table id="visTable">
+          <thead><tr><th>Visiteur</th><th>Type</th><th>Temps total</th><th>Visites</th><th>Onglet favori</th><th>Appareil</th><th>Dernière visite</th></tr></thead>
+          <tbody id="visBody"></tbody>
+        </table>
+      </div>
+      <div class="foot" id="visFoot"></div>
+    </div>
+
+    <div class="card">
+      <h2>🛡️ Confidentialité</h2>
+      <p class="hint">Les données sont pseudonymes tant que l'élève ne se connecte pas (identifiant aléatoire, aucune donnée personnelle non fournie). Pour les élèves connectés, le nom et l'e-mail affichés sont ceux qu'ils ont saisis en créant leur compte. Ce suivi est signalé aux visiteurs dans la fenêtre « Compte ». Conforme à la loi marocaine 09-08 (CNDP) sur la protection des données personnelles.</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+(function(){
+  var CFG = window.FIREBASE_CONFIG || {};
+  function okv(v){ return v && String(v).indexOf('VOTRE_')!==0; }
+  var el=function(id){ return document.getElementById(id); };
+  var loginMsg=el('loginMsg');
+  if(!okv(CFG.apiKey) || typeof firebase==='undefined'){
+    loginMsg.className='msg bad';
+    loginMsg.textContent="Firebase n'est pas configuré. Cette page a besoin des comptes activés.";
+    return;
+  }
+  firebase.initializeApp(CFG);
+  var auth=firebase.auth(), db=firebase.firestore();
+  var ADMIN_EMAIL=(window.PB_ADMIN_EMAIL||'saad.quickcash@gmail.com').toLowerCase();
+  function show(id,on){ el(id).classList[on?'remove':'add']('hide'); }
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  el('loginBtn').addEventListener('click',function(){
+    var e=el('email').value.trim(), p=el('pass').value;
+    if(!e||!p){ loginMsg.className='msg bad'; loginMsg.textContent='Entre ton e-mail et ton mot de passe.'; return; }
+    loginMsg.className='msg'; loginMsg.textContent='Connexion…';
+    auth.signInWithEmailAndPassword(e,p).catch(function(err){ loginMsg.className='msg bad'; loginMsg.textContent=humanErr(err); });
+  });
+  el('googleBtn').addEventListener('click',function(){
+    auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function(err){ loginMsg.className='msg bad'; loginMsg.textContent=humanErr(err); });
+  });
+  el('logoutBtn').addEventListener('click',function(){ auth.signOut(); });
+  function humanErr(e){ var c=(e&&e.code)||''; if(c.indexOf('wrong-password')>=0||c.indexOf('invalid-credential')>=0) return 'E-mail ou mot de passe incorrect.'; if(c.indexOf('user-not-found')>=0) return 'Aucun compte avec cet e-mail.'; if(c.indexOf('too-many')>=0) return 'Trop d’essais, réessaie plus tard.'; return (e&&e.message)||'Erreur de connexion.'; }
+
+  auth.onAuthStateChanged(function(u){
+    if(u){
+      show('loggedOut',false); show('loggedIn',true);
+      el('who').textContent=(u.email||u.displayName||'compte');
+      var isAdmin=(u.email||'').toLowerCase()===ADMIN_EMAIL;
+      var st=el('adminStatus');
+      if(isAdmin){ st.className='msg ok'; st.textContent='✓ Administrateur reconnu.'; show('dash',true); load(); }
+      else { st.className='msg bad'; st.innerHTML='⚠ Ce compte n’est pas l’administrateur ('+esc(ADMIN_EMAIL)+'). Connecte-toi avec le bon compte.'; show('dash',false); }
+    } else { show('loggedOut',true); show('loggedIn',false); show('dash',false); }
+  });
+
+  /* ---------- helpers d'affichage ---------- */
+  function fmtDur(sec){ sec=Math.round(sec||0); if(sec<60) return sec+' s'; var m=Math.floor(sec/60), s=sec%60; if(m<60) return m+' min'+(s?' '+s+'s':''); var h=Math.floor(m/60); m=m%60; return h+' h'+(m?' '+m+'min':''); }
+  function fmtDate(ms){ try{ return new Date(ms).toLocaleString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
+  function initial(s){ return (String(s||'?').trim()[0]||'?').toUpperCase(); }
+  function bars(holder, rows, fmt){
+    var max=0; rows.forEach(function(r){ if(r.v>max) max=r.v; }); if(max<=0) max=1;
+    holder.innerHTML = rows.length ? rows.map(function(r){
+      var pct=Math.max(2,Math.round(r.v/max*100));
+      return '<div class="bar"><span class="lab" title="'+esc(r.label)+'">'+esc(r.label)+'</span>'
+        +'<span class="track"><span class="fill" style="width:'+pct+'%"></span></span>'
+        +'<span class="val">'+(fmt?fmt(r.v):r.v)+'</span></div>';
+    }).join('') : '<p class="hint">Aucune donnée pour cette période.</p>';
+  }
+
+  /* ---------- chargement + calcul ---------- */
+  var rangeDays=7;
+  el('rangeSeg').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return;
+    [].forEach.call(el('rangeSeg').children,function(x){ x.classList.toggle('on',x===b); });
+    rangeDays=parseInt(b.getAttribute('data-d'),10)||0; load(); });
+  el('refreshBtn').addEventListener('click',load);
+
+  function load(){
+    var m=el('dashMsg'); m.className='msg'; m.textContent='Chargement…';
+    var since = rangeDays>0 ? (Date.now()-rangeDays*86400000) : 0;
+    // On lit l'agrégat par visiteur (rapide), filtré par dernière activité.
+    var q = db.collection('analytics_visitors');
+    var p = (since>0) ? q.where('lastSeen','>=',since).get() : q.get();
+    p.then(function(snap){
+      m.textContent='';
+      var vis=[]; snap.forEach(function(d){ var o=d.data()||{}; o._id=d.id; vis.push(o); });
+      render(vis, since);
+    }).catch(function(err){
+      if((err&&err.code||'').indexOf('permission')>=0){
+        m.className='msg bad';
+        m.innerHTML='⛔ Firestore refuse la lecture. Publie la règle fournie (lecture réservée à ton compte) dans Firebase → Firestore → Règles.';
+      } else if((err&&err.code||'').indexOf('failed-precondition')>=0 || (err&&err.message||'').indexOf('index')>=0){
+        m.className='msg bad'; m.textContent='Un index Firestore est requis — ouvre le lien proposé dans la console, ou choisis « Tout ».';
+      } else { m.className='msg bad'; m.textContent='Erreur : '+((err&&err.message)||'inconnue'); }
+    });
+  }
+
+  function render(vis, since){
+    /* KPIs */
+    var totalVisitors=vis.length, signed=0, totalSec=0, totalVisits=0;
+    var perTabSec={}, perTabLabel={}, perTabViews={}, devAgg={}, regionAgg={}, newV=0, retV=0;
+    vis.forEach(function(v){
+      if(v.signedIn) signed++;
+      totalSec += (v.totalSec||0);
+      totalVisits += (v.sessions||0);
+      // nouveau vs récurrent sur la période
+      if((v.sessions||0)>1) retV++; else newV++;
+      var pps=v.perPageSec||{}, lbl=v.perPageLabel||{}, ppv=v.perPageViews||{};
+      Object.keys(pps).forEach(function(k){ perTabSec[k]=(perTabSec[k]||0)+(pps[k]||0); if(lbl[k]) perTabLabel[k]=lbl[k]; });
+      Object.keys(ppv).forEach(function(k){ perTabViews[k]=(perTabViews[k]||0)+(ppv[k]||0); });
+      if(v.device) devAgg[v.device]=(devAgg[v.device]||0)+1;
+      var reg=(v.lang||'?'); if(v.tz){ reg = (v.lang||'')+' · '+v.tz.split('/').pop().replace(/_/g,' '); } regionAgg[reg]=(regionAgg[reg]||0)+1;
+    });
+    var avg = totalVisits? Math.round(totalSec/totalVisits) : 0;
+
+    el('kpis').innerHTML =
+      kpi('Visiteurs uniques', totalVisitors, 'accent')
+      + kpi('Élèves connectés', signed)
+      + kpi('Visites (pages vues)', totalVisits)
+      + kpi('Temps total', fmtDur(totalSec))
+      + kpi('Temps moyen / visite', fmtDur(avg))
+      + kpi('Nouveaux / récurrents', newV+' <small>/ '+retV+'</small>');
+
+    /* temps par onglet */
+    var tabRows = Object.keys(perTabSec).map(function(k){ return {label:(perTabLabel[k]||k), v:perTabSec[k], key:k}; })
+      .sort(function(a,b){ return b.v-a.v; });
+    bars(el('tabBars'), tabRows, fmtDur);
+
+    /* appareils + région */
+    bars(el('deviceBars'), Object.keys(devAgg).map(function(k){ return {label:k,v:devAgg[k]}; }).sort(function(a,b){return b.v-a.v;}), function(n){return n+' visiteur'+(n>1?'s':'');});
+    bars(el('regionBars'), Object.keys(regionAgg).map(function(k){ return {label:k,v:regionAgg[k]}; }).sort(function(a,b){return b.v-a.v;}).slice(0,10), function(n){return n+'';});
+
+    /* table visiteurs */
+    vis.sort(function(a,b){ return (b.totalSec||0)-(a.totalSec||0); });
+    var body=el('visBody'); body.innerHTML='';
+    vis.forEach(function(v,i){
+      var signedIn=!!v.signedIn;
+      var name = signedIn ? (v.name || (v.email||'').split('@')[0] || 'Élève') : ('Visiteur anonyme');
+      var sub = signedIn ? (v.email||'') : ('#'+String(v._id||'').replace(/[^a-z0-9]/gi,'').slice(-5).toUpperCase());
+      var pps=v.perPageSec||{}, lbl=v.perPageLabel||{};
+      var favKey=null,favV=-1; Object.keys(pps).forEach(function(k){ if(pps[k]>favV){favV=pps[k];favKey=k;} });
+      var fav = favKey ? (lbl[favKey]||favKey) : '—';
+      var avHtml = (signedIn && v.photo) ? '<span class="av" style="background-image:url(\''+esc(v.photo)+'\')"></span>' : '<span class="av">'+initial(name)+'</span>';
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td><div class="who">'+avHtml+'<div><div>'+esc(name)+'</div><div class="dim" style="font-size:.78rem">'+esc(sub)+'</div></div></div></td>'
+        +'<td>'+(signedIn?'<span class="pill in">Connecté</span>':'<span class="pill anon">Anonyme</span>')+'</td>'
+        +'<td><b>'+fmtDur(v.totalSec)+'</b></td>'
+        +'<td>'+(v.sessions||0)+'</td>'
+        +'<td>'+esc(fav)+'</td>'
+        +'<td>'+esc((v.device||'')+(v.os?' · '+v.os:''))+'</td>'
+        +'<td class="dim">'+fmtDate(v.lastSeen)+'</td>';
+      var det=document.createElement('tr'); det.className='detail hide';
+      var rows=Object.keys(pps).map(function(k){ return {label:(lbl[k]||k),v:pps[k]}; }).sort(function(a,b){return b.v-a.v;});
+      var mini='<div class="mini" id="mini-'+i+'"></div>';
+      det.innerHTML='<td colspan="7"><b>Détail du temps par onglet</b>'+mini
+        +'<div class="foot">Navigateur : '+esc(v.browser||'?')+' · Langue : '+esc(v.lang||'?')+' · Fuseau : '+esc(v.tz||'?')+' · Écran : '+esc(v.screen||'?')+' · '+(v.pwa?'App installée':'Navigateur')+' · Provenance : '+esc(v.referrer||'direct')+'</div></td>';
+      tr.addEventListener('click',function(){ det.classList.toggle('hide');
+        if(!det.classList.contains('hide')) bars(document.getElementById('mini-'+i), rows, fmtDur); });
+      body.appendChild(tr); body.appendChild(det);
+    });
+    el('visFoot').textContent = totalVisitors+' visiteur(s) sur la période.'+(since?'':'  (toutes périodes)');
+  }
+  function kpi(k,v,cls){ return '<div class="kpi'+(cls?' '+cls:'')+'"><div class="k">'+k+'</div><div class="v">'+v+'</div></div>'; }
+})();
+</script>
+</body>
+</html>

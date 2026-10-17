@@ -14,6 +14,17 @@
   if(modal) modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
   document.addEventListener('keydown', function(e){ if(e.key==='Escape'&&modal&&!modal.hidden) closeModal(); });
 
+  // ▶ Note de confidentialité (visible par tous) — mesure d'audience anonyme
+  try{
+    var authIn = modal && modal.querySelector('.auth-in');
+    if(authIn && !document.getElementById('pbPrivacyNote')){
+      var pn=document.createElement('p'); pn.id='pbPrivacyNote'; pn.className='auth-note';
+      pn.style.cssText='font-size:.74rem;opacity:.75;margin-top:10px;border-top:1px solid var(--border,#e5e2ef);padding-top:10px';
+      pn.innerHTML='\u{1F6E1}️ Pour améliorer le site, Brio mesure l’usage de façon anonyme (temps par page, type d’appareil, région approximative). En créant un compte, ton nom et ton e-mail y sont associés.';
+      authIn.appendChild(pn);
+    }
+  }catch(e){}
+
   if(typeof firebase==='undefined' || !configured){
     if(forms) forms.hidden=true; if(profile) profile.hidden=true; if(setup) setup.hidden=false;
     return;
@@ -84,6 +95,10 @@
       var cfu=document.getElementById('cfUser'); if(cfu) cfu.textContent=nm+' · connecté';
       var isAdmin=(user.email||'').toLowerCase()===ADMIN_EMAIL;
       var adm=document.getElementById('authAdmin'); if(adm) adm.hidden=!isAdmin;
+      // ▶ Lien « Audience & statistiques » (propriétaire uniquement)
+      var stt=document.getElementById('authStats');
+      if(!stt && adm && adm.parentNode){ stt=document.createElement('a'); stt.id='authStats'; stt.className='auth-admin'; stt.href='stats.html'; stt.innerHTML='\u{1F4CA} Audience & statistiques'; adm.parentNode.insertBefore(stt, adm.nextSibling); }
+      if(stt) stt.hidden=!isAdmin;
       try{ window.dispatchEvent(new CustomEvent('pb-admin')); }catch(e){}
       try{ if(window.PB_applyLocks) window.PB_applyLocks(); }catch(e){}
       docRef(user.uid).get().then(function(snap){
@@ -116,6 +131,7 @@
       var av=document.getElementById('acctAv'); if(av){ av.style.backgroundImage=''; av.style.color=''; av.classList.remove('has-photo'); av.textContent='\u{1F464}'; av.classList.remove('on'); }
       var lbl=document.getElementById('acctLabel'); if(lbl) lbl.textContent='Compte';
       var adm=document.getElementById('authAdmin'); if(adm) adm.hidden=true;
+      var stt=document.getElementById('authStats'); if(stt) stt.hidden=true;
       try{ window.dispatchEvent(new CustomEvent('pb-admin')); }catch(e){}
       try{ if(window.PB_applyLocks) window.PB_applyLocks(); }catch(e){}
       var cfu=document.getElementById('cfUser'); if(cfu) cfu.textContent='Non connecté — clique « Compte »';
