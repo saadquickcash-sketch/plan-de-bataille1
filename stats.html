@@ -55,7 +55,9 @@ th{color:var(--muted);font-weight:800;font-size:.72rem;text-transform:uppercase;
 tbody tr{cursor:pointer}
 tbody tr:hover{background:rgba(108,140,255,.07)}
 .who{display:flex;align-items:center;gap:9px}
-.av{width:28px;height:28px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.8rem;color:#fff;background-size:cover;background-position:center;flex:none}
+.av{position:relative;overflow:hidden;width:28px;height:28px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.8rem;color:#fff;flex:none}
+.av .ini{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
 .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.72rem;font-weight:800}
 .pill.in{background:rgba(47,208,138,.16);color:var(--good)}
 .pill.anon{background:var(--chip);color:var(--muted)}
@@ -212,6 +214,15 @@ tbody tr:hover{background:rgba(108,140,255,.07)}
   function fmtDate(ms){ try{ return new Date(ms).toLocaleString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
   function fmtDay(ms){ try{ return new Date(ms).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){ return ''; } }
   function initial(s){ return (String(s||'?').trim()[0]||'?').toUpperCase(); }
+  function avatar(name, photo){
+    var ini=initial(name);
+    if(photo){
+      // referrerpolicy=no-referrer : indispensable pour que les photos Google (googleusercontent) s'affichent hors de Google.
+      // onerror : si la photo ne charge pas, on retombe sur l'initiale.
+      return '<span class="av"><span class="ini">'+ini+'</span><img src="'+esc(photo)+'" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.remove()"></span>';
+    }
+    return '<span class="av">'+ini+'</span>';
+  }
   function bars(holder, rows, fmt){
     var max=0; rows.forEach(function(r){ if(r.v>max) max=r.v; }); if(max<=0) max=1;
     holder.innerHTML = rows.length ? rows.map(function(r){
@@ -311,7 +322,7 @@ tbody tr:hover{background:rgba(108,140,255,.07)}
     accounts.forEach(function(a,i){
       var an=analyticsForUid(vis,a.uid);
       var name=a.name||(a.email||'').split('@')[0]||'Élève';
-      var avHtml = a.photo ? '<span class="av" style="background-image:url(\''+esc(a.photo)+'\')"></span>' : '<span class="av">'+initial(name)+'</span>';
+      var avHtml = avatar(name, a.photo);
       var plan = a.premium ? '<span class="pill in">Premium'+(a.until?' · exp. '+fmtDay(a.until):'')+'</span>' : '<span class="pill anon">Gratuit</span>';
       var tr=document.createElement('tr');
       tr.innerHTML='<td><div class="who">'+avHtml+'<div><div>'+esc(name)+'</div><div class="dim" style="font-size:.78rem">'+esc(a.email||'')+'</div></div></div></td>'
@@ -350,7 +361,7 @@ tbody tr:hover{background:rgba(108,140,255,.07)}
       var pps=v.perPageSec||{}, lbl=v.perPageLabel||{};
       var favKey=null,favV=-1; Object.keys(pps).forEach(function(k){ if(pps[k]>favV){favV=pps[k];favKey=k;} });
       var fav = favKey ? (lbl[favKey]||favKey) : '—';
-      var avHtml = (signedIn && v.photo) ? '<span class="av" style="background-image:url(\''+esc(v.photo)+'\')"></span>' : '<span class="av">'+initial(name)+'</span>';
+      var avHtml = avatar(name, signedIn ? v.photo : '');
       var tr=document.createElement('tr');
       tr.innerHTML='<td><div class="who">'+avHtml+'<div><div>'+esc(name)+'</div><div class="dim" style="font-size:.78rem">'+esc(sub)+'</div></div></div></td>'
         +'<td>'+(signedIn?'<span class="pill in">Connecté</span>':'<span class="pill anon">Anonyme</span>')+'</td>'
