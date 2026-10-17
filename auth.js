@@ -101,6 +101,16 @@
       if(stt) stt.hidden=!isAdmin;
       try{ window.dispatchEvent(new CustomEvent('pb-admin')); }catch(e){}
       try{ if(window.PB_applyLocks) window.PB_applyLocks(); }catch(e){}
+      // ▶ Enregistre/actualise la fiche du compte à CHAQUE connexion
+      //    (pour que le propriétaire voie tous les comptes dans « Audience »).
+      try{
+        var acct={ email:(user.email||'').toLowerCase(), lastLogin:Date.now() };
+        if(user.displayName) acct.name=user.displayName;
+        if(user.photoURL) acct.photo=user.photoURL;
+        try{ var prov=(user.providerData&&user.providerData[0]&&user.providerData[0].providerId)||''; if(prov) acct.provider=prov; }catch(e){}
+        try{ if(user.metadata&&user.metadata.creationTime) acct.createdAt=new Date(user.metadata.creationTime).getTime(); }catch(e){}
+        docRef(user.uid).set(acct,{merge:true});
+      }catch(e){}
       docRef(user.uid).get().then(function(snap){
         var d=snap.exists?snap.data():null;
         if(d && Array.isArray(d.convos) && d.convos.length && window.PB_chat && window.PB_chat.setAll){ window.PB_chat.setAll(d.convos); }

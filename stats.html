@@ -119,6 +119,17 @@ tbody tr:hover{background:rgba(108,140,255,.07)}
     <div class="kpis" id="kpis"></div>
 
     <div class="card">
+      <h2>👤 Comptes inscrits <span class="hint" style="font-weight:600">— tous les élèves qui ont créé un compte (clique une ligne pour le détail)</span></h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Compte</th><th>Formule</th><th>Temps total</th><th>Onglet favori</th><th>Créé le</th><th>Dernière connexion</th></tr></thead>
+          <tbody id="acctBody"></tbody>
+        </table>
+      </div>
+      <div class="foot" id="acctFoot"></div>
+    </div>
+
+    <div class="card">
       <h2>⏱️ Temps passé par onglet <span class="hint" style="font-weight:600">— là où les visiteurs passent leur temps</span></h2>
       <div class="bars" id="tabBars"></div>
     </div>
@@ -199,6 +210,7 @@ tbody tr:hover{background:rgba(108,140,255,.07)}
   /* ---------- helpers d'affichage ---------- */
   function fmtDur(sec){ sec=Math.round(sec||0); if(sec<60) return sec+' s'; var m=Math.floor(sec/60), s=sec%60; if(m<60) return m+' min'+(s?' '+s+'s':''); var h=Math.floor(m/60); m=m%60; return h+' h'+(m?' '+m+'min':''); }
   function fmtDate(ms){ try{ return new Date(ms).toLocaleString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
+  function fmtDay(ms){ try{ return new Date(ms).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){ return ''; } }
   function initial(s){ return (String(s||'?').trim()[0]||'?').toUpperCase(); }
   function bars(holder, rows, fmt){
     var max=0; rows.forEach(function(r){ if(r.v>max) max=r.v; }); if(max<=0) max=1;
@@ -220,24 +232,52 @@ tbody tr:hover{background:rgba(108,140,255,.07)}
   function load(){
     var m=el('dashMsg'); m.className='msg'; m.textContent='Chargement…';
     var since = rangeDays>0 ? (Date.now()-rangeDays*86400000) : 0;
-    // On lit l'agrégat par visiteur (rapide), filtré par dernière activité.
+    // 1) agrégat par visiteur (temps par onglet), filtré par dernière activité.
     var q = db.collection('analytics_visitors');
-    var p = (since>0) ? q.where('lastSeen','>=',since).get() : q.get();
-    p.then(function(snap){
+    var pVis = (since>0) ? q.where('lastSeen','>=',since).get() : q.get();
+    // 2) TOUS les comptes inscrits (jamais filtrés par période).
+    var pUsers = db.collection('users').get().catch(function(e){ return {__err:e}; });
+    Promise.all([pVis, pUsers]).then(function(res){
       m.textContent='';
-      var vis=[]; snap.forEach(function(d){ var o=d.data()||{}; o._id=d.id; vis.push(o); });
-      render(vis, since);
+      var vis=[]; res[0].forEach(function(d){ var o=d.data()||{}; o._id=d.id; vis.push(o); });
+      var accounts=[]; var usersSnap=res[1];
+      if(usersSnap && !usersSnap.__err && usersSnap.forEach){
+        usersSnap.forEach(function(d){
+          var u=d.data()||{};
+          // on n'affiche QUE l'identité + la formule + les dates (jamais les conversations privées)
+          var pl=u.plan||null; var premium = !!(pl && pl.plan==='premium' && (!pl.until || pl.until>Date.now()));
+          accounts.push({ uid:d.id, email:(u.email||''), name:(u.name||''), photo:(u.photo||''),
+            premium:premium, until:(pl&&pl.until)||0, createdAt:u.createdAt||0, lastLogin:u.lastLogin||0, updatedAt:u.updatedAt||0 });
+        });
+      }
+      var usersErr = (usersSnap && usersSnap.__err) ? usersSnap.__err : null;
+      render(vis, accounts, since, usersErr);
     }).catch(function(err){
       if((err&&err.code||'').indexOf('permission')>=0){
         m.className='msg bad';
-        m.innerHTML='⛔ Firestore refuse la lecture. Publie la règle fournie (lecture réservée à ton compte) dans Firebase → Firestore → Règles.';
+        m.innerHTML='⛔ Firestore refuse la lecture. Publie la règle mise à jour (lecture réservée à ton compte, y compris la collection « users ») dans Firebase → Firestore → Règles.';
       } else if((err&&err.code||'').indexOf('failed-precondition')>=0 || (err&&err.message||'').indexOf('index')>=0){
         m.className='msg bad'; m.textContent='Un index Firestore est requis — ouvre le lien proposé dans la console, ou choisis « Tout ».';
       } else { m.className='msg bad'; m.textContent='Erreur : '+((err&&err.message)||'inconnue'); }
     });
   }
 
-  function render(vis, since){
+  // agrège le temps par onglet d'un compte (par uid) à partir des données d'audience
+  function analyticsForUid(vis, uid){
+    var totalSec=0, pps={}, lbl={}, dev='', last=0;
+    vis.forEach(function(v){
+      if(v.uid!==uid) return;
+      totalSec += (v.totalSec||0);
+      var p=v.perPageSec||{}, l=v.perPageLabel||{};
+      Object.keys(p).forEach(function(k){ pps[k]=(pps[k]||0)+(p[k]||0); if(l[k]) lbl[k]=l[k]; });
+      if((v.lastSeen||0)>last){ last=v.lastSeen||0; dev=(v.device||'')+(v.os?' · '+v.os:''); }
+    });
+    var favK=null,favV=-1; Object.keys(pps).forEach(function(k){ if(pps[k]>favV){favV=pps[k];favK=k;} });
+    return { totalSec:totalSec, pps:pps, lbl:lbl, fav: favK?(lbl[favK]||favK):'—', device:dev, lastSeen:last };
+  }
+
+  function render(vis, accounts, since, usersErr){
+    accounts = accounts || [];
     /* KPIs */
     var totalVisitors=vis.length, signed=0, totalSec=0, totalVisits=0;
     var perTabSec={}, perTabLabel={}, perTabViews={}, devAgg={}, regionAgg={}, newV=0, retV=0;
@@ -255,13 +295,41 @@ tbody tr:hover{background:rgba(108,140,255,.07)}
     });
     var avg = totalVisits? Math.round(totalSec/totalVisits) : 0;
 
+    var premiumCount=0; accounts.forEach(function(a){ if(a.premium) premiumCount++; });
     el('kpis').innerHTML =
-      kpi('Visiteurs uniques', totalVisitors, 'accent')
-      + kpi('Élèves connectés', signed)
+      kpi('Comptes inscrits', accounts.length, 'accent')
+      + kpi('Dont Premium', premiumCount)
+      + kpi('Visiteurs uniques', totalVisitors)
       + kpi('Visites (pages vues)', totalVisits)
       + kpi('Temps total', fmtDur(totalSec))
       + kpi('Temps moyen / visite', fmtDur(avg))
       + kpi('Nouveaux / récurrents', newV+' <small>/ '+retV+'</small>');
+
+    /* ---------- Comptes inscrits ---------- */
+    var ab=el('acctBody'); ab.innerHTML='';
+    accounts.sort(function(a,b){ return (b.lastLogin||b.updatedAt||0)-(a.lastLogin||a.updatedAt||0); });
+    accounts.forEach(function(a,i){
+      var an=analyticsForUid(vis,a.uid);
+      var name=a.name||(a.email||'').split('@')[0]||'Élève';
+      var avHtml = a.photo ? '<span class="av" style="background-image:url(\''+esc(a.photo)+'\')"></span>' : '<span class="av">'+initial(name)+'</span>';
+      var plan = a.premium ? '<span class="pill in">Premium'+(a.until?' · exp. '+fmtDay(a.until):'')+'</span>' : '<span class="pill anon">Gratuit</span>';
+      var tr=document.createElement('tr');
+      tr.innerHTML='<td><div class="who">'+avHtml+'<div><div>'+esc(name)+'</div><div class="dim" style="font-size:.78rem">'+esc(a.email||'')+'</div></div></div></td>'
+        +'<td>'+plan+'</td>'
+        +'<td><b>'+fmtDur(an.totalSec)+'</b></td>'
+        +'<td>'+esc(an.fav)+'</td>'
+        +'<td class="dim">'+(a.createdAt?fmtDay(a.createdAt):'—')+'</td>'
+        +'<td class="dim">'+(a.lastLogin?fmtDate(a.lastLogin):(a.updatedAt?fmtDate(a.updatedAt):'—'))+'</td>';
+      var det=document.createElement('tr'); det.className='detail hide';
+      var rows=Object.keys(an.pps).map(function(k){ return {label:(an.lbl[k]||k),v:an.pps[k]}; }).sort(function(a,b){return b.v-a.v;});
+      det.innerHTML='<td colspan="6"><b>Détail du temps par onglet</b><div class="mini" id="amini-'+i+'"></div>'
+        +'<div class="foot">'+(an.device?('Appareil : '+esc(an.device)+' · '):'')+'UID : '+esc(a.uid)+(an.totalSec?'':' — aucune activité mesurée depuis la mise à jour du suivi')+'</div></td>';
+      tr.addEventListener('click',function(){ det.classList.toggle('hide'); if(!det.classList.contains('hide')) bars(document.getElementById('amini-'+i), rows, fmtDur); });
+      ab.appendChild(tr); ab.appendChild(det);
+    });
+    var af=el('acctFoot');
+    if(usersErr){ af.innerHTML='⛔ Impossible de lire les comptes : publie la règle Firestore mise à jour (lecture « users » par l’admin).'; af.style.color='var(--bad)'; }
+    else { af.style.color=''; af.innerHTML=accounts.length+' compte(s) inscrit(s). <span class="hint">La liste 100% complète est aussi dans Firebase → Authentication → Users. Les comptes créés avant cette mise à jour apparaissent dès leur prochaine connexion.</span>'; }
 
     /* temps par onglet */
     var tabRows = Object.keys(perTabSec).map(function(k){ return {label:(perTabLabel[k]||k), v:perTabSec[k], key:k}; })
