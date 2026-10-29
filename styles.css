@@ -1004,3 +1004,29 @@ body.noscroll{overflow:hidden}
 /* Schéma dessiné par le tuteur IA */
 .ai-schema{margin:14px 0}
 .ai-schema svg{width:min(460px,100%);height:auto;display:inline-block}
+
+/* ===== خطاطة تركيبية — plan hiérarchique de synthèse (leçons arabe / histoire-géo) ===== */
+.khatta{border:1px solid var(--border-strong);border-radius:14px;margin:20px 0;background:var(--surface);box-shadow:var(--shadow-sm);overflow:hidden;direction:rtl}
+.khatta-top{display:flex;align-items:center;gap:9px;padding:12px 16px;font-weight:800;font-size:1.04rem;color:var(--text);border-bottom:1px solid var(--border-strong);background:linear-gradient(135deg,color-mix(in srgb,var(--royal) 24%,var(--surface)),color-mix(in srgb,var(--accent) 18%,var(--surface)))}
+.khatta-top .kt-ic{font-size:1.15rem;line-height:1}
+.khatta-sub{font-weight:600;font-size:.82rem;color:var(--muted);margin-inline-start:auto}
+.khatta-body{padding:12px 14px 14px}
+.khatta ol.kx-axes{list-style:none;margin:0;padding:0;counter-reset:kxc}
+.khatta .kx{counter-increment:kxc;position:relative;margin:10px 0;background:var(--surface-2);border:1px solid var(--border);border-right:3px solid var(--accent);border-radius:11px;padding:11px 44px 11px 13px}
+.khatta .kx::before{content:counter(kxc, arabic-indic);position:absolute;right:11px;top:10px;width:24px;height:24px;border-radius:50%;background:var(--royal);color:#fff;font-weight:800;font-size:.82rem;display:flex;align-items:center;justify-content:center}
+.khatta .kx-h{display:block;font-weight:800;color:var(--royal);font-size:1rem;margin-bottom:5px}
+.khatta .kx-pts{margin:4px 0 0;padding-inline-start:20px;list-style:disc}
+.khatta .kx-pts>li{margin:4px 0;line-height:1.66}
+.khatta .kx-pts ul{margin:3px 0;padding-inline-start:18px;list-style:circle}
+.khatta .kx-pts ul li{margin:2px 0}
+.khatta .kx-pts b{color:var(--text)}
+.khatta .kx-tag{display:inline-block;font-size:.76rem;font-weight:700;color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 34%,transparent);border-radius:20px;padding:1px 9px;margin-inline-start:6px}
+@media print{.khatta,.khatta .kx{break-inside:avoid}.khatta-top{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+/* ===== tableau comparatif dans les leçons ===== */
+.ltab-wrap{overflow-x:auto;margin:14px 0}
+table.ltab{border-collapse:collapse;width:100%;font-size:.92rem;background:var(--surface);border:1px solid var(--border-strong);border-radius:10px;overflow:hidden}
+table.ltab th,table.ltab td{border:1px solid var(--border);padding:8px 11px;text-align:start;vertical-align:top;line-height:1.55}
+table.ltab th{background:var(--surface-2);font-weight:800;color:var(--royal)}
+table.ltab tr:nth-child(even) td{background:color-mix(in srgb,var(--surface-2) 55%,var(--surface))}
+.exam-rtl table.ltab th,.exam-rtl table.ltab td{text-align:right}
