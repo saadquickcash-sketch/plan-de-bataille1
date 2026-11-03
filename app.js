@@ -90,6 +90,20 @@
       if(b){ b.classList.toggle('open', !open);
         if(!open && !b.dataset.mathDone){ b.dataset.mathDone='1'; try{ renderMath(b); }catch(_){} }
       }
+      /* audience : enregistre QUEL cours l'élève travaille */
+      try{
+        var _bid=(b&&b.id)||'', _mm=/^lz-(.+)-(\d+)$/.exec(_bid), _subj='', _num='';
+        if(_mm){ _subj=_mm[1]; _num=_mm[2]; }
+        if(!_subj){ var _sp=h.closest('.subject-panel'); if(_sp) _subj=_sp.dataset.panel||''; }
+        var _sl=''; try{ if(window.EDU_SUBJECTS && window.EDU_SUBJECTS[_subj] && window.EDU_SUBJECTS[_subj].label) _sl=window.EDU_SUBJECTS[_subj].label; }catch(e){}
+        if(!_sl && _subj){ var _st=document.querySelector('.subject-tab[data-subj="'+_subj+'"]'); if(_st) _sl=(_st.textContent||'').replace(/\s+/g,' ').trim(); }
+        var _tEl=h.querySelector('.lz-title'), _title=_tEl?(_tEl.textContent||'').trim():'';
+        var _nEl=h.querySelector('.lz-num'), _dnum=_nEl?(_nEl.textContent||'').trim():(_num!==''?String((parseInt(_num,10)||0)+1):'');
+        var _key=(_subj||'x')+'-'+(_num||'0');
+        var _label=((_sl||_subj||'')+' · '+(_dnum?_dnum+'. ':'')+_title).trim();
+        if(!open){ if(window.PB_trackLesson) window.PB_trackLesson(_key,_label); }
+        else { if(window.PB_trackLessonEnd) window.PB_trackLessonEnd(); }
+      }catch(_){}
     });
   });
   // subject tabs
@@ -506,6 +520,13 @@
       try{ window.PB_quota.inc(); }catch(_){}
     }
     busy=true;
+    /* audience : enregistre que l'élève a travaillé avec le tuteur IA Brio */
+    try{ if(window.PB_trackAI){
+      var _asub='', _aop=document.querySelector('.subject-panel.on'); if(_aop) _asub=_aop.dataset.panel||'';
+      var _asl=''; try{ if(window.EDU_SUBJECTS && window.EDU_SUBJECTS[_asub] && window.EDU_SUBJECTS[_asub].label) _asl=window.EDU_SUBJECTS[_asub].label; }catch(e){}
+      if(!_asl && _asub){ var _ast=document.querySelector('.subject-tab[data-subj="'+_asub+'"]'); if(_ast) _asl=(_ast.textContent||'').replace(/\s+/g,' ').trim(); }
+      window.PB_trackAI({ images:(imgs&&imgs.length)||0, premium:!!(window.PB_isPremium&&window.PB_isPremium()), subject:(_asl||_asub||'') });
+    } }catch(_){}
     if(input) input.value=''; if(cfInput){ cfInput.value=''; autoGrow(cfInput); } setPending(null);
     var c=cur(); var um={role:'user',content:text||(imgs.length>1?('📸 '+imgs.length+' photos envoyées'):'(photo envoyée)')}; if(img) um.img=img; c.msgs.push(um);
     if(!c.title||c.title==='Nouvelle conversation') c.title=(text||(imgs.length>1?'Correction de copie':'Photo — exercice')).slice(0,42); c.t=Date.now(); save(); renderMsgs(); renderList();

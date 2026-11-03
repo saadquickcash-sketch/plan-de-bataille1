@@ -21,8 +21,31 @@ OÙ VOIR LES STATS
 3) Choisis la période (24 h / 7 j / 30 j / Tout) et explore :
    • Visiteurs uniques, visites, temps total et moyen.
    • Temps passé PAR ONGLET (le graphique principal).
+   • COURS LES PLUS TRAVAILLÉS : quelles leçons les élèves ouvrent et
+     combien de temps (bascule ⏱️ Temps / 👁️ Ouvertures).
+   • TUTEUR IA BRIO : combien d'élèves ont utilisé l'IA, combien de
+     messages, sur quelle matière et quelle page.
    • Appareils, langue & région, nouveaux vs récurrents.
-   • Tableau des visiteurs : clique une ligne pour le détail par onglet.
+   • Tableaux « Comptes inscrits » et « Visiteurs » : clique une ligne
+     pour le détail par élève — temps par onglet, COURS travaillés et
+     usage du tuteur Brio.
+
+
+CE QUE MONTRE LE SUIVI DES COURS ET DE L'IA (nouveau)
+-----------------------------------------------------
+• Cours : pour chaque élève, quelles leçons il a ouvertes, combien de
+  fois et le temps passé dessus. Tu vois d'un coup d'œil ce qui est le
+  plus (ou le moins) travaillé, pour décider quoi renforcer.
+• Tuteur IA Brio : s'il a travaillé avec l'IA, combien de messages, avec
+  ou sans photo, en gratuit ou Premium, sur quelle matière/page, et quand
+  pour la dernière fois.
+• IMPORTANT (vie privée) : on enregistre l'USAGE (compteurs), JAMAIS le
+  CONTENU des échanges avec Brio. Le texte des questions d'un élève reste
+  privé — c'est essentiel pour des mineurs et conforme à la loi 09-08.
+• Aucune règle Firestore à republier : ces données s'ajoutent à la
+  collection « analytics_visitors » déjà autorisée. Il suffit de déployer
+  les fichiers mis à jour ; les chiffres se remplissent dès les visites
+  suivantes (les anciennes visites n'ont pas ces détails).
 
 
 UNE SEULE CHOSE À FAIRE (2 min) : publier la règle Firestore

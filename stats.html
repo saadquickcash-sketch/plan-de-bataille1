@@ -136,6 +136,30 @@ tbody tr:hover{background:rgba(108,140,255,.07)}
       <div class="bars" id="tabBars"></div>
     </div>
 
+    <div class="card">
+      <h2>📚 Cours les plus travaillés <span class="hint" style="font-weight:600">— quelles leçons les élèves ouvrent et combien de temps</span></h2>
+      <div class="seg" id="lessonSeg" style="margin-bottom:12px">
+        <button data-m="sec" class="on">⏱️ Temps</button>
+        <button data-m="views">👁️ Ouvertures</button>
+      </div>
+      <div class="bars" id="lessonBars"></div>
+    </div>
+
+    <div class="card">
+      <h2>🤖 Tuteur IA — Brio <span class="hint" style="font-weight:600">— qui a travaillé avec l'IA, et sur quoi</span></h2>
+      <div class="kpis" id="aiKpis" style="margin-bottom:14px"></div>
+      <div class="split">
+        <div>
+          <label style="margin-top:0">Messages par matière</label>
+          <div class="bars" id="aiSubjectBars"></div>
+        </div>
+        <div>
+          <label style="margin-top:0">Messages par page</label>
+          <div class="bars" id="aiPageBars"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="split">
       <div class="card">
         <h2>📱 Appareils</h2>
@@ -235,9 +259,20 @@ tbody tr:hover{background:rgba(108,140,255,.07)}
 
   /* ---------- chargement + calcul ---------- */
   var rangeDays=7;
+  var lessonMode='sec';
+  var _lessonData={sec:{},views:{},label:{}};
   el('rangeSeg').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return;
     [].forEach.call(el('rangeSeg').children,function(x){ x.classList.toggle('on',x===b); });
     rangeDays=parseInt(b.getAttribute('data-d'),10)||0; load(); });
+  el('lessonSeg').addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return;
+    [].forEach.call(el('lessonSeg').children,function(x){ x.classList.toggle('on',x===b); });
+    lessonMode=b.getAttribute('data-m')||'sec'; renderLessonBars(); });
+  function renderLessonBars(){
+    var src = lessonMode==='views' ? _lessonData.views : _lessonData.sec;
+    var rows=Object.keys(src).map(function(k){ return {label:(_lessonData.label[k]||k), v:src[k]}; })
+      .sort(function(a,b){ return b.v-a.v; }).slice(0,14);
+    bars(el('lessonBars'), rows, lessonMode==='views'?function(n){return n+' ouv.';}:fmtDur);
+  }
   el('refreshBtn').addEventListener('click',load);
 
   function load(){
@@ -276,15 +311,42 @@ tbody tr:hover{background:rgba(108,140,255,.07)}
   // agrège le temps par onglet d'un compte (par uid) à partir des données d'audience
   function analyticsForUid(vis, uid){
     var totalSec=0, pps={}, lbl={}, dev='', last=0;
+    var lsec={}, llbl={}, lviews={};
+    var aiMsg=0, aiImg=0, aiPrem=0, aiLast=0, aiPg={}, aiPgl={}, aiSub={};
     vis.forEach(function(v){
       if(v.uid!==uid) return;
       totalSec += (v.totalSec||0);
       var p=v.perPageSec||{}, l=v.perPageLabel||{};
       Object.keys(p).forEach(function(k){ pps[k]=(pps[k]||0)+(p[k]||0); if(l[k]) lbl[k]=l[k]; });
       if((v.lastSeen||0)>last){ last=v.lastSeen||0; dev=(v.device||'')+(v.os?' · '+v.os:''); }
+      // leçons
+      var L=v.perLessonSec||{}, Ll=v.perLessonLabel||{}, Lv=v.perLessonViews||{};
+      Object.keys(L).forEach(function(k){ lsec[k]=(lsec[k]||0)+(L[k]||0); });
+      Object.keys(Ll).forEach(function(k){ if(Ll[k]) llbl[k]=Ll[k]; });
+      Object.keys(Lv).forEach(function(k){ lviews[k]=(lviews[k]||0)+(Lv[k]||0); });
+      // IA
+      aiMsg+=(v.aiMessages||0); aiImg+=(v.aiImages||0); aiPrem+=(v.aiPremiumMsgs||0);
+      if((v.aiLastAt||0)>aiLast) aiLast=v.aiLastAt||0;
+      var ap=v.aiPerPage||{}, apl=v.aiPerPageLabel||{}, as=v.aiPerSubject||{};
+      Object.keys(ap).forEach(function(k){ aiPg[k]=(aiPg[k]||0)+(ap[k]||0); if(apl[k]) aiPgl[k]=apl[k]; });
+      Object.keys(as).forEach(function(k){ aiSub[k]=(aiSub[k]||0)+(as[k]||0); });
     });
     var favK=null,favV=-1; Object.keys(pps).forEach(function(k){ if(pps[k]>favV){favV=pps[k];favK=k;} });
-    return { totalSec:totalSec, pps:pps, lbl:lbl, fav: favK?(lbl[favK]||favK):'—', device:dev, lastSeen:last };
+    return { totalSec:totalSec, pps:pps, lbl:lbl, fav: favK?(lbl[favK]||favK):'—', device:dev, lastSeen:last,
+      lsec:lsec, llbl:llbl, lviews:lviews,
+      ai:{ msg:aiMsg, img:aiImg, prem:aiPrem, last:aiLast, perPage:aiPg, perPageLabel:aiPgl, perSubject:aiSub } };
+  }
+  // résumé lisible de l'usage du tuteur IA Brio par un élève (compteurs, jamais le contenu des échanges)
+  function aiSummaryHtml(ai){
+    if(!ai || !ai.msg) return '<p class="hint" style="margin:6px 0 0">N\'a pas encore utilisé le tuteur Brio.</p>';
+    var subs=Object.keys(ai.perSubject||{}).sort(function(a,b){return ai.perSubject[b]-ai.perSubject[a];}).map(function(k){return esc(k)+' ('+ai.perSubject[k]+')';}).join(', ');
+    var pgs=Object.keys(ai.perPage||{}).sort(function(a,b){return ai.perPage[b]-ai.perPage[a];}).map(function(k){return esc(ai.perPageLabel[k]||k)+' ('+ai.perPage[k]+')';}).join(', ');
+    return '<div style="margin-top:4px"><b>'+ai.msg+'</b> message'+(ai.msg>1?'s':'')+' à Brio'
+      +(ai.img?(' · <b>'+ai.img+'</b> photo'+(ai.img>1?'s':'')+' envoyée'+(ai.img>1?'s':'')):'')
+      +(ai.prem?(' · '+ai.prem+' en Premium'):'')
+      +(ai.last?(' · dernier : '+fmtDate(ai.last)):'')+'.</div>'
+      +(subs?'<div class="dim" style="font-size:.82rem;margin-top:4px">Par matière : '+subs+'</div>':'')
+      +(pgs?'<div class="dim" style="font-size:.82rem">Par page : '+pgs+'</div>':'');
   }
 
   function render(vis, accounts, since, usersErr){
@@ -292,6 +354,8 @@ tbody tr:hover{background:rgba(108,140,255,.07)}
     /* KPIs */
     var totalVisitors=vis.length, signed=0, totalSec=0, totalVisits=0;
     var perTabSec={}, perTabLabel={}, perTabViews={}, devAgg={}, regionAgg={}, newV=0, retV=0;
+    var perLessonSec={}, perLessonLabel={}, perLessonViews={};
+    var aiStudents=0, aiMsgTotal=0, aiImgTotal=0, aiPremTotal=0, aiPerPage={}, aiPerPageLabel={}, aiPerSubject={};
     vis.forEach(function(v){
       if(v.signedIn) signed++;
       totalSec += (v.totalSec||0);
@@ -303,6 +367,17 @@ tbody tr:hover{background:rgba(108,140,255,.07)}
       Object.keys(ppv).forEach(function(k){ perTabViews[k]=(perTabViews[k]||0)+(ppv[k]||0); });
       if(v.device) devAgg[v.device]=(devAgg[v.device]||0)+1;
       var reg=(v.lang||'?'); if(v.tz){ reg = (v.lang||'')+' · '+v.tz.split('/').pop().replace(/_/g,' '); } regionAgg[reg]=(regionAgg[reg]||0)+1;
+      // leçons travaillées
+      var pls=v.perLessonSec||{}, pll=v.perLessonLabel||{}, plv=v.perLessonViews||{};
+      Object.keys(pls).forEach(function(k){ perLessonSec[k]=(perLessonSec[k]||0)+(pls[k]||0); });
+      Object.keys(pll).forEach(function(k){ if(pll[k]) perLessonLabel[k]=pll[k]; });
+      Object.keys(plv).forEach(function(k){ perLessonViews[k]=(perLessonViews[k]||0)+(plv[k]||0); });
+      // tuteur IA Brio
+      if(v.aiUsed || (v.aiMessages||0)>0) aiStudents++;
+      aiMsgTotal += (v.aiMessages||0); aiImgTotal += (v.aiImages||0); aiPremTotal += (v.aiPremiumMsgs||0);
+      var ap=v.aiPerPage||{}, apl=v.aiPerPageLabel||{}, as=v.aiPerSubject||{};
+      Object.keys(ap).forEach(function(k){ aiPerPage[k]=(aiPerPage[k]||0)+(ap[k]||0); if(apl[k]) aiPerPageLabel[k]=apl[k]; });
+      Object.keys(as).forEach(function(k){ aiPerSubject[k]=(aiPerSubject[k]||0)+(as[k]||0); });
     });
     var avg = totalVisits? Math.round(totalSec/totalVisits) : 0;
 
@@ -333,9 +408,12 @@ tbody tr:hover{background:rgba(108,140,255,.07)}
         +'<td class="dim">'+(a.lastLogin?fmtDate(a.lastLogin):(a.updatedAt?fmtDate(a.updatedAt):'—'))+'</td>';
       var det=document.createElement('tr'); det.className='detail hide';
       var rows=Object.keys(an.pps).map(function(k){ return {label:(an.lbl[k]||k),v:an.pps[k]}; }).sort(function(a,b){return b.v-a.v;});
-      det.innerHTML='<td colspan="6"><b>Détail du temps par onglet</b><div class="mini" id="amini-'+i+'"></div>'
+      var lrows=Object.keys(an.lsec).map(function(k){ return {label:(an.llbl[k]||k),v:an.lsec[k]}; }).sort(function(a,b){return b.v-a.v;}).slice(0,20);
+      det.innerHTML='<td colspan="6"><b>⏱️ Temps par onglet</b><div class="mini" id="amini-'+i+'"></div>'
+        +'<b style="display:block;margin-top:14px">📚 Cours travaillés</b>'+(lrows.length?'<div class="mini" id="alsn-'+i+'"></div>':'<p class="hint" style="margin:6px 0 0">Aucun cours ouvert pour l\'instant.</p>')
+        +'<b style="display:block;margin-top:14px">🤖 Tuteur IA Brio</b>'+aiSummaryHtml(an.ai)
         +'<div class="foot">'+(an.device?('Appareil : '+esc(an.device)+' · '):'')+'UID : '+esc(a.uid)+(an.totalSec?'':' — aucune activité mesurée depuis la mise à jour du suivi')+'</div></td>';
-      tr.addEventListener('click',function(){ det.classList.toggle('hide'); if(!det.classList.contains('hide')) bars(document.getElementById('amini-'+i), rows, fmtDur); });
+      tr.addEventListener('click',function(){ det.classList.toggle('hide'); if(!det.classList.contains('hide')){ bars(document.getElementById('amini-'+i), rows, fmtDur); if(lrows.length) bars(document.getElementById('alsn-'+i), lrows, fmtDur); } });
       ab.appendChild(tr); ab.appendChild(det);
     });
     var af=el('acctFoot');
@@ -346,6 +424,19 @@ tbody tr:hover{background:rgba(108,140,255,.07)}
     var tabRows = Object.keys(perTabSec).map(function(k){ return {label:(perTabLabel[k]||k), v:perTabSec[k], key:k}; })
       .sort(function(a,b){ return b.v-a.v; });
     bars(el('tabBars'), tabRows, fmtDur);
+
+    /* cours les plus travaillés */
+    _lessonData={sec:perLessonSec, views:perLessonViews, label:perLessonLabel};
+    renderLessonBars();
+
+    /* tuteur IA Brio */
+    el('aiKpis').innerHTML =
+      kpi('Élèves ayant utilisé Brio', aiStudents, 'accent')
+      + kpi('Messages à Brio', aiMsgTotal)
+      + kpi('Photos envoyées', aiImgTotal)
+      + kpi('Messages en Premium', aiPremTotal);
+    bars(el('aiSubjectBars'), Object.keys(aiPerSubject).map(function(k){ return {label:k,v:aiPerSubject[k]}; }).sort(function(a,b){return b.v-a.v;}).slice(0,12), function(n){return n+' msg';});
+    bars(el('aiPageBars'), Object.keys(aiPerPage).map(function(k){ return {label:(aiPerPageLabel[k]||k),v:aiPerPage[k]}; }).sort(function(a,b){return b.v-a.v;}).slice(0,12), function(n){return n+' msg';});
 
     /* appareils + région */
     bars(el('deviceBars'), Object.keys(devAgg).map(function(k){ return {label:k,v:devAgg[k]}; }).sort(function(a,b){return b.v-a.v;}), function(n){return n+' visiteur'+(n>1?'s':'');});
@@ -372,11 +463,15 @@ tbody tr:hover{background:rgba(108,140,255,.07)}
         +'<td class="dim">'+fmtDate(v.lastSeen)+'</td>';
       var det=document.createElement('tr'); det.className='detail hide';
       var rows=Object.keys(pps).map(function(k){ return {label:(lbl[k]||k),v:pps[k]}; }).sort(function(a,b){return b.v-a.v;});
-      var mini='<div class="mini" id="mini-'+i+'"></div>';
-      det.innerHTML='<td colspan="7"><b>Détail du temps par onglet</b>'+mini
+      var vlsec=v.perLessonSec||{}, vllbl=v.perLessonLabel||{};
+      var lrows=Object.keys(vlsec).map(function(k){ return {label:(vllbl[k]||k),v:vlsec[k]}; }).sort(function(a,b){return b.v-a.v;}).slice(0,20);
+      var vai={ msg:(v.aiMessages||0), img:(v.aiImages||0), prem:(v.aiPremiumMsgs||0), last:(v.aiLastAt||0), perPage:(v.aiPerPage||{}), perPageLabel:(v.aiPerPageLabel||{}), perSubject:(v.aiPerSubject||{}) };
+      det.innerHTML='<td colspan="7"><b>⏱️ Temps par onglet</b><div class="mini" id="mini-'+i+'"></div>'
+        +'<b style="display:block;margin-top:14px">📚 Cours travaillés</b>'+(lrows.length?'<div class="mini" id="vlsn-'+i+'"></div>':'<p class="hint" style="margin:6px 0 0">Aucun cours ouvert pour l\'instant.</p>')
+        +'<b style="display:block;margin-top:14px">🤖 Tuteur IA Brio</b>'+aiSummaryHtml(vai)
         +'<div class="foot">Navigateur : '+esc(v.browser||'?')+' · Langue : '+esc(v.lang||'?')+' · Fuseau : '+esc(v.tz||'?')+' · Écran : '+esc(v.screen||'?')+' · '+(v.pwa?'App installée':'Navigateur')+' · Provenance : '+esc(v.referrer||'direct')+'</div></td>';
       tr.addEventListener('click',function(){ det.classList.toggle('hide');
-        if(!det.classList.contains('hide')) bars(document.getElementById('mini-'+i), rows, fmtDur); });
+        if(!det.classList.contains('hide')){ bars(document.getElementById('mini-'+i), rows, fmtDur); if(lrows.length) bars(document.getElementById('vlsn-'+i), lrows, fmtDur); } });
       body.appendChild(tr); body.appendChild(det);
     });
     el('visFoot').textContent = totalVisitors+' visiteur(s) sur la période.'+(since?'':'  (toutes périodes)');

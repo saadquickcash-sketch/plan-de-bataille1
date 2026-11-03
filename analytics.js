@@ -75,9 +75,23 @@
 
     /* ---------- chrono du temps ACTIF sur cet onglet ---------- */
     var activeMs = 0, lastTick = Date.now(), visible = (document.visibilityState !== 'hidden');
+
+    /* ---------- suivi des LEÇONS ouvertes (sur quel cours l'élève travaille) ---------- */
+    var lessons = {};            // clé -> { label, ms, views }
+    var lessonsWritten = {};     // clé -> { sec, views } déjà écrits (pour les deltas)
+    var curLessonKey = null;     // leçon « active » = la dernière ouverte (pour le chrono)
+    var lastLessonLabel = '';    // dernière leçon ouverte (tableau de bord)
+    /* ---------- suivi du TUTEUR IA (Brio) ---------- */
+    var pendingAI = null;        // incréments IA en attente d'écriture
+    var aiMeta = null;           // { lastAt }
+
     function tickAccumulate() {
       var now = Date.now();
-      if (visible) activeMs += Math.min(now - lastTick, 60000); // garde-fou : max 60s par intervalle
+      if (visible) {
+        var d = Math.min(now - lastTick, 60000); // garde-fou : max 60s par intervalle
+        activeMs += d;
+        if (curLessonKey && lessons[curLessonKey]) lessons[curLessonKey].ms += d;
+      }
       lastTick = now;
     }
     function onVis() {
@@ -175,6 +189,35 @@
             vdoc.perPageViews = {}; vdoc.perPageViews[page] = FV.increment(1);
           }
         }
+
+        /* --- LEÇONS : temps actif + nombre d'ouvertures, par leçon (deltas) --- */
+        if (lastLessonLabel) vdoc.lastLesson = lastLessonLabel;
+        if (FV) {
+          Object.keys(lessons).forEach(function (lk) {
+            var L = lessons[lk];
+            var secNow = Math.round((L.ms || 0) / 1000);
+            var w = lessonsWritten[lk] || { sec: 0, views: 0 };
+            var dSec = secNow - w.sec; if (dSec < 0) dSec = 0;
+            var dViews = (L.views || 0) - w.views; if (dViews < 0) dViews = 0;
+            if (dSec > 0) { vdoc.perLessonSec = vdoc.perLessonSec || {}; vdoc.perLessonSec[lk] = FV.increment(dSec); }
+            if (dViews > 0) { vdoc.perLessonViews = vdoc.perLessonViews || {}; vdoc.perLessonViews[lk] = FV.increment(dViews); }
+            if (L.label) { vdoc.perLessonLabel = vdoc.perLessonLabel || {}; vdoc.perLessonLabel[lk] = L.label; }
+            lessonsWritten[lk] = { sec: secNow, views: (L.views || 0) };
+          });
+
+          /* --- TUTEUR IA (Brio) : incréments en attente (compteurs d'usage, pas le contenu) --- */
+          if (pendingAI) {
+            if (pendingAI.msgs)    vdoc.aiMessages    = FV.increment(pendingAI.msgs);
+            if (pendingAI.imgs)    vdoc.aiImages      = FV.increment(pendingAI.imgs);
+            if (pendingAI.premium) vdoc.aiPremiumMsgs = FV.increment(pendingAI.premium);
+            if (pendingAI.perPage)      { vdoc.aiPerPage = {}; Object.keys(pendingAI.perPage).forEach(function (k) { vdoc.aiPerPage[k] = FV.increment(pendingAI.perPage[k]); }); }
+            if (pendingAI.perPageLabel) { vdoc.aiPerPageLabel = pendingAI.perPageLabel; }
+            if (pendingAI.perSubject)   { vdoc.aiPerSubject = {}; Object.keys(pendingAI.perSubject).forEach(function (k) { vdoc.aiPerSubject[k] = FV.increment(pendingAI.perSubject[k]); }); }
+            pendingAI = null;
+          }
+        }
+        if (aiMeta) { vdoc.aiUsed = true; vdoc.aiLastAt = aiMeta.lastAt; }
+
         db.collection('analytics_visitors').doc(visitorId).set(vdoc, { merge: true });
 
         wrote0 = true;
@@ -201,6 +244,41 @@
         var payload = { lastSeen: Date.now() };
         if (FV) { var ev = {}; ev[String(eventName).replace(/[^\w-]/g, '_')] = FV.increment(1); payload.events = ev; }
         db.collection('analytics_visitors').doc(visitorId).set(payload, { merge: true });
+      } catch (e) {}
+    };
+
+    /* ----- ouverture d'une leçon : enregistre QUEL cours l'élève travaille ----- */
+    window.PB_trackLesson = function (key, label) {
+      try {
+        if (!key) return;
+        tickAccumulate();                 // banque le temps de la leçon précédente
+        key = String(key).replace(/[^\w-]/g, '_');
+        if (!lessons[key]) lessons[key] = { label: label || key, ms: 0, views: 0 };
+        if (label) lessons[key].label = label;
+        lessons[key].views += 1;
+        curLessonKey = key;
+        lastLessonLabel = lessons[key].label;
+        scheduleFlush();
+      } catch (e) {}
+    };
+    /* ----- fermeture de la leçon active : on arrête de lui compter du temps ----- */
+    window.PB_trackLessonEnd = function () {
+      try { tickAccumulate(); curLessonKey = null; } catch (e) {}
+    };
+    /* ----- un message envoyé au tuteur IA Brio (compteur d'usage, jamais le texte) ----- */
+    window.PB_trackAI = function (info) {
+      try {
+        info = info || {};
+        pendingAI = pendingAI || { msgs: 0, imgs: 0, premium: 0, perPage: {}, perPageLabel: {}, perSubject: {} };
+        pendingAI.msgs += 1;
+        if (info.images) pendingAI.imgs += (info.images | 0);
+        if (info.premium) pendingAI.premium += 1;
+        var pg = info.page || page, pgl = info.pageLabel || pageLabel;
+        pendingAI.perPage[pg] = (pendingAI.perPage[pg] || 0) + 1;
+        pendingAI.perPageLabel[pg] = pgl;
+        if (info.subject) { var sj = String(info.subject).slice(0, 40); pendingAI.perSubject[sj] = (pendingAI.perSubject[sj] || 0) + 1; }
+        aiMeta = { lastAt: Date.now() };
+        flush('ai');
       } catch (e) {}
     };
   } catch (e) { /* analytics ne doit jamais casser le site */ }
