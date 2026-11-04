@@ -77,7 +77,10 @@
   function speak(text, btn) { try { if (voiceOn && window.brioRead && text) window.brioRead(text, 'fr', btn || null, { hideBar: true }); } catch (e) {} }
   function speakNow(text, btn) { try { if (window.brioRead && text) window.brioRead(text, 'fr', btn || null, { hideBar: true }); } catch (e) {} }
   function stopSpeak() { try { if (window.brioStop) window.brioStop(); } catch (e) {} }
-  try { window.__ACAD = { sanEnToFr: sanEnToFr, notationToSpeech: notationToSpeech, frMoveToSpeech: frMoveToSpeech }; } catch (e) {}
+  try { window.__ACAD = { sanEnToFr: sanEnToFr, notationToSpeech: notationToSpeech, frMoveToSpeech: frMoveToSpeech,
+    getFen: function () { try { return chess ? chess.fen() : ''; } catch (e) { return ''; } },
+    bestMateMove: function (fen, n) { try { var c = new Chess(); if (!c.load(fen)) return null; var ms = c.moves({ verbose: true });
+      for (var i = 0; i < ms.length; i++) { c.move(ms[i]); var good = false; if (c.in_checkmate()) good = (n === 1); else if (n > 1) { var rp = c.moves({ verbose: true }); if (rp.length) { var all = true; for (var j = 0; j < rp.length; j++) { c.move(rp[j]); var ok = matesRec(c, n - 1); c.undo(); if (!ok) { all = false; break; } } good = all; } } c.undo(); if (good) return { from: ms[i].from, to: ms[i].to }; } return null; } catch (e) { return null; } } }; } catch (e) {}
 
   /* =====================================================================
      LE PROGRAMME — 8 niveaux, du plateau aux premières tactiques.
@@ -532,7 +535,61 @@
           intro: "Pour franchir un palier, élimine ces erreurs fréquentes : jouer <b>trop vite</b> (vérifie toujours si ton coup laisse une pièce en prise, ou s'il rate l'échec adverse) ; <b>oublier le plan de l'adversaire</b> (prophylaxie !) ; <b>attaquer sans avoir développé</b> ; <b>échanger sans raison</b> sa bonne pièce ; et <b>abandonner trop tôt</b> — beaucoup de parties se sauvent par un pat ou une astuce. Avant chaque coup : « Est-ce que ça laisse quelque chose en prise ? Quelle est sa menace ? »" },
         { id: 'l16f', type: 'info', title: "Devenir fort : la méthode",
           fen: 'start',
-          intro: "Tu connais désormais tout : pièces, tactiques, stratégie, finales, attaque. Pour continuer à progresser, la méthode des maîtres est simple : <b>1)</b> résous des <b>problèmes de tactique</b> chaque jour (c'est ce qui fait gagner le plus de points) ; <b>2)</b> <b>joue</b> des parties, puis <b>analyse</b>-les (sers-toi du mode « Jouer » et du bilan de partie de Brio) ; <b>3)</b> <b>rejoue les parties des grands maîtres</b> pour nourrir ton intuition ; <b>4)</b> apprends une ou deux ouvertures que tu aimes. Régularité + curiosité = progrès. Bonne route, et amuse-toi — c'est le plus important ! ♟️" }
+          intro: "Tu connais désormais tout : pièces, tactiques, stratégie, finales, attaque. Pour continuer à progresser, la méthode des maîtres est simple : <b>1)</b> résous des <b>problèmes de tactique</b> chaque jour (c'est ce qui fait gagner le plus de points) ; <b>2)</b> <b>joue</b> des parties, puis <b>analyse</b>-les (sers-toi du mode « Jouer » et du bilan de partie de Brio) ; <b>3)</b> <b>rejoue les parties des grands maîtres</b> pour nourrir ton intuition ; <b>4)</b> apprends une ou deux ouvertures que tu aimes. Régularité + curiosité = progrès. Et pour t'entraîner comme sur les grands sites : passe aux <b>problèmes de mat</b> ci-dessous ! ♟️" }
+      ]
+    },
+    {
+      id: 'l17', icon: '🎖️', title: "Entraînement au mat en 2",
+      sub: "Des problèmes multi-coups : joue toute la combinaison",
+      lessons: [
+        { id: 'l17a', type: 'mate', mateIn: 2, title: "Le mat étouffé (sacrifice)",
+          fen: '5r1k/6pp/7N/8/2Q5/8/8/6K1 w - - 0 1',
+          intro: "Bienvenue dans l'<b>entraînement au mat</b>, façon grands sites d'échecs : ici tu joues <b>toute la combinaison</b>, et l'adversaire répond tout seul. Pour commencer, un classique spectaculaire : un <b>sacrifice de Dame</b> qui force le mat étouffé.",
+          task: "Trouve le <b>mat en 2 coups</b>. (Indice : ose sacrifier !)",
+          hint: "Dg8+ !! La Tour est obligée de prendre (Txg8), ce qui bouche la dernière case de fuite. Puis Cf7 est mat : le Roi est totalement étouffé.",
+          done: "Sacrifice de Dame + mat étouffé ! 🎇 Le plus beau mat des échecs, exécuté à la perfection." },
+        { id: 'l17b', type: 'mate', mateIn: 2, title: "La technique Dame + Roi (1)",
+          fen: '8/8/8/7k/8/5K2/8/Q7 w - - 0 1',
+          intro: "La finale <b>Dame + Roi contre Roi seul</b> est à maîtriser absolument — tu la rencontreras souvent. La <b>technique</b> : garde ta Dame à un <b>saut de Cavalier</b> du Roi adverse pour le pousser vers le bord, amène ton Roi, puis mate. Ici, c'est un mat en 2.",
+          task: "Trouve le <b>mat en 2 coups</b>.",
+          hint: "Confine d'abord le Roi noir tout au bord avec ta Dame (Dg7 le colle à la dernière rangée), puis mate au coup suivant.",
+          done: "Technique maîtrisée ! Dame + Roi, c'est un mat forcé." },
+        { id: 'l17c', type: 'mate', mateIn: 2, title: "La technique Dame + Roi (2)",
+          fen: '8/8/8/8/8/2K5/Q7/4k3 w - - 0 1',
+          intro: "Même thème, autre position. Souviens-toi : la Dame <b>seule</b> ne peut pas mater — ton Roi doit l'épauler. Place ta Dame pour réduire la cage du Roi adverse, sans jamais le laisser s'échapper (ni le mettre au pat !).",
+          task: "Trouve le <b>mat en 2 coups</b>.",
+          hint: "Rapproche la Dame (Dg2) pour enfermer le Roi sur la dernière rangée, en gardant ton Roi en soutien. Mat au coup suivant.",
+          done: "Parfait ! Tu convertis Dame + Roi en victoire sans hésiter." },
+        { id: 'l17d', type: 'mate', mateIn: 2, title: "Fais avancer ton Roi",
+          fen: '8/8/1Q6/8/k7/8/2K5/8 w - - 0 1',
+          intro: "Dernier entraînement au mat en 2 : parfois le bon premier coup n'est <b>pas</b> un coup de Dame, mais un pas de <b>Roi</b> pour fermer la dernière case de fuite. Pense « équipe » : la Dame tient, le Roi s'approche.",
+          task: "Trouve le <b>mat en 2 coups</b>.",
+          hint: "Avance ton Roi (Rc3 ou Rc2 selon la position) pour contrôler les cases de fuite : le Roi noir se retrouve coincé, et la Dame mate.",
+          done: "Bravo ! Le Roi est une pièce d'attaque — tu l'as compris et appliqué. 🎖️" }
+      ]
+    },
+    {
+      id: 'l18', icon: '🥇', title: "Mat en 3 — niveau maître",
+      sub: "Calcule trois coups à l'avance, comme un grand maître",
+      lessons: [
+        { id: 'l18a', type: 'mate', mateIn: 3, title: "Mat en 3 (1)",
+          fen: '8/8/8/8/2K5/8/Q7/4k3 w - - 0 1',
+          intro: "Le vrai test du calcul : le <b>mat en 3 coups</b>. Tu dois prévoir ta manœuvre ET les réponses de l'adversaire, trois coups à l'avance. Applique la technique Dame + Roi : <b>resserre la cage</b> pas à pas, avance ton Roi, et conclus. Chaque coup doit garder le mat <b>forcé</b>.",
+          task: "Mate le Roi noir en <b>3 coups</b> — joue la combinaison complète.",
+          hint: "Rapproche la Dame pour limiter le Roi à quelques cases, amène ton Roi pour le soutien, puis donne le mat. Vérifie à chaque coup que le mat reste inévitable.",
+          done: "Mat en 3 trouvé ! 🥇 Tu calcules déjà comme un joueur confirmé." },
+        { id: 'l18b', type: 'mate', mateIn: 3, title: "Mat en 3 (2)",
+          fen: '7Q/8/8/8/8/2K5/8/4k3 w - - 0 1',
+          intro: "La Dame est loin : il faut la rapprocher avec <b>précision</b>, puis coordonner avec le Roi. Pense d'abord à la <b>case de mat</b> finale, puis remonte le fil : quels coups y mènent en forçant l'adversaire ?",
+          task: "Mate le Roi noir en <b>3 coups</b>.",
+          hint: "Approche la Dame d'un saut de Cavalier du Roi adverse pour le confiner, fais avancer ton Roi, puis mate. L'adversaire n'a aucune échappatoire.",
+          done: "Encore un mat en 3 maîtrisé ! Ta vision se précise, coup après coup." },
+        { id: 'l18c', type: 'mate', mateIn: 3, title: "Mat en 3 (3) — le diplôme",
+          fen: 'Q7/8/8/7k/8/4K3/8/8 w - - 0 1',
+          intro: "L'épreuve finale de l'Académie. Le Roi noir est au large, ta Dame à l'autre bout : à toi de l'<b>encercler</b> méthodiquement et de le mater en trois coups précis. Réussis, et tu auras parcouru tout le chemin — du plateau vide jusqu'à la technique de maître.",
+          task: "Mate le Roi noir en <b>3 coups</b> et décroche ton diplôme !",
+          hint: "Pas à pas : réduis l'espace du Roi avec la Dame (sans pat !), approche ton Roi, puis assène le mat. Pense à la position finale et remonte.",
+          done: "🏆 DIPLÔME DE MAÎTRE ! Tu as terminé toute l'Académie — des règles de base jusqu'au mat en 3 calculé. Bravo, champion. Continue à t'entraîner et à jouer : le meilleur reste à venir !" }
       ]
     }
   ];
@@ -563,7 +620,7 @@
      RENDU
   ===================================================================== */
   var view = 'road';          // 'road' | 'lesson'
-  var curLv = null, curIdx = 0, chess = null, sel = null, solved = false, usedHint = false, locked = false, phase = 1;
+  var curLv = null, curIdx = 0, chess = null, sel = null, solved = false, usedHint = false, locked = false, matesLeft = 0, lastMove = null;
 
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
   function sqName(f, r) { return 'abcdefgh'[f] + (r + 1); }
@@ -618,7 +675,7 @@
   /* ---------- une leçon ---------- */
   function startLesson() {
     var ls = curLv.lessons[curIdx];
-    sel = null; solved = false; usedHint = false; locked = false; phase = 1;
+    sel = null; solved = false; usedHint = false; locked = false; lastMove = null; matesLeft = mateInOf(ls);
     if (ls.type === 'quiz' || !ls.fen || ls.fen === 'start') {
       chess = new Chess(); if (ls.fen && ls.fen !== 'start') { try { chess.load(ls.fen); } catch (e) {} }
     } else {
@@ -751,6 +808,7 @@
         if (sq === sel) cls += ' sel';
         if (targets.indexOf(sq) >= 0) cls += ' tgt';
         if (ls.target === sq && !isDone(ls.id)) cls += ' goalsq';
+        if (lastMove && (sq === lastMove.from || sq === lastMove.to)) cls += ' lastmv';
         if (sq === chkSq) cls += ' chk';
         html += '<button class="'+ cls +'" data-sq="'+ sq +'">';
         if (showCoords) {
@@ -801,60 +859,67 @@
     var opts = { from: sel, to: sq };
     if (mv.promotion) opts.promotion = ls.promote || 'q';
     var done = chess.move(opts);
-    sel = null; drawBoard();
+    sel = null;
+    if (done) lastMove = { from: done.from, to: done.to };
+    drawBoard();
     if (!done) return;
     evaluateMove(ls, done);
   }
 
-  // la position (trait aux Noirs) force-t-elle un mat au prochain coup blanc ?
-  function forcesMate(pos) {
-    try {
-      var fen = pos.fen();
-      var tmp = new Chess(); tmp.load(fen);
-      var replies = tmp.moves({ verbose: true });
-      if (!replies.length) return false;
-      for (var i = 0; i < replies.length; i++) {
-        var u = new Chess(); u.load(fen); u.move({ from: replies[i].from, to: replies[i].to, promotion: replies[i].promotion || 'q' });
-        var wm = u.moves({ verbose: true }), ok = false;
-        for (var j = 0; j < wm.length; j++) {
-          var v = new Chess(); v.load(u.fen()); v.move({ from: wm[j].from, to: wm[j].to, promotion: wm[j].promotion || 'q' });
-          if (v.in_checkmate()) { ok = true; break; }
-        }
-        if (!ok) return false;
+  /* ---- Solveur de mat (move/undo pour la vitesse) : l'attaquant au trait force-t-il un mat en <= n ? ---- */
+  function matesRec(c, n) {
+    var ms = c.moves({ verbose: true });
+    for (var i = 0; i < ms.length; i++) {
+      c.move(ms[i]); var res = false;
+      if (c.in_checkmate()) res = true;
+      else if (n > 1) {
+        var rp = c.moves({ verbose: true });
+        if (rp.length) { var all = true; for (var j = 0; j < rp.length; j++) { c.move(rp[j]); var ok = matesRec(c, n - 1); c.undo(); if (!ok) { all = false; break; } } res = all; }
       }
+      c.undo(); if (res) return true;
+    }
+    return false;
+  }
+  // après le coup de l'élève (trait à l'adversaire), le mat est-il forcé en <= k coups ?
+  function defenderMatedIn(pos, k) {
+    try {
+      var c = new Chess(); if (!c.load(pos.fen())) return false;
+      var rp = c.moves({ verbose: true }); if (!rp.length) return false;
+      for (var j = 0; j < rp.length; j++) { c.move(rp[j]); var ok = matesRec(c, k); c.undo(); if (!ok) return false; }
       return true;
     } catch (e) { return false; }
   }
+  function mateInOf(ls) { return ls.mateIn || ((ls.type === 'mate2' || ls.goal === 'mate2') ? 2 : 0); }
+  // l'adversaire répond : on choisit la défense qui RÉSISTE le plus longtemps (la plus naturelle).
   function autoReplyBlack() {
     try {
       var r = chess.moves({ verbose: true }); if (!r.length) return;
-      var m = r[0];
-      chess.move({ from: m.from, to: m.to, promotion: m.promotion || 'q' });
+      var pick = r[0];
+      // préfère une réponse qui n'est pas mat au prochain coup si possible (défense coriace)
+      for (var i = 0; i < r.length; i++) {
+        chess.move(r[i]); var mate1 = matesRec(chess, 1); chess.undo();
+        if (!mate1) { pick = r[i]; break; }
+      }
+      chess.move({ from: pick.from, to: pick.to, promotion: pick.promotion || 'q' });
+      lastMove = { from: pick.from, to: pick.to };
     } catch (e) {}
   }
 
   function evaluateMove(ls, mv) {
-    // ---- mat en 2 coups (validation en direct par le moteur) ----
-    if (ls.type === 'mate2' || ls.goal === 'mate2') {
-      if (phase === 1) {
-        if (chess.in_checkmate()) { succeed(ls); return; }
-        if (forcesMate(chess)) {
-          phase = 2;
-          feedback('<b>✓ Bien vu !</b> Le Roi est pris au piège… maintenant, <b>mate-le</b> !', 'ok');
-          locked = true;
-          setTimeout(function () { autoReplyBlack(); locked = false; drawBoard(); }, 850);
-        } else {
-          locked = true;
-          feedback("Ce coup ne force pas le mat. J'annule — cherche le coup qui enferme le Roi 💪", 'bad');
-          setTimeout(function () { chess.undo(); locked = false; drawBoard(); }, 950);
-        }
+    // ---- mat forcé en N coups (validation en direct par le moteur, l'adversaire répond) ----
+    var mateIn = mateInOf(ls);
+    if (mateIn > 0) {
+      if (chess.in_checkmate()) { succeed(ls); return; }
+      // coup juste s'il mène toujours à un mat forcé dans les coups restants
+      if (defenderMatedIn(chess, matesLeft - 1)) {
+        matesLeft -= 1;
+        feedback('<b>✓ Bien joué !</b> ' + (matesLeft > 1 ? ('Il reste ' + matesLeft + ' coups — trouve la suite !') : 'Encore un coup pour mater !'), 'ok');
+        locked = true;
+        setTimeout(function () { autoReplyBlack(); locked = false; drawBoard(); }, 750);
       } else {
-        if (chess.in_checkmate()) { succeed(ls); }
-        else {
-          locked = true;
-          feedback("Presque ! Ce n'est pas encore mat. J'annule — retrouve le coup qui mate 💪", 'bad');
-          setTimeout(function () { chess.undo(); locked = false; drawBoard(); }, 950);
-        }
+        locked = true;
+        feedback("Ce coup ne mène pas au mat forcé. J'annule — cherche mieux 💪", 'bad');
+        setTimeout(function () { chess.undo(); lastMove = null; locked = false; drawBoard(); }, 950);
       }
       return;
     }
