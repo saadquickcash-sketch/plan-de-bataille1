@@ -904,6 +904,7 @@
     brioSeqStart(c,lang,function(chunk){ if(chunk===null)return; if(cap){ cap.textContent=chunk; cap.dir=(_seq.lang==='ar')?'rtl':'ltr'; } }, function(){ brioReadEnd(); });
   }
   try{ window.brioRead=brioRead; }catch(_){}
+  try{ window.brioStop=brioReadEnd; }catch(_){}
 
   /* ================= BRIO MÉDIA : export MP3 + génération de VIDÉO de cours =================
      - MP3  : synthèse de la voix neurale (/api/tts) concaténée en un fichier .mp3 téléchargeable.

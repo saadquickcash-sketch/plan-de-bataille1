@@ -14,6 +14,66 @@
   var GLY = { w: { p: '♙', n: '♘', b: '♗', r: '♖', q: '♕', k: '♔' },
               b: { p: '♟', n: '♞', b: '♝', r: '♜', q: '♛', k: '♚' } };
 
+  /* ====================================================================
+     NOTATION — anglais (interne chess.js) → français (affichage & voix)
+     K→Roi, Q→Dame, R→Tour, B→Fou, N→Cavalier. Ex. Nc5 → Cc5 → « Cavalier c 5 ».
+  ==================================================================== */
+  var EN2FR = { K: 'R', Q: 'D', R: 'T', B: 'F', N: 'C' };
+  var FRWORD = { R: 'Roi', D: 'Dame', T: 'Tour', F: 'Fou', C: 'Cavalier' };
+  // regex d'un coup (SAN) : roque, prise de pion, ou coup de pièce/pion
+  var MOVE_RE = /(O-O-O|O-O|[a-h]x[a-h][1-8](?:=[A-Za-z])?[+#]?|[KQRBNRDTFC]?x?[a-h][1-8](?:=[A-Za-z])?[+#]?)/g;
+
+  // Affichage : convertit un texte contenant du SAN anglais en notation française.
+  function sanEnToFr(text) {
+    if (text == null) return '';
+    return String(text).replace(MOVE_RE, function (tok) {
+      if (tok === 'O-O' || tok === 'O-O-O') return tok;
+      tok = tok.replace(/^([KQRBN])/, function (_, p) { return EN2FR[p] || p; });
+      tok = tok.replace(/=([KQRBN])/, function (_, p) { return '=' + (EN2FR[p] || p); });
+      return tok;
+    });
+  }
+  // Voix : transforme la notation française en mots prononçables.
+  function frMoveToSpeech(tok) {
+    if (tok === 'O-O') return 'petit roque';
+    if (tok === 'O-O-O') return 'grand roque';
+    var suf = '', body = tok;
+    if (/#$/.test(body)) { suf = ' échec et mat'; body = body.slice(0, -1); }
+    else if (/\+$/.test(body)) { suf = ' échec'; body = body.slice(0, -1); }
+    var promo = ''; var pm = /=([RDTFC])$/.exec(body);
+    if (pm) { promo = ', promotion ' + (FRWORD[pm[1]] || pm[1]); body = body.replace(/=[RDTFC]$/, ''); }
+    var m;
+    // prise de pion : exd5 → « pion e prend d 5 »
+    if ((m = /^([a-h])x([a-h])([1-8])$/.exec(body))) return 'pion ' + m[1] + ' prend ' + m[2] + ' ' + m[3] + promo + suf;
+    // coup de pièce : Cf3 / Cxd4
+    if ((m = /^([RDTFC])(x?)([a-h])([1-8])$/.exec(body))) return (FRWORD[m[1]] || m[1]) + (m[2] ? ' prend ' : ' ') + m[3] + ' ' + m[4] + promo + suf;
+    // coup / case de pion : e4, e8
+    if ((m = /^([a-h])(x?)([a-h])?([1-8])$/.exec(body))) {
+      if (m[2] && m[3]) return 'pion ' + m[1] + ' prend ' + m[3] + ' ' + m[4] + promo + suf;
+      return m[1] + ' ' + m[4] + promo + suf;
+    }
+    return tok;
+  }
+  function notationToSpeech(text) {
+    return String(text == null ? '' : text).replace(MOVE_RE, function (tok) { return ' ' + frMoveToSpeech(tok) + ' '; });
+  }
+  function stripHtml(h) { try { var d = document.createElement('div'); d.innerHTML = h || ''; return d.textContent || d.innerText || ''; } catch (e) { return String(h || '').replace(/<[^>]+>/g, ' '); } }
+
+  /* ---------- voix : lecture automatique des leçons (moteur Brio) ---------- */
+  var voiceOn = true; try { voiceOn = (localStorage.getItem('brio_echecs_voice') !== '0'); } catch (e) {}
+  function lessonSpeechText(ls) {
+    var parts = [];
+    if (ls.intro) parts.push(stripHtml(ls.intro));
+    if (ls.task) parts.push(stripHtml(ls.task));
+    if (ls.quiz && ls.quiz.q) parts.push(stripHtml(ls.quiz.q));
+    return notationToSpeech(parts.join('. '));   // le texte est déjà en notation française
+  }
+  function speakText(htmlOrText, btn) { speakNow(notationToSpeech(stripHtml(htmlOrText)), btn || null); }
+  function speak(text, btn) { try { if (voiceOn && window.brioRead && text) window.brioRead(text, 'fr', btn || null); } catch (e) {} }
+  function speakNow(text, btn) { try { if (window.brioRead && text) window.brioRead(text, 'fr', btn || null); } catch (e) {} }
+  function stopSpeak() { try { if (window.brioStop) window.brioStop(); } catch (e) {} }
+  try { window.__ACAD = { sanEnToFr: sanEnToFr, notationToSpeech: notationToSpeech, frMoveToSpeech: frMoveToSpeech }; } catch (e) {}
+
   /* =====================================================================
      LE PROGRAMME — 8 niveaux, du plateau aux premières tactiques.
      Types de leçon :
@@ -144,7 +204,7 @@
           fen: '7k/5Q2/6K1/8/8/8/8/8 w - - 0 1', preselect: 'f7', goal: 'mate',
           intro: "La Dame est mortelle quand elle est <b>protégée</b> par le Roi. Ici, ton Roi en g6 soutient ta Dame : approche-la du Roi noir pour l'étouffer.",
           task: "Mate en un coup : amène la Dame tout près du Roi noir (en g7).",
-          hint: "Qg7 : la Dame contrôle h8, h7 et g8 ; elle est protégée par ton Roi en g6. Mat !",
+          hint: "Dg7 : la Dame contrôle h8, h7 et g8 ; elle est protégée par ton Roi en g6. Mat !",
           done: "Magnifique ! Dame + Roi, c'est le duo gagnant des finales." },
         { id: 'l4e', type: 'quiz', title: "Mat ou pat ?",
           fen: '8/8/8/8/8/8/8/8 w - - 0 1', coords: true,
@@ -208,8 +268,8 @@
           fen: '3q3k/8/8/6N1/8/8/8/7K w - - 0 1', preselect: 'g5',
           intro: "Trouve le <b>coup double</b> : un échec au Roi qui attaque aussi la Dame. Après l'échec, le Roi bouge… et tu prends la Dame au coup d'après !",
           task: "Joue la fourchette du Cavalier qui met en échec <b>et</b> vise la Dame (case f7).",
-          solution: ['Nf7+'], hint: "Nf7+ : le Cavalier donne échec au Roi en h8 et attaque la Dame en d8. Imparable !",
-          done: "Fourchette gagnante ! Le Roi s'écarte, et Nxd8 rafle la Dame. 🍴" },
+          solution: ['Nf7+'], hint: "Cf7+ : le Cavalier donne échec au Roi en h8 et attaque la Dame en d8. Imparable !",
+          done: "Fourchette gagnante ! Le Roi s'écarte, et Cxd8 rafle la Dame. 🍴" },
         { id: 'l7c', type: 'info', title: "Le clouage",
           fen: '4k3/8/8/8/8/4r3/8/4RK2 w - - 0 1',
           intro: "Le <b>clouage</b> immobilise une pièce : elle ne peut pas bouger car elle protège une pièce plus précieuse (souvent le Roi) <b>juste derrière</b>. Ici la Tour noire en e3 est « clouée » sur son Roi en e8 : si elle bouge, le Roi serait en échec. Tu peux alors l'attaquer tranquillement." },
@@ -222,6 +282,87 @@
           task: "Donne <b>échec et mat</b> en un coup.",
           hint: "La Tour g1 est bloquée par le pion g7. Mais la colonne d est libre : amène la Tour d1 en <b>d8</b>. Elle contrôle toute la 8ᵉ rangée, et le Roi n'a aucune fuite. Mat !",
           done: "ÉCHEC ET MAT ! 🏆 Tu maîtrises les bases — te voilà prêt à jouer de vraies parties." }
+      ]
+    },
+    {
+      id: 'l8', icon: '🧠', title: "Combinaisons gagnantes",
+      sub: "Des pièges plus difficiles pour gagner du matériel",
+      lessons: [
+        { id: 'l8a', type: 'info', title: "Comment trouver une combinaison",
+          fen: '8/8/8/8/8/8/8/8 w - - 0 1', coords: true,
+          intro: "On monte en niveau ! Pour repérer un coup gagnant, examine toujours les <b>coups forcés</b>, dans cet ordre : <b>1) les échecs</b>, <b>2) les prises</b>, <b>3) les menaces</b>. Les meilleurs joueurs calculent d'abord ces coups-là. Dans les leçons qui suivent, cherche le coup qui met en échec, capture, ou menace <b>deux cibles à la fois</b>." },
+        { id: 'l8b', type: 'move', title: "Fourchette royale",
+          fen: '6k1/8/2q5/3N4/8/8/8/K7 w - - 0 1', preselect: 'd5',
+          intro: "La <b>fourchette</b> du Cavalier est l'arme la plus redoutable : une seule pièce en attaque deux, et l'adversaire ne peut en sauver qu'une.",
+          task: "Trouve le saut de Cavalier qui met le Roi en échec tout en attaquant la Dame.",
+          solution: ['Ne7+'], hint: "Ce7+ : le Cavalier saute en e7, échec au Roi en g8 — et il attaque la Dame en c6. Au coup suivant, Cxc6 gagne la Dame.",
+          done: "Fourchette gagnante ! Le Roi doit bouger, puis tu rafles la Dame. 🍴" },
+        { id: 'l8c', type: 'move', title: "L'enfilade",
+          fen: '2q5/8/8/8/2k5/8/8/5RK1 w - - 0 1', preselect: 'f1',
+          intro: "L'<b>enfilade</b> : tu mets en échec une pièce, et quand elle s'écarte, tu captures la pièce alignée <b>derrière</b> elle. Une pièce à longue portée (Tour, Fou, Dame) adore ça.",
+          task: "Donne un échec qui aligne le Roi et la Dame sur la même colonne.",
+          solution: ['Rc1+'], hint: "Tc1+ : la Tour met le Roi noir en échec sur la colonne c. Le Roi doit s'écarter, puis Txc8 capture la Dame.",
+          done: "Enfilade réussie ! Le Roi s'écarte et la Dame tombe." },
+        { id: 'l8d', type: 'move', title: "L'attaque à la découverte",
+          fen: '4k3/1q6/8/8/4N3/8/8/4R1K1 w - - 0 1', preselect: 'e4',
+          intro: "L'<b>attaque à la découverte</b> : une pièce se déplace et <b>démasque</b> l'attaque d'une pièce derrière elle. Ici, ta Tour en e1 vise déjà le Roi noir — il suffit que le Cavalier s'écarte en gagnant quelque chose au passage.",
+          task: "Bouge le Cavalier pour découvrir l'échec de la Tour tout en attaquant la Dame.",
+          solution: ['Nd6+', 'Nc5+'], hint: "Cd6+ (ou Cc5+) : le Cavalier quitte la colonne e — la Tour met le Roi en échec — et le Cavalier attaque la Dame en b7. Imparable.",
+          done: "Découverte gagnante ! Le Roi pare l'échec, puis le Cavalier prend la Dame." },
+        { id: 'l8e', type: 'move', title: "La double attaque de la Dame",
+          fen: 'r5k1/8/8/7n/8/8/8/3Q2K1 w - - 0 1', preselect: 'd1',
+          intro: "Grâce à sa portée, la Dame peut attaquer <b>deux pièces non protégées</b> d'un seul coup. Repère deux cibles sans défense, puis trouve la case qui vise les deux.",
+          task: "Place la Dame sur la case qui attaque à la fois la Tour en a8 et le Cavalier en h5.",
+          solution: ['Qd5'], hint: "Dd5 : la Dame attaque la Tour a8 (en diagonale) et le Cavalier h5 (sur la rangée 5). L'adversaire n'en sauve qu'une.",
+          done: "Double attaque ! Tu gagnes une pièce au coup suivant." }
+      ]
+    },
+    {
+      id: 'l9', icon: '🏅', title: "Mats à trouver",
+      sub: "Des échecs et mats en 1 coup… mais bien cachés",
+      lessons: [
+        { id: 'l9a', type: 'goal', title: "Le mat étouffé",
+          fen: '6rk/6pp/7N/8/8/8/8/7K w - - 0 1', preselect: 'h6', goal: 'mate',
+          intro: "Le <b>mat étouffé</b> : le Roi est si entouré de ses propres pièces qu'il ne peut plus bouger. Seul le Cavalier peut l'achever, car il saute par-dessus tout.",
+          task: "Donne échec et mat en un coup avec le Cavalier.",
+          hint: "Cf7 : le Cavalier met le Roi en échec. Aucune fuite — la Tour en g8 et les pions g7 et h7 étouffent le Roi. Mat !",
+          done: "Mat étouffé ! 🤯 L'un des plus beaux mats des échecs." },
+        { id: 'l9b', type: 'goal', title: "Deux pièces coordonnées",
+          fen: '6k1/5p1p/8/8/8/8/1B6/4R1K1 w - - 0 1', preselect: 'e1', goal: 'mate',
+          intro: "Souvent, le mat naît de la <b>coopération</b> de deux pièces : l'une donne l'échec, l'autre coupe la fuite. Ici, ton Fou en b2 surveille la grande diagonale — dont la case de fuite g7.",
+          task: "Mate le Roi en un coup avec la Tour, pendant que le Fou garde la sortie.",
+          hint: "Te8 : la Tour donne échec sur la dernière rangée. Le Roi ne peut pas fuir en g7 (ton Fou b2 le contrôle), ni ailleurs. Mat !",
+          done: "Superbe coordination ! La Tour mate, le Fou verrouille la sortie." },
+        { id: 'l9c', type: 'goal', title: "Le mat arabe",
+          fen: '7k/1R6/5N2/8/8/8/8/6K1 w - - 0 1', preselect: 'b7', goal: 'mate',
+          intro: "Le <b>mat arabe</b> (l'un des plus anciens connus) associe la <b>Tour et le Cavalier</b> : le Cavalier garde les cases de fuite, la Tour donne le mat juste à côté du Roi.",
+          task: "Trouve le coup de Tour qui mate le Roi dans le coin, soutenu par le Cavalier.",
+          hint: "Th7 : la Tour mate le Roi en h8, protégée par le Cavalier en f6 (qui contrôle g8). Le Roi est pris au piège. Mat !",
+          done: "Mat arabe ! ⚔️ Tour + Cavalier, un duo vieux de mille ans." }
+      ]
+    },
+    {
+      id: 'l10', icon: '🔥', title: "Mat en 2 coups",
+      sub: "Le défi suprême : calcule deux coups à l'avance",
+      lessons: [
+        { id: 'l10a', type: 'mate2', title: "Mat étouffé — sacrifice de Dame",
+          fen: '5r1k/6pp/7N/8/8/1Q6/8/6K1 w - - 0 1',
+          intro: "Le plus beau coup des échecs : un <b>sacrifice de Dame</b> pour forcer le mat étouffé. Le Roi noir est presque enfermé — il ne manque qu'à boucher sa dernière case de fuite… avec une pièce ennemie !",
+          task: "Trouve le premier coup qui force le mat en 2 coups. (Indice : ose sacrifier !)",
+          hint: "Dg8+ !! La Tour est obligée de prendre (Txg8), ce qui bouche la case g8. Ensuite, Cf7 est mat : le Roi est totalement étouffé.",
+          done: "CHEF-D'ŒUVRE ! 🎇 Sacrifice de Dame puis mat étouffé — le coup le plus célèbre des échecs." },
+        { id: 'l10b', type: 'mate2', title: "Mater avec la Dame et le Roi",
+          fen: '4k3/8/4K3/8/8/8/3Q4/8 w - - 0 1',
+          intro: "Savoir mater avec <b>Dame + Roi</b> contre Roi seul est <b>indispensable</b> : c'est la fin de partie la plus fréquente. L'idée : la Dame confine le Roi au bord, ton Roi l'épaule, et c'est mat.",
+          task: "Trouve un coup qui enferme le Roi adverse pour mater au coup suivant.",
+          hint: "Rapproche la Dame pour contrôler les cases de fuite — par exemple Dd7, qui cloue le Roi sur sa rangée. Au coup suivant, c'est mat.",
+          done: "Technique maîtrisée ! Tu sais désormais convertir Dame + Roi en victoire. 👑" },
+        { id: 'l10c', type: 'mate2', title: "Fais travailler ton Roi",
+          fen: '8/8/8/8/KQ6/8/8/k7 w - - 0 1',
+          intro: "Erreur classique du débutant : vouloir mater avec la Dame <b>seule</b>. Impossible ! Le <b>Roi doit aider</b>. Ici, la Dame tient déjà le Roi noir ; c'est à ton Roi d'avancer pour porter le coup final.",
+          task: "Trouve le coup qui prépare le mat en 2… ce n'est pas un coup de Dame !",
+          hint: "Rb3 : ton Roi s'approche pour soutenir la Dame. Le Roi noir se retrouve totalement bloqué, et tu mates au coup suivant.",
+          done: "Bravo ! Tu as compris la clé des finales : le Roi est aussi une pièce d'attaque. 🏁" }
       ]
     }
   ];
@@ -252,7 +393,7 @@
      RENDU
   ===================================================================== */
   var view = 'road';          // 'road' | 'lesson'
-  var curLv = null, curIdx = 0, chess = null, sel = null, solved = false, usedHint = false, locked = false;
+  var curLv = null, curIdx = 0, chess = null, sel = null, solved = false, usedHint = false, locked = false, phase = 1;
 
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
   function sqName(f, r) { return 'abcdefgh'[f] + (r + 1); }
@@ -307,7 +448,7 @@
   /* ---------- une leçon ---------- */
   function startLesson() {
     var ls = curLv.lessons[curIdx];
-    sel = null; solved = false; usedHint = false; locked = false;
+    sel = null; solved = false; usedHint = false; locked = false; phase = 1;
     if (ls.type === 'quiz' || !ls.fen || ls.fen === 'start') {
       chess = new Chess(); if (ls.fen && ls.fen !== 'start') { try { chess.load(ls.fen); } catch (e) {} }
     } else {
@@ -330,6 +471,8 @@
     h += '<div class="ac-txtcol">';
     h += '<div class="ac-l-tag">Niveau '+ (LEVELS.indexOf(curLv) + 1) +' · '+ esc(curLv.title) +'</div>';
     h += '<h3 class="ac-l-title">'+ esc(ls.title) +'</h3>';
+    h += '<div class="ac-voice"><button class="ac-vbtn" id="acSpeak" type="button">🔊 Écouter</button>'
+       + '<button class="ac-vtog" id="acVmute" type="button" title="Lecture automatique à voix haute">'+ (voiceOn ? '🔈 Voix : ON' : '🔇 Voix : OFF') +'</button></div>';
     if (ls.intro) h += '<div class="ac-l-intro">'+ ls.intro +'</div>';
     if (ls.task) h += '<div class="ac-l-task"><span class="ac-l-task-ic">🎯</span><div>'+ ls.task +'</div></div>';
     if (ls.type === 'quiz') h += '<div class="ac-quiz" id="acadQuiz"></div>';
@@ -337,11 +480,25 @@
     h += '</div></div></div>';
     mount.innerHTML = h;
 
-    mount.querySelector('.ac-back').addEventListener('click', function () { view = 'road'; renderRoad(); });
+    mount.querySelector('.ac-back').addEventListener('click', function () { stopSpeak(); view = 'road'; renderRoad(); });
 
     if (ls.type === 'quiz') { buildQuiz(ls); }
     else { drawBoard(); }
     buildActions(ls);
+    wireVoice(ls);
+  }
+
+  function wireVoice(ls) {
+    var sp = document.getElementById('acSpeak');
+    var tg = document.getElementById('acVmute');
+    if (sp) sp.addEventListener('click', function () { speakNow(lessonSpeechText(ls), sp); });
+    if (tg) tg.addEventListener('click', function () {
+      voiceOn = !voiceOn; try { localStorage.setItem('brio_echecs_voice', voiceOn ? '1' : '0'); } catch (e) {}
+      tg.innerHTML = voiceOn ? '🔈 Voix : ON' : '🔇 Voix : OFF';
+      if (!voiceOn) stopSpeak(); else speakNow(lessonSpeechText(ls), sp);
+    });
+    // lecture automatique à l'ouverture (déclenchée par le clic d'ouverture → autoplay autorisé)
+    if (voiceOn) setTimeout(function () { speak(lessonSpeechText(ls), document.getElementById('acSpeak')); }, 350);
   }
 
   function buildActions(ls) {
@@ -356,7 +513,7 @@
     box.innerHTML = h;
     var d = document.getElementById('acDone'); if (d) d.addEventListener('click', function () { succeed(ls, "Leçon comprise — continue comme ça !"); });
     var hi = document.getElementById('acHint'); if (hi) hi.addEventListener('click', function () {
-      usedHint = true; feedback(ls.hint || "Observe bien les cases proposées.", 'hint');
+      usedHint = true; var ht = ls.hint || "Observe bien les cases proposées."; feedback(ht, 'hint'); speakText(ht);
     });
     var rs = document.getElementById('acReset'); if (rs) rs.addEventListener('click', function () { startLesson(); });
   }
@@ -368,10 +525,11 @@
       + (hasNext ? '<button class="ac-btn primary" id="acNext">Leçon suivante →</button>'
                  : '<button class="ac-btn primary" id="acRoad2">🏁 Terminer le parcours</button>');
     var n = document.getElementById('acNext'); if (n) n.addEventListener('click', goNext);
-    var r = document.getElementById('acRoad'); if (r) r.addEventListener('click', function () { view = 'road'; renderRoad(); });
-    var r2 = document.getElementById('acRoad2'); if (r2) r2.addEventListener('click', function () { view = 'road'; renderRoad(); });
+    var r = document.getElementById('acRoad'); if (r) r.addEventListener('click', function () { stopSpeak(); view = 'road'; renderRoad(); });
+    var r2 = document.getElementById('acRoad2'); if (r2) r2.addEventListener('click', function () { stopSpeak(); view = 'road'; renderRoad(); });
   }
   function goNext() {
+    stopSpeak();
     if (curIdx < curLv.lessons.length - 1) { curIdx++; }
     else { var i = LEVELS.indexOf(curLv); if (i < LEVELS.length - 1) { curLv = LEVELS[i + 1]; curIdx = 0; } }
     startLesson();
@@ -477,7 +635,58 @@
     evaluateMove(ls, done);
   }
 
+  // la position (trait aux Noirs) force-t-elle un mat au prochain coup blanc ?
+  function forcesMate(pos) {
+    try {
+      var fen = pos.fen();
+      var tmp = new Chess(); tmp.load(fen);
+      var replies = tmp.moves({ verbose: true });
+      if (!replies.length) return false;
+      for (var i = 0; i < replies.length; i++) {
+        var u = new Chess(); u.load(fen); u.move({ from: replies[i].from, to: replies[i].to, promotion: replies[i].promotion || 'q' });
+        var wm = u.moves({ verbose: true }), ok = false;
+        for (var j = 0; j < wm.length; j++) {
+          var v = new Chess(); v.load(u.fen()); v.move({ from: wm[j].from, to: wm[j].to, promotion: wm[j].promotion || 'q' });
+          if (v.in_checkmate()) { ok = true; break; }
+        }
+        if (!ok) return false;
+      }
+      return true;
+    } catch (e) { return false; }
+  }
+  function autoReplyBlack() {
+    try {
+      var r = chess.moves({ verbose: true }); if (!r.length) return;
+      var m = r[0];
+      chess.move({ from: m.from, to: m.to, promotion: m.promotion || 'q' });
+    } catch (e) {}
+  }
+
   function evaluateMove(ls, mv) {
+    // ---- mat en 2 coups (validation en direct par le moteur) ----
+    if (ls.type === 'mate2' || ls.goal === 'mate2') {
+      if (phase === 1) {
+        if (chess.in_checkmate()) { succeed(ls); return; }
+        if (forcesMate(chess)) {
+          phase = 2;
+          feedback('<b>✓ Bien vu !</b> Le Roi est pris au piège… maintenant, <b>mate-le</b> !', 'ok');
+          locked = true;
+          setTimeout(function () { autoReplyBlack(); locked = false; drawBoard(); }, 850);
+        } else {
+          locked = true;
+          feedback("Ce coup ne force pas le mat. J'annule — cherche le coup qui enferme le Roi 💪", 'bad');
+          setTimeout(function () { chess.undo(); locked = false; drawBoard(); }, 950);
+        }
+      } else {
+        if (chess.in_checkmate()) { succeed(ls); }
+        else {
+          locked = true;
+          feedback("Presque ! Ce n'est pas encore mat. J'annule — retrouve le coup qui mate 💪", 'bad');
+          setTimeout(function () { chess.undo(); locked = false; drawBoard(); }, 950);
+        }
+      }
+      return;
+    }
     var ok = false;
     if (ls.goal === 'mate') ok = chess.in_checkmate();
     else if (ls.goal === 'check') ok = chess.in_check();
@@ -505,6 +714,7 @@
     var msg = overrideMsg != null ? overrideMsg : (ls.done || "Bravo, leçon réussie !");
     if (!isQuiz) {
       feedback('<span class="ac-win">🎉 ' + (msg || 'Bravo !') + '</span>', 'ok');
+      if (voiceOn) speakText(msg);
       burst();
     } else {
       // le quiz affiche déjà son explication ; on ajoute juste la validation
@@ -547,6 +757,7 @@
     var playEl = document.getElementById('playMode');
     function set(mode, remember) {
       var learn = mode === 'learn';
+      if (!learn) stopSpeak();
       mount.hidden = !learn;
       if (playEl) playEl.hidden = learn;
       seg.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-m') === mode); });
