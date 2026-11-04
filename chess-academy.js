@@ -10,9 +10,13 @@
   if (!mount) return;
   var Chess = window.Chess;
 
-  /* --------- glyphes (identiques au plateau de jeu) --------- */
-  var GLY = { w: { p: '♙', n: '♘', b: '♗', r: '♖', q: '♕', k: '♔' },
-              b: { p: '♟', n: '♞', b: '♝', r: '♜', q: '♛', k: '♚' } };
+  /* --------- glyphes : on utilise le MÊME jeu plein pour les deux couleurs,
+     et c'est le CSS (remplissage + contour) qui distingue blancs/noirs. Ainsi
+     la police du système ne peut pas rendre une pièce (ex. le roi noir ♚) en
+     contour clair et la faire passer pour une pièce blanche. ︎ force le
+     rendu « texte » (jamais emoji). --------- */
+  var SOLID = { p: '♟︎', n: '♞︎', b: '♝︎', r: '♜︎', q: '♛︎', k: '♚︎' };
+  var GLY = { w: SOLID, b: SOLID };
 
   /* ====================================================================
      NOTATION — anglais (interne chess.js) → français (affichage & voix)
@@ -275,8 +279,8 @@
           fen: '4k3/8/8/8/8/4r3/8/4RK2 w - - 0 1',
           intro: "Le <b>clouage</b> immobilise une pièce : elle ne peut pas bouger car elle protège une pièce plus précieuse (souvent le Roi) <b>juste derrière</b>. Ici la Tour noire en e3 est « clouée » sur son Roi en e8 : si elle bouge, le Roi serait en échec. Tu peux alors l'attaquer tranquillement." },
         { id: 'l7d', type: 'info', title: "L'enfilade",
-          fen: '7k/8/8/8/8/1q6/8/B6K w - - 0 1',
-          intro: "L'<b>enfilade</b> est l'inverse du clouage : tu attaques une pièce de <b>grande</b> valeur qui, en s'écartant, expose une pièce <b>derrière</b> elle. Une pièce à longue portée (Fou, Tour, Dame) aligne les deux cibles et gagne du matériel." },
+          fen: '7q/6k1/8/8/8/8/1B6/2K5 b - - 0 1',
+          intro: "L'<b>enfilade</b> est l'inverse du clouage : tu mets en échec une pièce de <b>grande</b> valeur (ici le Roi en g7, attaqué par le Fou b2), et quand elle s'écarte, elle <b>expose</b> la pièce placée <b>derrière</b> elle sur la même ligne (la Dame en h8). Le Roi doit bouger… et le Fou capture la Dame. Une pièce à longue portée (Fou, Tour, Dame) aligne les deux cibles et gagne du matériel." },
         { id: 'l7e', type: 'goal', title: "Mat en 1 — mets tout en pratique",
           fen: '7k/6pp/8/8/8/8/8/3R2RK w - - 0 1', preselect: 'd1', goal: 'mate',
           intro: "Dernier défi de l'Académie : le Roi noir est muré par ses pions g7 et h7. Tu as deux Tours — mais une seule peut frapper. Trouve le coup qui conclut <b>immédiatement</b>.",
@@ -364,6 +368,171 @@
           task: "Trouve le coup qui prépare le mat en 2… ce n'est pas un coup de Dame !",
           hint: "Rb3 : ton Roi s'approche pour soutenir la Dame. Le Roi noir se retrouve totalement bloqué, et tu mates au coup suivant.",
           done: "Bravo ! Tu as compris la clé des finales : le Roi est aussi une pièce d'attaque. 🏁" }
+      ]
+    },
+    {
+      id: 'l11', icon: '📖', title: "Les ouvertures",
+      sub: "Bien démarrer : principes et premières ouvertures",
+      lessons: [
+        { id: 'l11a', type: 'info', title: "Les 3 règles d'or (+ 2 pièges)",
+          fen: 'start',
+          intro: "On passe au niveau supérieur. Une bonne ouverture tient en <b>3 règles</b> : <b>1)</b> occupe le <b>centre</b> avec un pion (e4 ou d4) ; <b>2)</b> <b>développe</b> tes pièces légères (Cavaliers puis Fous) vers le centre ; <b>3)</b> mets ton <b>Roi en sécurité</b> en roquant tôt. Deux pièges mortels à éviter : <b>ne sors pas ta Dame trop tôt</b> (l'adversaire la chasse en développant ses pièces et gagne du temps), et <b>ne joue pas dix fois la même pièce</b> — active une pièce nouvelle à chaque coup." },
+        { id: 'l11b', type: 'move', title: "L'Ouverture Italienne",
+          fen: 'r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 3 3', preselect: 'f1',
+          intro: "Après <b>1.e4 e5 2.Cf3 Cc6</b>, l'une des ouvertures les plus anciennes et les plus saines : l'<b>Italienne</b>. On développe le Fou sur la case <b>c4</b>, d'où il vise directement le point <b>f7</b> — la case la plus faible du camp adverse (défendue seulement par le Roi).",
+          task: "Développe ton Fou de f1 vers la case marquée <b>c4</b>.",
+          solution: ['Bc4'], hint: "Fc4 : le Fou file en diagonale de f1 à c4, pointé sur f7. Une pièce développée, active et agressive.",
+          done: "Fc4 ! Fou développé, centre tenu, pression sur f7 — une ouverture de maître." },
+        { id: 'l11c', type: 'move', title: "Roquer tôt (règle n°3)",
+          fen: 'r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4', preselect: 'e1',
+          intro: "Tes pièces légères du côté roi sont sorties : il est temps d'appliquer la <b>règle n°3</b> — la <b>sécurité du Roi</b>. Le petit roque met le Roi à l'abri dans son coin et <b>active la Tour</b> vers le centre. Règle simple : <b>roque dans les 10 premiers coups.</b>",
+          task: "Effectue le <b>petit roque</b> : clique le Roi, puis la case g1.",
+          solution: ['O-O'], hint: "Sélectionne le Roi en e1 et joue-le en g1 : la Tour h1 saute automatiquement en f1. Roi en sécurité !",
+          done: "Roque réussi ! Roi à l'abri, Tour activée — tu joues déjà comme un vrai joueur de club." },
+        { id: 'l11d', type: 'move', title: "Développer avec un but",
+          fen: 'rnbqkbnr/ppp2ppp/8/3pp3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 0 3', preselect: 'b1',
+          intro: "Chaque coup d'ouverture doit <b>développer</b> une pièce vers le centre, idéalement en créant une menace. Sors tes Cavaliers vers c3 et f3 : ils contrôlent les cases centrales d4, e5, d5, e4.",
+          task: "Développe ton Cavalier de b1 vers la case marquée <b>c3</b> (il attaque le pion d5 et contrôle le centre).",
+          solution: ['Nc3'], hint: "Cc3 : le Cavalier sort au centre, attaque d5 et prépare la suite. Développement parfait.",
+          done: "Cc3 ! Deux Cavaliers au centre, tu domines les cases clés." },
+        { id: 'l11e', type: 'info', title: "Quelques ouvertures célèbres",
+          fen: 'r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3',
+          intro: "Tu n'as pas besoin de tout mémoriser : les <b>principes</b> suffisent. Mais connais les grandes idées : l'<b>Espagnole / Ruy Lopez</b> (ci-dessus, 1.e4 e5 2.Cf3 Cc6 3.Fb5) met la pression sur le Cavalier c6 ; la <b>Sicilienne</b> (1.e4 c5) est la défense la plus combative des Noirs ; la <b>Française</b> (1.e4 e6) est solide ; le <b>Gambit Dame</b> (1.d4 d5 2.c4) lutte pour le centre. Un <b>gambit</b>, c'est <b>offrir un pion</b> pour prendre de l'avance en développement et ouvrir des lignes vers le Roi adverse." }
+      ]
+    },
+    {
+      id: 'l12', icon: '🗺️', title: "Le milieu de jeu",
+      sub: "Les plans stratégiques qui gagnent les parties",
+      lessons: [
+        { id: 'l12a', type: 'info', title: "Avoir un plan + l'activité",
+          fen: 'r1bq1rk1/ppp2ppp/2np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQ1RK1 w - - 0 1',
+          intro: "L'ouverture finie, place à la <b>stratégie</b>. La règle d'or du milieu de jeu : <b>une pièce active vaut bien plus qu'une pièce passive.</b> Avant chaque coup, demande-toi : « Quelle est ma pièce la moins active ? Comment l'améliorer ? » Place tes pièces sur des cases où elles contrôlent beaucoup de cases centrales et visent le camp adverse. Un plan simple et clair bat toujours des coups joués au hasard." },
+        { id: 'l12b', type: 'move', title: "Les colonnes ouvertes → les Tours",
+          fen: 'r3k3/ppp2ppp/8/8/8/8/PPP2PPP/R3K3 w - - 0 1', preselect: 'a1',
+          intro: "Les <b>Tours</b> sont maladroites au début, mais deviennent surpuissantes sur les <b>colonnes ouvertes</b> (sans pions). Une Tour sur une colonne ouverte pénètre dans le camp adverse (7ᵉ rangée !) et attaque. Ici, la <b>colonne d</b> est entièrement ouverte.",
+          task: "Empare-toi de la colonne ouverte : amène ta Tour de a1 en <b>d1</b>.",
+          solution: ['Rd1'], hint: "Td1 : la Tour prend la colonne ouverte d. De là, elle vise tout le camp adverse. C'est le bon plan.",
+          done: "Td1 ! Tu contrôles la colonne ouverte — un avantage stratégique durable." },
+        { id: 'l12c', type: 'move', title: "L'avant-poste du Cavalier",
+          fen: 'r1bqkb1r/ppp2ppp/2n2n2/3p4/3P4/5N2/PPP2PPP/RNBQKB1R w KQkq - 0 1', preselect: 'f3',
+          intro: "Le Cavalier adore les <b>avant-postes</b> : une case avancée (souvent au centre, en d5/e5/d4/e4) où il est <b>protégé par un pion</b> et ne peut plus être chassé par un pion adverse. Un Cavalier bien posté au cœur de la position vaut parfois une Tour !",
+          task: "Installe ton Cavalier au centre : joue-le de f3 en <b>e5</b>, soutenu par ton pion d4.",
+          solution: ['Ne5'], hint: "Ce5 : le Cavalier s'installe au centre, protégé par le pion d4. Un avant-poste dominant.",
+          done: "Ce5 ! Cavalier central et protégé — il gêne tout le jeu adverse." },
+        { id: 'l12d', type: 'info', title: "Le bon et le mauvais Fou",
+          fen: 'r1bqk2r/ppp2ppp/2np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQK2R w KQkq - 0 1',
+          intro: "Un <b>Fou</b> ne se déplace que sur une couleur de cases. Si <b>tes propres pions</b> sont bloqués sur cette même couleur, ton Fou est enfermé derrière eux : c'est un <b>« mauvais Fou »</b>. Garde tes pions sur la couleur <b>opposée</b> à ton Fou pour qu'il reste actif. Règle pratique : si ton Fou est mauvais, cherche à l'échanger ou à le sortir hors de la chaîne de pions." },
+        { id: 'l12e', type: 'info', title: "La structure de pions",
+          fen: 'r3k2r/pp3ppp/2p5/3p4/3P4/2P5/PP3PPP/R3K2R w KQkq - 0 1',
+          intro: "Les pions ne reculent jamais : leur structure décide souvent de la partie. Les faiblesses à connaître : le <b>pion isolé</b> (sans pion ami sur les colonnes voisines — difficile à défendre), les <b>pions doublés</b> (deux pions sur la même colonne — ils se gênent), et surtout le <b>pion passé</b> (aucun pion adverse ne peut l'arrêter) : c'est une arme, pousse-le vers la promotion ! Vise les pions faibles de l'adversaire, protège les tiens." },
+        { id: 'l12f', type: 'move', title: "Pousser un pion passé",
+          fen: '8/8/4P1k1/8/8/8/6K1/8 w - - 0 1', preselect: 'e6',
+          intro: "Un <b>pion passé</b> (plus aucun pion adverse devant lui ni sur les colonnes voisines) est une menace permanente : chaque pas le rapproche de la <b>promotion</b> en Dame. « Un pion passé doit être poussé ! »",
+          task: "Fais avancer ton pion passé de e6 vers <b>e7</b> — une case de plus vers la Dame.",
+          solution: ['e7'], hint: "e7 : le pion avance vers la promotion. Soutenu par ton Roi, il deviendra Dame.",
+          done: "e7 ! Encore un pas et c'est une nouvelle Dame. Les pions passés gagnent les finales." }
+      ]
+    },
+    {
+      id: 'l13', icon: '🧩', title: "Tactiques avancées",
+      sub: "Les combinaisons des joueurs confirmés",
+      lessons: [
+        { id: 'l13a', type: 'info', title: "Enlever le défenseur",
+          fen: '3r2k1/5ppp/8/8/8/8/8/3R2K1 w - - 0 1',
+          intro: "Une case ou une pièce n'est forte que si elle est <b>défendue</b>. L'idée maîtresse : <b>élimine le défenseur</b> (capture-le ou chasse-le), et la cible tombe. Ici, la Tour noire en d8 est le <b>seul défenseur</b> de la dernière rangée. Supprime-la… et c'est le mat !" },
+        { id: 'l13b', type: 'goal', title: "Applique : enlève le défenseur",
+          fen: '3r2k1/5ppp/8/8/8/8/8/3R2K1 w - - 0 1', preselect: 'd1', goal: 'mate',
+          intro: "La Tour noire en d8 garde la 8ᵉ rangée. Débarrasse-t'en, et le Roi muré par ses pions est perdu.",
+          task: "Donne <b>échec et mat</b> en un coup.",
+          hint: "Txd8 : ta Tour capture l'unique défenseur en d8 et donne échec sur la dernière rangée. Le Roi, enfermé par f7/g7/h7, n'a aucune fuite. Mat !",
+          done: "Txd8 mat ! 🎯 Supprimer le défenseur : une idée qui gagne des centaines de parties." },
+        { id: 'l13c', type: 'info', title: "La déviation",
+          fen: '6k1/5ppp/8/q7/8/8/5PPP/R5K1 w - - 0 1',
+          intro: "La <b>déviation</b> force une pièce adverse à <b>quitter</b> une tâche importante (défendre une case, bloquer une colonne, protéger le Roi). On l'attire ailleurs avec une menace ou un sacrifice, puis on frappe là où elle ne garde plus. « Occupe le gardien, puis cambriole la maison. »" },
+        { id: 'l13d', type: 'info', title: "L'attraction (par sacrifice)",
+          fen: '5rk1/5p1p/8/8/8/8/8/4R1K1 w - - 0 1',
+          intro: "L'<b>attraction</b> est l'inverse : au lieu d'éloigner une pièce, tu l'<b>attires</b> (souvent le Roi) sur une case fatale — généralement par un <b>sacrifice</b>. Le Roi attiré au centre ou sur une mauvaise case tombe ensuite dans une fourchette, un échec double ou un mat. Les plus beaux coups des échecs sont des attractions." },
+        { id: 'l13e', type: 'info', title: "Le coup intermédiaire (Zwischenzug)",
+          fen: 'r2q1rk1/ppp2ppp/2n2n2/3p4/3P4/2N2N2/PPP2PPP/R2Q1RK1 w - - 0 1',
+          intro: "Le <b>Zwischenzug</b> (« coup intermédiaire ») est une arme de maître : au lieu de reprendre immédiatement une pièce, tu glisses d'abord un <b>coup plus fort</b> (souvent un échec ou une grosse menace) — l'adversaire doit y répondre, et <b>ensuite</b> seulement tu reprends, avec un gain en plus. Avant de reprendre « automatiquement », demande-toi toujours : « Ai-je un coup encore plus fort ? »" },
+        { id: 'l13f', type: 'info', title: "L'interférence",
+          fen: '3r2k1/5ppp/8/8/8/2B5/5PPP/6K1 w - - 0 1',
+          intro: "L'<b>interférence</b> consiste à <b>couper la communication</b> entre deux pièces adverses en interposant (souvent en sacrifiant) une pièce sur la ligne qui les relie. Le défenseur est soudain séparé de ce qu'il protégeait, et la cible tombe. Rare, spectaculaire — la marque des joueurs forts." }
+      ]
+    },
+    {
+      id: 'l14', icon: '⏳', title: "Les finales",
+      sub: "Savoir conclure quand il reste peu de pièces",
+      lessons: [
+        { id: 'l14a', type: 'info', title: "Active ton Roi !",
+          fen: '8/8/4k3/8/8/4K3/8/8 w - - 0 1',
+          intro: "Changement de mentalité : en <b>finale</b> (peu de pièces), le Roi n'est plus une cible à cacher — il devient une <b>pièce forte et active</b> ! Un Roi au centre vaut environ autant qu'un Fou. Règle d'or des finales : <b>avance ton Roi vers le centre et vers les pions.</b> Le joueur dont le Roi est le plus actif gagne souvent." },
+        { id: 'l14b', type: 'info', title: "L'opposition",
+          fen: '8/8/8/3k4/8/3K4/3P4/8 w - - 0 1',
+          intro: "L'<b>opposition</b> est LA clé des finales de pions : quand les deux Rois se font face, séparés d'<b>une seule case</b> (ici Rd3 et Rd5), celui qui <b>n'a PAS le trait</b> a « l'opposition » et contrôle le duel — il force l'autre Roi à reculer. Pour faire passer ton pion, prends d'abord l'opposition avec ton Roi, puis avance. Maîtriser l'opposition, c'est gagner (ou sauver) d'innombrables finales." },
+        { id: 'l14c', type: 'info', title: "La règle du carré",
+          fen: '7k/8/8/8/P7/8/8/K7 w - - 0 1',
+          intro: "Un pion passé court vers la promotion : le Roi adverse peut-il le rattraper <b>sans calculer</b> ? Trace le <b>carré</b> dont un côté va du pion à sa case de promotion. <b>Si le Roi adverse peut entrer dans ce carré</b> (à son tour de jouer), il attrape le pion ; sinon, le pion passe et fait Dame. Une astuce visuelle qui t'évite de compter case par case." },
+        { id: 'l14d', type: 'goal', title: "Mater avec la Dame et le Roi",
+          fen: '7k/5Q2/6K1/8/8/8/8/8 w - - 0 1', preselect: 'f7', goal: 'mate',
+          intro: "La finale la plus fréquente : <b>Dame + Roi contre Roi</b>. La méthode : la Dame pousse le Roi adverse au <b>bord</b>, le Roi blanc vient l'épauler, et on mate. Ton Roi en g6 soutient déjà la Dame — conclus !",
+          task: "Donne échec et mat en un coup.",
+          hint: "Dg7 : la Dame se place juste à côté du Roi noir, protégée par ton Roi en g6. Le Roi en h8 n'a aucune case. Mat !",
+          done: "Dame + Roi, c'est mat ! 👑 Tu sais désormais convertir cette finale essentielle." },
+        { id: 'l14e', type: 'info', title: "Finales de Tours : les 2 à connaître",
+          fen: '8/8/4k3/8/8/4K3/4P3/4R1r1 w - - 0 1',
+          intro: "Les finales de <b>Tours</b> sont les plus fréquentes du jeu — connais ces deux positions clés. La <b>position de Lucena</b> (« construire un pont ») : le camp fort fait Dame grâce à un abri créé pour son Roi avec la Tour — c'est une <b>victoire</b>. La <b>position de Philidor</b> : le camp faible tient la <b>nulle</b> en gardant sa Tour active sur la 6ᵉ rangée, puis en donnant des échecs par derrière. Règle d'or : en finale de Tour, garde ta <b>Tour active</b> (jamais passive) et place-la <b>derrière</b> le pion passé." }
+      ]
+    },
+    {
+      id: 'l15', icon: '💥', title: "L'attaque sur le Roi",
+      sub: "Mener l'assaut contre le Roi adverse",
+      lessons: [
+        { id: 'l15a', type: 'info', title: "Ouvrir les lignes vers le Roi",
+          fen: 'r1bq1rk1/ppp2ppp/2n5/8/8/2N5/PPP2PPP/R1BQ1RK1 w - - 0 1',
+          intro: "Pour attaquer un Roi roqué, il faut des <b>lignes ouvertes</b> (colonnes et diagonales) qui mènent jusqu'à lui. Trois leviers : <b>dirige tes pièces</b> vers le roque adverse (Dame, Tours, Fous), <b>ouvre une colonne</b> devant son Roi (par un échange ou une poussée de pion), et attaque avec le <b>nombre</b> : il faut plus d'attaquants que de défenseurs. Compte tes attaquants, compte ses défenseurs." },
+        { id: 'l15b', type: 'goal', title: "Le sacrifice classique (Dame soutenue)",
+          fen: '7k/6pp/7Q/8/8/8/1B6/6K1 w - - 0 1', preselect: 'h6', goal: 'mate',
+          intro: "L'arme la plus belle de l'attaque : la <b>Dame qui se glisse à côté du Roi</b>, <b>protégée</b> par un Fou sur la grande diagonale. Ton Fou en b2 tient la case g7 ; le Roi noir est presque étouffé par ses pions.",
+          task: "Donne échec et mat en un coup avec la Dame.",
+          hint: "Dxg7 : la Dame prend le pion g7 et met le Roi en échec, <b>protégée par le Fou b2</b>. Le Roi ne peut pas la capturer, et il n'a aucune fuite. Mat !",
+          done: "Dxg7 mat ! 💥 Dame + Fou sur la grande diagonale : un schéma d'attaque dévastateur." },
+        { id: 'l15c', type: 'info', title: "Le sacrifice grec (Fou en h7)",
+          fen: 'r1bq1rk1/ppp1bppp/2n5/3p4/3P4/2NB4/PPP2PPP/R1BQ1RK1 w - - 0 1',
+          intro: "Le <b>sacrifice grec</b> (ou « Greek gift ») est le sacrifice d'attaque le plus célèbre : <b>Fxh7+ !</b> On donne le Fou en h7 pour <b>attirer le Roi</b> à découvert (…Rxh7), puis <b>Cg5+</b> et la <b>Dame arrive</b> (Dh5) pour mater. Il fonctionne quand ton Fou vise h7, qu'un Cavalier peut sauter en g5 et que la Dame peut rejoindre l'attaque. Un motif à reconnaître des deux côtés !" },
+        { id: 'l15d', type: 'info', title: "La tempête de pions",
+          fen: 'r1bq1rk1/pp3ppp/2n1pn2/2pp4/3P4/2P1PN2/PP1NBPPP/R1BQ1RK1 w - - 0 1',
+          intro: "Quand les deux Rois ont roqué du <b>même côté</b>, on attaque avec les pièces. Mais s'ils ont roqué de <b>côtés opposés</b>, place à la <b>tempête de pions</b> : lance tes pions devant le Roi adverse (g4-g5, h4-h5…) pour <b>ouvrir des colonnes</b> à tes Tours. Celui qui arrive le premier gagne la course. Ne crains pas d'avancer tes propres pions du roque : ton Roi est à l'opposé." },
+        { id: 'l15e', type: 'info', title: "Attirer le Roi au centre",
+          fen: 'rnbqkb1r/pppp1ppp/5n2/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1',
+          intro: "Un Roi qui n'a <b>pas roqué</b> et reste au centre est une cible rêvée : ouvre le centre (poussées et échanges de pions) pour exposer ce Roi aux Tours et à la Dame. Punir un adversaire qui néglige le roque est l'une des façons les plus rapides de gagner — et c'est pourquoi toi, tu roques tôt !" }
+      ]
+    },
+    {
+      id: 'l16', icon: '🏆', title: "Penser comme un maître",
+      sub: "La stratégie supérieure et la bonne méthode",
+      lessons: [
+        { id: 'l16a', type: 'info', title: "La prophylaxie",
+          fen: 'r1bq1rk1/ppp1bppp/2np1n2/4p3/2B1P3/2NP1N2/PPP2PPP/R1BQ1RK1 w - - 0 1',
+          intro: "Le secret des grands joueurs : la <b>prophylaxie</b>. Avant de jouer ton plan, demande-toi toujours : « Que veut faire mon adversaire ? Quelle est SA menace ? » — puis <b>empêche-la</b> d'abord. Un maître ne pense pas seulement à son propre jeu : il anticipe et neutralise les idées adverses avant qu'elles n'arrivent. Un coup qui améliore ta position <b>et</b> gêne l'adversaire est un coup parfait." },
+        { id: 'l16b', type: 'info', title: "Évaluer une position",
+          fen: 'r2q1rk1/pp2bppp/2n1pn2/2pp4/3P4/2PBPN2/PP1N1PPP/R1BQ1RK1 w - - 0 1',
+          intro: "Pour choisir un plan, <b>évalue</b> la position selon 5 critères : <b>1) le matériel</b> (qui a plus de pièces ?), <b>2) la sécurité des Rois</b>, <b>3) l'activité des pièces</b> (qui est mieux développé, mieux placé ?), <b>4) la structure de pions</b> (faiblesses, pions passés), <b>5) le centre et l'espace</b>. Celui qui mène sur la plupart de ces points est mieux — et doit jouer pour attaquer. Celui qui est moins bien doit défendre et simplifier." },
+        { id: 'l16c', type: 'info', title: "Quand échanger (et convertir)",
+          fen: '6k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1',
+          intro: "Savoir <b>échanger</b> au bon moment est un art. Règles sûres : quand tu as <b>plus de matériel</b>, <b>échange les pièces</b> (pas les pions !) — moins il reste de pièces, plus ton avantage se voit, et plus la finale est facile à gagner. Quand tu <b>attaques</b>, garde au contraire tes attaquants. Échange tes pièces <b>passives</b> contre les pièces <b>actives</b> de l'adversaire. Convertir un avantage, c'est simplifier vers une finale gagnante, sans précipitation." },
+        { id: 'l16d', type: 'goal', title: "Toujours chercher le mat !",
+          fen: 'r5k1/5ppp/8/8/8/8/5PPP/R5K1 w - - 0 1', preselect: 'a1', goal: 'mate',
+          intro: "La leçon finale, celle qu'oublient même les joueurs avancés : <b>avant de gagner du matériel, cherche TOUJOURS s'il y a un mat.</b> Ici, on pourrait jouer tranquillement… mais il y a bien mieux. Examine les <b>échecs</b> d'abord !",
+          task: "Trouve l'échec et mat en un coup.",
+          hint: "Txa8 : ta Tour capture la Tour adverse ET donne échec sur la dernière rangée. Le Roi, muré par f7/g7/h7, est mat. Toujours vérifier les échecs d'abord !",
+          done: "Txa8 mat ! 🏆 Tu as terminé l'Académie — du plateau vide jusqu'à la pensée de maître. Félicitations, champion !" },
+        { id: 'l16e', type: 'info', title: "Les erreurs classiques à bannir",
+          fen: 'start',
+          intro: "Pour franchir un palier, élimine ces erreurs fréquentes : jouer <b>trop vite</b> (vérifie toujours si ton coup laisse une pièce en prise, ou s'il rate l'échec adverse) ; <b>oublier le plan de l'adversaire</b> (prophylaxie !) ; <b>attaquer sans avoir développé</b> ; <b>échanger sans raison</b> sa bonne pièce ; et <b>abandonner trop tôt</b> — beaucoup de parties se sauvent par un pat ou une astuce. Avant chaque coup : « Est-ce que ça laisse quelque chose en prise ? Quelle est sa menace ? »" },
+        { id: 'l16f', type: 'info', title: "Devenir fort : la méthode",
+          fen: 'start',
+          intro: "Tu connais désormais tout : pièces, tactiques, stratégie, finales, attaque. Pour continuer à progresser, la méthode des maîtres est simple : <b>1)</b> résous des <b>problèmes de tactique</b> chaque jour (c'est ce qui fait gagner le plus de points) ; <b>2)</b> <b>joue</b> des parties, puis <b>analyse</b>-les (sers-toi du mode « Jouer » et du bilan de partie de Brio) ; <b>3)</b> <b>rejoue les parties des grands maîtres</b> pour nourrir ton intuition ; <b>4)</b> apprends une ou deux ouvertures que tu aimes. Régularité + curiosité = progrès. Bonne route, et amuse-toi — c'est le plus important ! ♟️" }
       ]
     }
   ];
@@ -466,7 +635,7 @@
     h += '<button class="ac-back">← Retour au parcours</button>';
     h += '<div class="ac-lesson-grid">';
     // colonne plateau
-    h += '<div class="ac-boardcol"><div class="ac-board thb-brown pcs-classic" id="acadBoard"></div>'
+    h += '<div class="ac-boardcol"><div class="ac-board thb-brown" id="acadBoard"></div>'
        + '<div class="ac-fb" id="acadFb"></div></div>';
     // colonne texte
     h += '<div class="ac-txtcol">';
@@ -605,6 +774,7 @@
   function onSquare(sq) {
     if (solved || locked) return;
     var ls = curLv.lessons[curIdx];
+    if (ls.type === 'info') return;   // les leçons « explication » sont illustratives (plateau non interactif)
 
     // leçon « clique la bonne case »
     if (ls.type === 'click') {
