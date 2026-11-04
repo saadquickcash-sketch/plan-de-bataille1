@@ -861,7 +861,12 @@
     var ok = false;
     if (ls.goal === 'mate') ok = chess.in_checkmate();
     else if (ls.goal === 'check') ok = chess.in_check();
-    else if (ls.solution) ok = ls.solution.indexOf(mv.san) >= 0;
+    else if (ls.solution) {
+      // on compare SANS les symboles d'échec/mat : « Dd5 » accepte aussi « Dd5+ », etc.
+      var stripSan = function (s) { return String(s || '').replace(/[+#]+$/, ''); };
+      var mvN = stripSan(mv.san);
+      ok = ls.solution.some(function (s) { return stripSan(s) === mvN; });
+    }
     else ok = true;
 
     if (ok) { succeed(ls); }
