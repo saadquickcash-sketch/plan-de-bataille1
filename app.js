@@ -892,16 +892,19 @@
     return el; }
   function brioReadEnd(){ brioSeqStop(); var el=document.getElementById('brioRead'); if(el){ el.style.display='none'; el.classList.remove('paused'); var pp=el.querySelector('.br-pp'); if(pp)pp.textContent='⏸'; }
     brioSetBtn(_brBtn,false); _brBtn=null; }
-  function brioRead(text,lang,btn){
+  function brioRead(text,lang,btn,opts){
+    opts=opts||{};
     if(_seq.on && _brBtn===btn){ brioReadEnd(); return; }   // reclic sur le même bouton -> stop
     if(_seq.on){ brioReadEnd(); }
-    var c=voiceCleanTTS(text); if(!c){ try{toast("Rien à lire ici.");}catch(_){} return; }
-    var el=brioReadBar(); el.style.display='flex'; el.classList.remove('paused');
+    var c=voiceCleanTTS(text); if(!c){ if(!opts.hideBar){ try{toast("Rien à lire ici.");}catch(_){} } return; }
+    var el=brioReadBar();
+    if(opts.hideBar){ el.style.display='none'; }           // lecture sans l'encart (le texte est déjà à l'écran)
+    else { el.style.display='flex'; el.classList.remove('paused'); }
     var pp=el.querySelector('.br-pp'); if(pp)pp.textContent='⏸';
     var cap=el.querySelector('.br-cap'); var ar=(lang&&/^ar/i.test(lang));
-    if(cap){ cap.dir=ar?'rtl':'ltr'; cap.textContent=ar?'…جارٍ التحضير':'…préparation'; }
-    _brBtn=btn||null; brioSetBtn(_brBtn,true);
-    brioSeqStart(c,lang,function(chunk){ if(chunk===null)return; if(cap){ cap.textContent=chunk; cap.dir=(_seq.lang==='ar')?'rtl':'ltr'; } }, function(){ brioReadEnd(); });
+    if(cap && !opts.hideBar){ cap.dir=ar?'rtl':'ltr'; cap.textContent=ar?'…جارٍ التحضير':'…préparation'; }
+    _brBtn=btn||null; if(!opts.hideBar) brioSetBtn(_brBtn,true);
+    brioSeqStart(c,lang,function(chunk){ if(chunk===null)return; if(cap && !opts.hideBar){ cap.textContent=chunk; cap.dir=(_seq.lang==='ar')?'rtl':'ltr'; } }, function(){ brioReadEnd(); });
   }
   try{ window.brioRead=brioRead; }catch(_){}
   try{ window.brioStop=brioReadEnd; }catch(_){}

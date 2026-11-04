@@ -38,8 +38,45 @@
 
   injectCss();
   buildToolbar();
+  buildRepeater();
   Array.prototype.forEach.call(secs, enhance);
   updateProgress();
+
+  /* ---------------- التكرار للحفظ (قراءة آيات ومعاودتها n مرة) ---------------- */
+  function buildRepeater() {
+    var main = document.querySelector('main.wrap'); if (!main) return;
+    var card = document.createElement('div'); card.className = 'yrep'; card.dir = 'rtl';
+    card.innerHTML =
+      '<div class="yrep-ttl">🔁 التكرار للحفظ</div>'
+      + '<div class="yrep-sub">اختر مجال الآيات وعددَ مرات التكرار؛ تُتلى تلقائياً بصوت القارئ المختار في الأعلى، وتُعاد حتى ترسَخ في الحفظ.</div>'
+      + '<div class="yrep-row">'
+      + '<label>من الآية<input type="number" id="yrFrom" min="1" max="111" value="1" inputmode="numeric"></label>'
+      + '<label>إلى الآية<input type="number" id="yrTo" min="1" max="111" value="10" inputmode="numeric"></label>'
+      + '<label>مرات التكرار<input type="number" id="yrReps" min="1" max="99" value="3" inputmode="numeric"></label>'
+      + '<button class="ylbtn yrep-go" id="yrGo" type="button">▶ ابدأ التكرار</button>'
+      + '<button class="ylbtn" id="yrStop" type="button">⏹ إيقاف</button>'
+      + '</div><div class="yrep-msg" id="yrMsg"></div>';
+    var tb = main.querySelector('.ycard');
+    if (tb && tb.parentNode === main) main.insertBefore(card, tb.nextSibling);
+    else main.insertBefore(card, main.firstChild);
+
+    function clamp(v, lo, hi, dflt) { v = parseInt(v, 10); if (isNaN(v)) v = dflt; return Math.max(lo, Math.min(hi, v)); }
+    var msg = card.querySelector('#yrMsg');
+    card.querySelector('#yrGo').addEventListener('click', function () {
+      var f = clamp(card.querySelector('#yrFrom').value, 1, 111, 1);
+      var t = clamp(card.querySelector('#yrTo').value, 1, 111, f);
+      var r = clamp(card.querySelector('#yrReps').value, 1, 99, 1);
+      if (t < f) { var x = f; f = t; t = x; }
+      card.querySelector('#yrFrom').value = f; card.querySelector('#yrTo').value = t; card.querySelector('#yrReps').value = r;
+      if (typeof window.PB_coranPlay !== 'function') { msg.textContent = 'تعذّر تشغيل التلاوة على هذه الصفحة.'; return; }
+      try { window.PB_coranPlay(f, t, r); } catch (e) {}
+      msg.innerHTML = '▶ تُتلى الآيات <b>' + f + '</b> إلى <b>' + t + '</b>، مكرَّرةً <b>' + r + '</b> مرّة — بصوت القارئ المختار. يتطلّب اتصالاً بالإنترنت.';
+    });
+    card.querySelector('#yrStop').addEventListener('click', function () {
+      try { if (window.PB_coranStop) window.PB_coranStop(); } catch (e) {}
+      msg.textContent = 'أُوقفت التلاوة.';
+    });
+  }
 
   /* ---------------- شريط التقدّم العلوي ---------------- */
   function buildToolbar() {
@@ -180,6 +217,15 @@
       + '.yc-bar{height:12px;background:rgba(255,255,255,.22);border-radius:8px;overflow:hidden;margin:14px 0 8px}'
       + '.yc-fill{height:100%;width:0;background:linear-gradient(90deg,#f4d03f,#2fd08a);border-radius:8px;transition:width .6s ease}'
       + '.yc-stat{font-size:.86rem;opacity:.96}'
+      + '.yrep{background:var(--surface,var(--card));border:1px solid var(--border);border-right:5px solid var(--royal,#2f6ca8);border-radius:16px;padding:16px 18px;margin:0 0 18px}'
+      + '.yrep-ttl{font-family:Amiri,serif;font-size:1.25rem;font-weight:700;color:var(--royal,#2f6ca8)}'
+      + '.yrep-sub{font-size:.88rem;color:var(--muted);margin:4px 0 12px;line-height:1.6}'
+      + '.yrep-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}'
+      + '.yrep-row label{display:flex;flex-direction:column;gap:5px;font-size:.82rem;font-weight:700;color:var(--muted)}'
+      + '.yrep-row input{width:92px;padding:9px 11px;border:1px solid var(--border);border-radius:10px;font-size:1rem;font-family:inherit;background:var(--card);color:var(--text);text-align:center}'
+      + '.yrep-go{background:var(--royal,#2f6ca8)!important;color:#fff!important;border:0!important}'
+      + '.yrep-go:hover{filter:brightness(1.1)}'
+      + '.yrep-msg{margin-top:11px;font-size:.9rem;line-height:1.6;color:var(--text);min-height:1.1em}'
       + '.ylrn{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}'
       + '.ylbtn{font-family:inherit;font-size:.86rem;font-weight:700;padding:8px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface,var(--card));color:var(--text);cursor:pointer;transition:.15s}'
       + '.ylbtn:hover{border-color:var(--royal,#2f6ca8);transform:translateY(-1px)}'

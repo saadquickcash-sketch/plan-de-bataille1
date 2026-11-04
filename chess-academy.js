@@ -69,8 +69,9 @@
     return notationToSpeech(parts.join('. '));   // le texte est déjà en notation française
   }
   function speakText(htmlOrText, btn) { speakNow(notationToSpeech(stripHtml(htmlOrText)), btn || null); }
-  function speak(text, btn) { try { if (voiceOn && window.brioRead && text) window.brioRead(text, 'fr', btn || null); } catch (e) {} }
-  function speakNow(text, btn) { try { if (window.brioRead && text) window.brioRead(text, 'fr', btn || null); } catch (e) {} }
+  // hideBar:true → on lit à voix haute SANS afficher l'encart (le texte est déjà à l'écran)
+  function speak(text, btn) { try { if (voiceOn && window.brioRead && text) window.brioRead(text, 'fr', btn || null, { hideBar: true }); } catch (e) {} }
+  function speakNow(text, btn) { try { if (window.brioRead && text) window.brioRead(text, 'fr', btn || null, { hideBar: true }); } catch (e) {} }
   function stopSpeak() { try { if (window.brioStop) window.brioStop(); } catch (e) {} }
   try { window.__ACAD = { sanEnToFr: sanEnToFr, notationToSpeech: notationToSpeech, frMoveToSpeech: frMoveToSpeech }; } catch (e) {}
 
