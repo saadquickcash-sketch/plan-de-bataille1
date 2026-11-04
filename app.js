@@ -126,7 +126,7 @@
     });
   });
   // ===== Tuteur IA — chat intégré (compact + plein écran, multi-conversations) =====
-  var SYS="Tu es « Brio », le professeur particulier personnel et l'assistant IA de ton élève. Ton nom est Brio : présente-toi toujours ainsi, et si on te demande qui tu es, réponds simplement « Je suis Brio, ton professeur particulier ». Ton élève est en 1ère année du Baccalauréat Sciences Mathématiques (filière BIOF, programme marocain) au Groupe scolaire Fès City, région Fès-Meknès, Maroc. Objectif de l'élève : une moyenne générale supérieure à 17,5/20. Ton but n'est pas seulement de donner la réponse, mais de la lui faire COMPRENDRE en profondeur. MÉTHODE (à appliquer à chaque fois) : 1) Assure-toi d'avoir compris la question ; si elle est ambiguë, pose UNE courte question de clarification avant de te lancer. 2) Explique étape par étape, du plus simple au plus complexe, en définissant chaque terme ou notion nouvelle. 3) Illustre toujours par un exemple concret, puis propose un petit exercice d'application. 4) Quand c'est utile, guide l'élève par une question (méthode socratique) au lieu de tout donner d'un coup. 5) Termine par un récapitulatif court et une prochaine étape claire. RIGUEUR (très important) : avant de donner un résultat de calcul en maths ou en physique-chimie, REFAIS le calcul mentalement pour le vérifier, contrôle les unités et les cas particuliers. N'invente JAMAIS une formule, une définition, une date, une citation ou une source : si tu n'es pas sûr, dis-le honnêtement plutôt que d'inventer. Reste strictement dans le programme de 1ère Bac SM marocain (n'utilise pas de notions hors-programme). STYLE : réponds en français (ou en arabe si la question est en arabe), avec des paragraphes courts et une mise en forme claire ; écris les formules de façon lisible et mets en évidence le résultat important. Sois chaleureux, encourageant et jamais condescendant. ÉLÉGANCE (écris comme un excellent pédagogue) : commence par l'essentiel, va droit au but, aère ton texte ; n'emploie le gras que pour les points vraiment clés ; préfère des phrases fluides à une accumulation de puces ; une réponse soignée, précise et agréable à lire vaut mieux qu'une réponse longue et brouillonne. Priorité aux Maths (coef 9) et à la Physique-Chimie (coef 7), mais tu maîtrises aussi SVT, français (œuvres au programme : Le Dernier Jour d'un Condamné, La Boîte à Merveilles, Antigone), philosophie, histoire-géographie, arabe, éducation islamique et anglais. RÉFLEXION (ta manière de penser) : avant de répondre, prends un instant pour réfléchir en silence — identifie ce que l'élève sait déjà et où se situe PRÉCISÉMENT sa difficulté, décompose le problème en petites étapes, choisis la voie la plus simple, puis rédige une réponse claire. Anticipe l'erreur classique sur ce point et préviens-la. Si plusieurs méthodes existent, montre la plus efficace pour un élève de ce niveau, et dis pourquoi. PROACTIVITÉ : propose spontanément l'outil du site le plus utile au bon moment — un QCM interactif pour se tester, une fiche ou une série d'exercices imprimable, un planning, ou l'ouverture de la bonne leçon — sans attendre qu'on te le demande, dès que cela aide vraiment l'élève.";
+  var SYS="Tu es « Brio », le professeur particulier personnel et l'assistant IA de ton élève. Ton nom est Brio : présente-toi toujours ainsi, et si on te demande qui tu es, réponds simplement « Je suis Brio, ton professeur particulier ». Ton élève est en 1ère année du Baccalauréat Sciences Mathématiques (filière BIOF, programme marocain) au Groupe scolaire Fès City, région Fès-Meknès, Maroc. Objectif de l'élève : une moyenne générale supérieure à 17,5/20. Ton but n'est pas seulement de donner la réponse, mais de la lui faire COMPRENDRE en profondeur. MÉTHODE (à appliquer à chaque fois) : 1) Assure-toi d'avoir compris la question ; si elle est ambiguë, pose UNE courte question de clarification avant de te lancer. 2) Explique étape par étape, du plus simple au plus complexe, en définissant chaque terme ou notion nouvelle. 3) Illustre toujours par un exemple concret, puis propose un petit exercice d'application. 4) Quand c'est utile, guide l'élève par une question (méthode socratique) au lieu de tout donner d'un coup. 5) Termine par un récapitulatif court et une prochaine étape claire. RIGUEUR (très important) : avant de donner un résultat de calcul en maths ou en physique-chimie, REFAIS le calcul mentalement pour le vérifier, contrôle les unités et les cas particuliers. N'invente JAMAIS une formule, une définition, une date, une citation ou une source : si tu n'es pas sûr, dis-le honnêtement plutôt que d'inventer. Reste strictement dans le programme de 1ère Bac SM marocain (n'utilise pas de notions hors-programme). LANGUE (règle absolue) : réponds TOUJOURS dans la langue du message de l'élève — s'il écrit en arabe, réponds entièrement en arabe sans y mêler de français ; s'il écrit en français, réponds en français ; s'il te demande d'expliquer un passage, réponds dans la langue de ce passage. STYLE : avec des paragraphes courts et une mise en forme claire ; écris les formules de façon lisible et mets en évidence le résultat important. Sois chaleureux, encourageant et jamais condescendant. ÉLÉGANCE (écris comme un excellent pédagogue) : commence par l'essentiel, va droit au but, aère ton texte ; n'emploie le gras que pour les points vraiment clés ; préfère des phrases fluides à une accumulation de puces ; une réponse soignée, précise et agréable à lire vaut mieux qu'une réponse longue et brouillonne. Priorité aux Maths (coef 9) et à la Physique-Chimie (coef 7), mais tu maîtrises aussi SVT, français (œuvres au programme : Le Dernier Jour d'un Condamné, La Boîte à Merveilles, Antigone), philosophie, histoire-géographie, arabe, éducation islamique et anglais. RÉFLEXION (ta manière de penser) : avant de répondre, prends un instant pour réfléchir en silence — identifie ce que l'élève sait déjà et où se situe PRÉCISÉMENT sa difficulté, décompose le problème en petites étapes, choisis la voie la plus simple, puis rédige une réponse claire. Anticipe l'erreur classique sur ce point et préviens-la. Si plusieurs méthodes existent, montre la plus efficace pour un élève de ce niveau, et dis pourquoi. PROACTIVITÉ : propose spontanément l'outil du site le plus utile au bon moment — un QCM interactif pour se tester, une fiche ou une série d'exercices imprimable, un planning, ou l'ouverture de la bonne leçon — sans attendre qu'on te le demande, dès que cela aide vraiment l'élève.";
   var fab=document.getElementById('fab'),panel=document.getElementById('chatpanel');
   if(!fab||!panel) return;
   var msgsEl=document.getElementById('chatMsgs'),input=document.getElementById('chatInput'),send=document.getElementById('chatSend');
@@ -307,6 +307,16 @@
       +' PLANNING INTELLIGENT : quand tu crées un planning, sers-toi de la MÉMOIRE DE L\'ÉLÈVE pour le PERSONNALISER — réserve des créneaux PRÉCIS aux chapitres exacts où il est faible (nomme chaque chapitre, et propose de l\'ouvrir avec l\'outil "aller"), équilibre selon les coefficients (Maths, Physique-Chimie d\'abord), rends-le concret (tableau jour par jour) et motivant. Rends-le DIFFÉRENT à chaque fois (structure, conseils, ordre variés) — jamais deux plannings identiques. Termine en proposant de lancer un QCM interactif court pour démarrer.'
       +' QCM DYNAMIQUE : chaque QCM ou série d\'exercices que tu génères doit contenir des questions NOUVELLES et VARIÉES — change les énoncés, les nombres, l\'ordre, les angles et la difficulté à chaque fois. Ne repose JAMAIS exactement les mêmes questions que la fois précédente.';
     return SYS+extra+cap+proto+teach+agMemText()+' '+pageCtx(); }
+  /* ---- Langue : répondre TOUJOURS dans la langue de l'élève (arabe / français) ---- */
+  function detectLang(t){ t=String(t||''); var ar=(t.match(/[؀-ۿ]/g)||[]).length; var la=(t.match(/[A-Za-zÀ-ÖØ-öø-ÿ]/g)||[]).length; return (ar>0 && ar>=la) ? 'ar' : 'fr'; }
+  function langLockMsg(lang){
+    if(lang==='ar') return 'تعليماتُ اللغة (الأهمُّ، وتَعلو على كلِّ التعليماتِ الفرنسيةِ الواردةِ أعلاه): رسالةُ التلميذِ بالعربية، فأجِبْ بالكاملِ بالعربيةِ الفصحى. اكتُبْ كلَّ شيءٍ بالعربية — العناوينَ والشرحَ والأمثلةَ والتمارينَ والخاتمةَ — ولا تُدخِلْ أيَّ كلمةٍ أو جملةٍ بالفرنسية (يُسمحُ فقط بالمصطلحاتِ العلميةِ العالميةِ وبرموزِ الرياضياتِ و LaTeX عند الحاجة). وإنِ اختارَ التلميذُ مقطعاً من القرآنِ أو نصّاً عربيّاً ليُشرَحَ له، فاشرَحْهُ بالعربيةِ بأسلوبٍ مبسَّطٍ ومحترَم. مهمٌّ جِدّاً: لا تُترجِمْ صيغةَ الأدواتِ ولا مفاتيحَها — أبقِ [[PB]] و[[MEM]] ومفاتيحَهُما (outil, args, titre, matiere, lang…) كما هي تماماً؛ أمّا النصوصُ الظاهرةُ وقيَمُ النصِّ داخلَ الأدواتِ فاكتُبها بالعربيةِ وضَعْ "lang":"ar".';
+    return 'LANGUE (règle prioritaire) : le message de l\'élève est en français — réponds entièrement en français, sans y mêler d\'arabe (sauf s\'il le demande expressément).';
+  }
+  function lastUserText(c){ try{ for(var i=c.msgs.length-1;i>=0;i--){ if(c.msgs[i].role==='user') return c.msgs[i].content||''; } }catch(e){} return ''; }
+  try{ window.__PB_AITEST={ detectLang:detectLang, langLock:langLockMsg, msgsForAPI:msgsForAPI,
+    textToQuiz:(typeof agTextToQuiz==='function'?agTextToQuiz:null), textToSurvey:(typeof agTextToSurvey==='function'?agTextToSurvey:null) }; }catch(e){}
+
   function msgsForAPI(c){ var base=[{role:'system',content:sysText()}];
     try{ if(_webCtx) base.push({role:'system',content:_webCtx}); }catch(e){}
     try{ var lastU=''; for(var i=c.msgs.length-1;i>=0;i--){ if(c.msgs[i].role==='user'){ lastU=c.msgs[i].content||''; break; } }
@@ -319,8 +329,10 @@
       else if(pendingForceMedia==='video'){ var _vm=pendingMediaMin||0, _vsec=_vm?Math.min(22,Math.max(8,_vm*2)):12, _vwords=_vm?_vm*145:0, _vper=_vm?Math.round(_vwords/_vsec):0;
         var _vdur=_vm?(' DURÉE IMPÉRATIVE : l\'élève veut une vidéo d\'environ '+_vm+' minute(s). Comme la durée de la vidéo = durée de ta narration lue à voix haute (~145 mots/minute), tu DOIS écrire AU TOTAL environ '+_vwords+' mots de narration (champs VOIX), répartis sur '+_vsec+' sections, soit en moyenne ~'+_vper+' mots de VOIX par section. DÉVELOPPE vraiment : explique en profondeur, reformule, détaille chaque étape, ajoute plusieurs exemples et exercices corrigés — comme un vrai cours de '+_vm+' minutes. Ne sois pas bref.'):' Mets 8 à 14 sections (jusqu\'à ~20 si l\'élève veut « détaillé/complet/long »), et développe la narration VOIX (3 à 6 phrases par section).';
         base.push({role:'system',content:'VIDÉO DE COURS (impératif) : l\'élève veut une vidéo. N\'écris NI JSON NI balise [[PB]]. Rédige un VRAI COURS COMPLET façon professeur, structuré en SECTIONS où CHAQUE section devient une diapo. Format EXACT, répété pour chaque section :\n## TYPE | Titre court de la diapo\n- point clé bref\n- autre point bref\nVOIX: les phrases que la voix doit dire pour cette diapo (claires, naturelles, SANS symboles ni LaTeX : dis « u indice n », « racine de 2 », « x au carré »)\n\nTYPE ∈ INTRO, COURS, EXEMPLE, EXERCICE, CORRECTION, CONCLUSION. Dans les TITRES et les PUCES, écris les maths en notation SIMPLE et lisible (ex. u(n), u(n+1) = f(u(n)), racine de 2), SANS LaTeX ni $ ; tu peux ajouter une ligne « Formule: … » pour UNE formule clé à afficher. Enchaîne la trame d\'un vrai cours : une INTRO, plusieurs sections COURS (explication progressive), au moins un EXEMPLE résolu, un ou deux EXERCICE d\'application PUIS leur CORRECTION détaillée, et une section CONCLUSION « à retenir ».'+_vdur+' N\'écris AUCUN autre texte avant la première section ni après la dernière.'}); }
-      if(pendingForceQuiz){ base.push({role:'system',content:'QCM INTERACTIF (impératif) : l\'élève veut un QCM interactif dans le chat. Réponds UNIQUEMENT par un QCM au FORMAT TEXTE EXACT ci-dessous — SANS aucune balise, SANS JSON, SANS LaTeX ni antislash (écris les maths en clair avec des symboles : lim, x→0, x², √, ≤, ≥, ∞, π, sin(x)/x). Format pour CHAQUE question :\n1) énoncé de la question ?\nA) premier choix\nB) deuxième choix\nC) troisième choix\nD) quatrième choix\nRéponse : B\nExplication : courte explication de la bonne réponse\n\nEnchaîne ainsi 5 questions (2), 3) …), ou le nombre demandé par l\'élève. Chaque question a 4 choix (A à D), une ligne « Réponse : <lettre> » et une ligne « Explication : … ». N\'écris AUCUNE introduction ni conclusion, seulement les questions à ce format.'}); } }catch(_){}
+      if(pendingForceQuiz){ base.push({role:'system',content:'QCM INTERACTIF (impératif) : l\'élève veut un QCM interactif dans le chat. Réponds UNIQUEMENT par un QCM au FORMAT TEXTE EXACT ci-dessous — SANS aucune balise, SANS JSON, SANS LaTeX ni antislash (écris les maths en clair avec des symboles : lim, x→0, x², √, ≤, ≥, ∞, π, sin(x)/x). Format pour CHAQUE question :\n1) énoncé de la question ?\nA) premier choix\nB) deuxième choix\nC) troisième choix\nD) quatrième choix\nRéponse : B\nExplication : courte explication de la bonne réponse\n\nEnchaîne ainsi 5 questions (2), 3) …), ou le nombre demandé par l\'élève. Chaque question a 4 choix (A à D), une ligne « Réponse : <lettre> » et une ligne « Explication : … ». N\'écris AUCUNE introduction ni conclusion, seulement les questions à ce format. LANGUE : écris les énoncés et les choix DANS LA LANGUE de l\'élève (entièrement en arabe s\'il a écrit en arabe), tout en GARDANT les lettres d\'option A) B) C) D) ; pour l\'arabe tu peux écrire les deux lignes ainsi : « الإجابة: B » و « الشرح: … ».'}); } }catch(_){}
     }catch(e){}
+    // VERROU DE LANGUE (placé en dernier → le plus saillant) : la réponse suit la langue de l'élève.
+    try{ base.push({role:'system',content:langLockMsg(detectLang(lastUserText(c)))}); }catch(_){}
     // Pour un MÉDIA forcé (vidéo/MP3/carte), on n'a pas besoin de tout l'historique : on limite le payload
     // au dernier message — sinon une longue conversation fait échouer l'IA premium (repli sur l'IA gratuite).
     if(pendingForceMedia){ var lastU=null; for(var li=c.msgs.length-1; li>=0; li--){ if(c.msgs[li].role==='user'){ lastU=c.msgs[li]; break; } } return base.concat(lastU?[{role:'user',content:lastU.content}]:c.msgs.slice(-1)); }
@@ -351,8 +363,10 @@
     var base=String(userText||'').replace(/\s+/g,' ').trim();
     var fallback=base.slice(0,42);
     if(base.length<2) return fallback;
-    var prompt='Donne UNIQUEMENT un titre court de 3 à 6 mots, en français, qui résume ce sujet. '
-      +'Pas de phrase, pas de guillemets, pas de ponctuation finale, ne commence pas par « Titre ». Sujet : '+base.slice(0,240);
+    var prompt = detectLang(base)==='ar'
+      ? ('أعطِ فقط عنواناً قصيراً من 3 إلى 6 كلمات بالعربية يُلخِّص هذا الموضوع. بدون جملة، بدون علامات اقتباس، بدون نقطة في النهاية، ولا تبدأ بكلمة «عنوان». الموضوع: '+base.slice(0,240))
+      : ('Donne UNIQUEMENT un titre court de 3 à 6 mots, en français, qui résume ce sujet. '
+      +'Pas de phrase, pas de guillemets, pas de ponctuation finale, ne commence pas par « Titre ». Sujet : '+base.slice(0,240));
     // 1) Backend premium (fiable) — marche pour tout élève connecté
     try{
       var r1=await callPremiumAI([{role:'user',content:prompt}]);
@@ -669,7 +683,12 @@
   window.addEventListener('resize',function(){ if(selShown) handleSel(); });
   if(selAsk){
     function doAsk(e){ if(e){ e.preventDefault(); e.stopPropagation(); } var t=selAsk.getAttribute('data-txt')||''; selAsk.removeAttribute('data-txt'); hideSel(); try{ var s=window.getSelection(); if(s) s.removeAllRanges(); }catch(_){}
-      if(!t) return; openPanel(); ask('Explique-moi ce passage sélectionné sur la page, et aide-moi à le comprendre :\n\n« '+t+' »'); }
+      if(!t) return; openPanel();
+      // on pose la question DANS LA LANGUE du passage sélectionné (ex. un verset arabe → question en arabe → réponse en arabe)
+      var _sp = detectLang(t)==='ar'
+        ? ('اشرَحْ لي هذا المقطعَ الذي اخترتُه من الصفحة، وبسِّطْه لي حتى أفهمَه جيّداً، بالعربية:\n\n« '+t+' »')
+        : ('Explique-moi ce passage sélectionné sur la page, et aide-moi à le comprendre :\n\n« '+t+' »');
+      ask(_sp); }
     selAsk.addEventListener('mousedown',function(e){ e.preventDefault(); });
     selAsk.addEventListener('touchstart',function(e){ e.preventDefault(); e.stopPropagation(); },{passive:false});
     selAsk.addEventListener('touchend',doAsk,{passive:false});
@@ -766,13 +785,14 @@
     var _isPrem=false; try{ _isPrem=!!(window.PB_isPremium && window.PB_isPremium()); }catch(_){}
     try{ window.PB_LAST_AI=_isPrem?'premium':'free'; if(window.PB_paintAiBadge) window.PB_paintAiBadge(); }catch(_){}
     // Premium : IA vision puissante via /api/chat (envoie toutes les images)
+    var _vlock=langLockMsg(detectLang(text));
     try{ if(_isPrem){
-      var pmsgs=[{role:'system',content:sysText()},{role:'user',content:content()}];
+      var pmsgs=[{role:'system',content:sysText()},{role:'system',content:_vlock},{role:'user',content:content()}];
       var pr=await callPremiumAI(pmsgs); if(pr){ draft=pr; try{ window.PB_LAST_AI='premium'; }catch(_){} }
     } }catch(e){}
     if(!draft){ try{ window.PB_LAST_AI='free'; if(window.PB_paintAiBadge) window.PB_paintAiBadge(); }catch(_){} }
     if(!draft){ try{ var ok=await ensurePuter(); if(ok){ var r= imgs.length>1 ? await puter.ai.chat(q,imgs) : await puter.ai.chat(q,imgs[0]); var t=extract(r); if(t&&t.trim()){ draft=t.trim(); try{ window.PB_LAST_AI='free'; }catch(_){} } } }catch(e){} }
-    if(!draft){ try{ var msgs=[{role:'system',content:sysText()},{role:'user',content:content()}];
+    if(!draft){ try{ var msgs=[{role:'system',content:sysText()},{role:'system',content:_vlock},{role:'user',content:content()}];
       var res=await fetch('https://text.pollinations.ai/openai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openai',messages:msgs})});
       if(res.ok){ var j=await res.json(); var t2=extract(j); if(t2&&t2.trim()){ draft=t2.trim(); try{ window.PB_LAST_AI='free'; }catch(_){} } } }catch(e){} }
     if(!draft) throw new Error('vision indisponible');
@@ -2181,20 +2201,24 @@ function agMakePlanning(vals){ vals=vals||[];
 }
 
 /* -- Conversion automatique : un QCM/questionnaire écrit en TEXTE -> questionnaire cliquable -- */
+/* Convertit une lettre de choix (A-H ou أ ب ج د ه …) en indice 0-based */
+var AG_AR_LET={'أ':0,'إ':0,'ا':0,'ب':1,'ج':2,'د':3,'ه':4,'و':5,'ز':6,'ح':7};
+function agLetterIdx(ch){ ch=String(ch||'').trim(); var i='ABCDEFGH'.indexOf(ch.toUpperCase()); if(i>=0) return i; if(AG_AR_LET[ch]!=null) return AG_AR_LET[ch]; return -1; }
+
 function agTextToSurvey(text){
   if(!text) return null;
   var lines=String(text).replace(/\r/g,'').split('\n');
   var qs=[], curq=null, intro=[], seenQ=false;
-  var ore=/^\s*[-*•]?\s*(?:\*\*)?\s*([A-Ha-h])\s*[).\-–]\s*(.+?)\s*(?:\*\*)?\s*$/;
-  var qnum=/^\s*(?:\*\*)?\s*\d+[.)]\s*(.+)$/;
+  var ore=/^\s*[-*•]?\s*(?:\*\*)?\s*([A-Ha-hأإابجدهوزح])\s*[).\-–]\s*(.+?)\s*(?:\*\*)?\s*$/;
+  var qnum=/^\s*(?:\*\*)?\s*(?:السؤال\s*|س\s*)?[\d٠-٩]+\s*[.)؛]\s*(.+)$/;
   for(var i=0;i<lines.length;i++){ var l=lines[i]; if(!l.trim()) continue;
     var om=l.match(ore);
     if(om && curq){ curq.choix.push(om[2].trim().replace(/\*+/g,'')); continue; }
     var qtext=null; var qn=l.match(qnum);
     if(qn){ qtext=qn[1]; }
-    else if(/\?\s*(\*\*)?\s*$/.test(l) && !om){ qtext=l; }
+    else if(/[?؟]\s*(\*\*)?\s*$/.test(l) && !om){ qtext=l; }
     if(qtext){ if(curq && curq.choix.length>=2) qs.push(curq);
-      curq={q:qtext.replace(/\*+/g,'').replace(/^#+\s*/,'').trim(), choix:[], multi:/quels|quelles|plusieurs|coche|s[ée]lectionne|plusieurs r[ée]ponses/i.test(qtext)}; seenQ=true; continue; }
+      curq={q:qtext.replace(/\*+/g,'').replace(/^#+\s*/,'').trim(), choix:[], multi:/quels|quelles|plusieurs|coche|s[ée]lectionne|plusieurs r[ée]ponses|عدة|أكثر من|اختر كل|متعدد/i.test(qtext)}; seenQ=true; continue; }
     if(!seenQ) intro.push(l.replace(/\*+/g,''));
   }
   if(curq && curq.choix.length>=2) qs.push(curq);
@@ -2208,21 +2232,21 @@ function agTextToQuiz(text){
   if(!text) return null;
   var lines=String(text).replace(/\r/g,'').split('\n');
   var qs=[], curq=null;
-  var ore=/^\s*[-*•]?\s*(?:\*\*)?\s*([A-Ha-h])\s*[).\-–]\s*(.+?)\s*(?:\*\*)?\s*$/;
-  var qnum=/^\s*(?:\*\*)?\s*(?:question\s*)?\d+[.)]\s*(.+)$/i;
-  var ansre=/^\s*(?:\*\*)?\s*(?:la\s+)?(?:bonne\s+r[ée]ponse|r[ée]ponse(?:\s+correcte)?|correct(?:e)?|solution)\s*(?:\*\*)?\s*[:=\-–)]*\s*(?:est\s+)?(?:\*\*)?\s*([A-Ha-h])\b/i;
-  var expre=/^\s*(?:\*\*)?\s*(?:explication|justification|pourquoi)\s*(?:\*\*)?\s*[:=\-–]?\s*(.+)$/i;
+  var ore=/^\s*[-*•]?\s*(?:\*\*)?\s*([A-Ha-hأإابجدهوزح])\s*[).\-–]\s*(.+?)\s*(?:\*\*)?\s*$/;
+  var qnum=/^\s*(?:\*\*)?\s*(?:question\s*|السؤال\s*|س\s*)?[\d٠-٩]+\s*[.)؛]\s*(.+)$/i;
+  var ansre=/^\s*(?:\*\*)?\s*(?:(?:la\s+)?(?:bonne\s+r[ée]ponse|r[ée]ponse(?:\s+correcte)?|correct(?:e)?|solution)|الإجابةُ?\s*الصحيحة|الإجابة|الجواب\s*الصحيح|الجواب|الصحيح)\s*(?:\*\*)?\s*[:=\-–)：]*\s*(?:est\s+|هي\s*[:：]?\s*)?(?:\*\*)?\s*([A-Ha-hأإابجدهوزح])/i;
+  var expre=/^\s*(?:\*\*)?\s*(?:explication|justification|pourquoi|الشرح|التفسير|التعليل|السبب|لماذا)\s*(?:\*\*)?\s*[:=\-–：]?\s*(.+)$/i;
   function pushCur(){ if(curq && curq.choix.length>=2 && curq.correct!=null && curq.correct>=0 && curq.correct<curq.choix.length) qs.push(curq); }
   for(var i=0;i<lines.length;i++){ var l=lines[i]; if(!l.trim()) continue;
     var am=l.match(ansre);
-    if(am && curq){ var L='ABCDEFGH'.indexOf(am[1].toUpperCase()); if(L>=0) curq.correct=L; continue; }
+    if(am && curq){ var L=agLetterIdx(am[1]); if(L>=0) curq.correct=L; continue; }
     var em=l.match(expre);
     if(em && curq){ curq.exp=(curq.exp?curq.exp+' ':'')+em[1].replace(/\*+/g,'').trim(); continue; }
     var om=l.match(ore);
     if(om && curq){ curq.choix.push(om[2].trim().replace(/\*+/g,'')); continue; }
     var qn=l.match(qnum); var qtext=null;
     if(qn){ qtext=qn[1]; }
-    else if(/\?\s*(\*\*)?\s*$/.test(l) && !om){ qtext=l; }
+    else if(/[?؟]\s*(\*\*)?\s*$/.test(l) && !om){ qtext=l; }
     if(qtext){ pushCur(); curq={q:qtext.replace(/\*+/g,'').replace(/^#+\s*/,'').trim(), choix:[], correct:null, exp:''}; }
   }
   pushCur();
