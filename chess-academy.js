@@ -591,6 +591,206 @@
           hint: "Pas à pas : réduis l'espace du Roi avec la Dame (sans pat !), approche ton Roi, puis assène le mat. Pense à la position finale et remonte.",
           done: "🏆 DIPLÔME DE MAÎTRE ! Tu as terminé toute l'Académie — des règles de base jusqu'au mat en 3 calculé. Bravo, champion. Continue à t'entraîner et à jouer : le meilleur reste à venir !" }
       ]
+    },
+
+    /* ================== NIVEAU 19 — OUVERTURES EN BLANCS ================== */
+    {
+      id: 'l19', icon: '📘', title: "Ouvertures — avec les Blancs",
+      sub: "Jouer l'ouverture coup par coup, et comprendre chaque coup",
+      lessons: [
+        { id: 'l19a', type: 'info', title: "Les 3 principes de l'ouverture",
+          fen: 'start',
+          intro: "Une bonne ouverture tient en <b>trois principes</b> : <b>1) occuper le centre</b> (les pions e et d), <b>2) développer</b> ses pièces légères (Cavaliers et Fous) vers des cases actives, <b>3) mettre le Roi à l'abri</b> par le roque. À partir d'ici, tu <b>joues toi-même</b> les coups de la théorie : glisse ou clique la pièce, et l'adversaire répondra. Chaque coup est expliqué." },
+        { id: 'l19b', type: 'line', orient: 'w', title: "La partie Italienne",
+          fen: 'start',
+          intro: "L'<b>Italienne</b> est l'ouverture idéale pour apprendre : chaque pièce va à sa place naturelle et les trois principes sont respectés.",
+          task: "Joue les coups des <b>Blancs</b>. L'adversaire répond tout seul.",
+          done: "Italienne maîtrisée ! Développement harmonieux et Roi à l'abri.",
+          line: [
+            { san: 'e4',  note: "On occupe le centre et on ouvre les lignes du Fou f1 et de la Dame." },
+            { san: 'e5',  note: "Les Noirs contestent le centre symétriquement." },
+            { san: 'Nf3', note: "On attaque le pion e5 tout en développant un Cavalier vers le centre." },
+            { san: 'Nc6', note: "Les Noirs défendent e5 en développant à leur tour." },
+            { san: 'Bc4', note: "Le Fou vise f7, la case la plus fragile du camp noir." },
+            { san: 'Bc5', note: "Les Noirs imitent : Fou actif pointé vers f2." },
+            { san: 'c3',  note: "On prépare d4 pour bâtir un grand centre de pions." },
+            { san: 'Nf6', note: "Les Noirs se développent et attaquent e4." },
+            { san: 'd3',  note: "On soutient solidement e4 (le calme « Giuoco Pianissimo »)." },
+            { san: 'd6',  note: "Les Noirs soutiennent e5 de la même manière." },
+            { san: 'O-O', note: "Le petit roque : priorité en ouverture, le Roi est en sécurité." },
+            { san: 'O-O', note: "Les Noirs roquent aussi. Développement terminé des deux côtés !" }
+          ] },
+        { id: 'l19c', type: 'line', orient: 'w', title: "L'Espagnole (Ruy López)",
+          fen: 'start',
+          intro: "La <b>Ruy López</b> est l'une des ouvertures les plus respectées : les Blancs mettent une pression durable sur le pion e5 via le Cavalier c6.",
+          task: "Joue les coups des <b>Blancs</b> de l'Espagnole.",
+          done: "Espagnole jouée comme un livre ! Une pression saine et durable.",
+          line: [
+            { san: 'e4',  note: "Le centre, d'abord." },
+            { san: 'e5',  note: "Réponse classique au centre." },
+            { san: 'Nf3', note: "On attaque e5 immédiatement." },
+            { san: 'Nc6', note: "Les Noirs défendent e5." },
+            { san: 'Bb5', note: "L'Espagnole : le Fou attaque le Cavalier qui défend e5 (clouage indirect)." },
+            { san: 'a6',  note: "Le coup Morphy : les Noirs questionnent le Fou." },
+            { san: 'Ba4', note: "On maintient la pression en gardant la diagonale vers c6." },
+            { san: 'Nf6', note: "Les Noirs se développent et attaquent e4." },
+            { san: 'O-O', note: "On roque : la sécurité d'abord, e4 est défendable ensuite." },
+            { san: 'Be7', note: "Les Noirs préparent leur propre roque." },
+            { san: 'Re1', note: "La Tour soutient e4 et occupe la colonne e." },
+            { san: 'b5',  note: "Les Noirs repoussent le Fou avant de consolider." },
+            { san: 'Bb3', note: "Le Fou se replie sur la diagonale a2-g8, toujours braqué vers f7." },
+            { san: 'd6',  note: "Les Noirs consolident e5 : position espagnole typique." }
+          ] },
+        { id: 'l19d', type: 'line', orient: 'w', title: "Le Gambit Dame (refusé)",
+          fen: 'start',
+          intro: "Le <b>Gambit Dame</b> est une ouverture de pion dame : on offre temporairement le pion c4 pour dominer le centre. Ici les Noirs le <b>refusent</b> (Gambit Dame Refusé).",
+          task: "Joue les coups des <b>Blancs</b>.",
+          done: "Gambit Dame maîtrisé ! Un centre solide et une pression sur d5.",
+          line: [
+            { san: 'd4',  note: "On prend le centre côté dame." },
+            { san: 'd5',  note: "Les Noirs occupent le centre symétriquement." },
+            { san: 'c4',  note: "Le Gambit Dame : on offre c4 pour dévier d5 et dominer le centre." },
+            { san: 'e6',  note: "Gambit refusé : les Noirs renforcent d5 et libèrent leur Fou f8." },
+            { san: 'Nc3', note: "On développe en ajoutant une attaque sur d5." },
+            { san: 'Nf6', note: "Les Noirs défendent d5 et se développent." },
+            { san: 'Bg5', note: "On cloue le Cavalier f6 pour accentuer la pression sur d5." },
+            { san: 'Be7', note: "Les Noirs brisent le clouage en soutenant le Cavalier." },
+            { san: 'e3',  note: "On ouvre la voie au Fou f1 et on consolide le pion d4." },
+            { san: 'h6',  note: "Les Noirs questionnent le Fou g5." },
+            { san: 'Bh4', note: "On garde le clouage : le Fou reste actif." },
+            { san: 'O-O', note: "Les Noirs mettent le Roi à l'abri. Position classique et saine." }
+          ] }
+      ]
+    },
+
+    /* ================== NIVEAU 20 — OUVERTURES EN NOIRS ================== */
+    {
+      id: 'l20', icon: '📙', title: "Ouvertures — avec les Noirs",
+      sub: "Répondre à 1.e4 : l'échiquier se retourne, tu joues les Noirs",
+      lessons: [
+        { id: 'l20a', type: 'info', title: "Jouer avec les Noirs",
+          fen: 'start', orient: 'b',
+          intro: "Avec les <b>Noirs</b>, on a un temps de retard : l'objectif est d'abord d'<b>égaliser</b> en contestant le centre, puis de contre-attaquer. L'échiquier est maintenant <b>vu de ton côté</b> (les Noirs en bas). Tu vas apprendre trois réponses solides à 1.e4." },
+        { id: 'l20b', type: 'line', orient: 'b', title: "La Sicilienne",
+          fen: 'start',
+          intro: "La <b>Sicilienne</b> est la réponse la plus combative à 1.e4 : au lieu d'imiter, les Noirs attaquent le centre de biais et jouent pour gagner.",
+          task: "Joue les coups des <b>Noirs</b>. Les Blancs commencent.",
+          done: "Sicilienne Najdorf — une arme redoutable entre tes mains !",
+          line: [
+            { san: 'e4',   note: "Les Blancs prennent le centre." },
+            { san: 'c5',   note: "La Sicilienne : on conteste d4 de biais, sans symétrie. L'ouverture la plus ambitieuse des Noirs." },
+            { san: 'Nf3',  note: "Les Blancs développent et préparent d4." },
+            { san: 'd6',   note: "On contrôle e5 et on prépare la sortie du Cavalier f6." },
+            { san: 'd4',   note: "Les Blancs ouvrent le centre." },
+            { san: 'cxd4', note: "On échange un pion de l'aile dame contre un pion central : un atout stratégique durable." },
+            { san: 'Nxd4', note: "Les Blancs reprennent, Cavalier bien centralisé." },
+            { san: 'Nf6',  note: "On attaque e4 et on se développe." },
+            { san: 'Nc3',  note: "Les Blancs défendent e4." },
+            { san: 'a6',   note: "Le coup Najdorf : on contrôle b5 et on prépare ...e5 ou ...b5. Flexibilité maximale." }
+          ] },
+        { id: 'l20c', type: 'line', orient: 'b', title: "La Française",
+          fen: 'start',
+          intro: "La <b>Française</b> est une ouverture solide : les Noirs préparent ...d5 pour frapper le centre blanc. Seul bémol, le Fou de cases claires devra être activé plus tard.",
+          task: "Joue les coups des <b>Noirs</b>.",
+          done: "Française maîtrisée — une structure solide comme un roc.",
+          line: [
+            { san: 'e4',   note: "Les Blancs occupent le centre." },
+            { san: 'e6',   note: "La Française : on prépare ...d5 pour attaquer e4." },
+            { san: 'd4',   note: "Les Blancs bâtissent un grand centre." },
+            { san: 'd5',   note: "On frappe e4 : les Blancs doivent se décider." },
+            { san: 'Nc3',  note: "Les Blancs défendent e4 en développant." },
+            { san: 'Nf6',  note: "On remet la pression sur e4." },
+            { san: 'Bg5',  note: "Les Blancs clouent le Cavalier f6." },
+            { san: 'Be7',  note: "On défait le clouage et on prépare le roque." },
+            { san: 'e5',   note: "Les Blancs gagnent de l'espace en fermant le centre." },
+            { san: 'Nfd7', note: "Le Cavalier recule pour frapper le centre blanc par ...c5 et ...f6." }
+          ] },
+        { id: 'l20d', type: 'line', orient: 'b', title: "La Caro-Kann",
+          fen: 'start',
+          intro: "La <b>Caro-Kann</b> ressemble à la Française, mais résout son défaut : on développe le Fou de cases claires <b>hors</b> de la chaîne de pions. Solide et sans faiblesse.",
+          task: "Joue les coups des <b>Noirs</b>.",
+          done: "Caro-Kann jouée parfaitement : position saine, bon Fou, aucun point faible.",
+          line: [
+            { san: 'e4',   note: "Les Blancs prennent le centre." },
+            { san: 'c6',   note: "La Caro-Kann : on prépare ...d5, mais sans enfermer le Fou c8." },
+            { san: 'd4',   note: "Grand centre blanc." },
+            { san: 'd5',   note: "On frappe e4 avec un soutien solide." },
+            { san: 'Nc3',  note: "Les Blancs défendent e4." },
+            { san: 'dxe4', note: "On clarifie le centre en capturant." },
+            { san: 'Nxe4', note: "Les Blancs reprennent, Cavalier centralisé." },
+            { san: 'Bf5',  note: "Le coup-clé : on sort le Fou AVANT ...e6. C'est tout l'intérêt de la Caro-Kann." },
+            { san: 'Ng3',  note: "Les Blancs attaquent le Fou." },
+            { san: 'Bg6',  note: "Le Fou se place sur une bonne diagonale : les Noirs ont une position saine et harmonieuse." }
+          ] }
+      ]
+    },
+
+    /* ================== NIVEAU 21 — PIÈGES D'OUVERTURE ================== */
+    {
+      id: 'l21', icon: '🎣', title: "Pièges d'ouverture",
+      sub: "Punir les erreurs de l'adversaire par un calcul profond",
+      lessons: [
+        { id: 'l21a', type: 'info', title: "Punir les erreurs",
+          fen: 'start',
+          intro: "Quand l'adversaire néglige les principes ou devient gourmand, une erreur d'ouverture peut se punir <b>immédiatement</b>. Ces pièges reposent sur un <b>calcul précis</b> : chaque coup de l'adversaire est forcé jusqu'au mat. À utiliser avec discernement — un bon joueur ne tombera pas dedans." },
+        { id: 'l21b', type: 'line', orient: 'w', title: "Le mat du Berger",
+          fen: 'start',
+          intro: "Le plus célèbre des pièges : la Dame et le Fou s'unissent pour fondre sur <b>f7</b>. Il ne marche que si l'adversaire ne voit pas la menace — mais il faut le connaître pour s'en défendre !",
+          task: "Joue les <b>Blancs</b> et punis l'erreur noire par le mat.",
+          done: "Mat du Berger ! La Dame soutenue par le Fou mate sur f7 : le Roi n'a aucune fuite.",
+          line: [
+            { san: 'e4',   note: "On ouvre le centre." },
+            { san: 'e5',   note: "Réponse symétrique." },
+            { san: 'Bc4',  note: "Le Fou braque déjà f7 : chez les Noirs, seul le Roi défend cette case." },
+            { san: 'Nc6',  note: "Les Noirs développent — un coup correct." },
+            { san: 'Qh5',  note: "On menace Dxf7 mat ! Agressif : sans la menace vue, ...g6 ou ...De7 défendrait." },
+            { san: 'Nf6',  note: "L'erreur ! Les Noirs attaquent la Dame mais oublient le mat en f7." },
+            { san: 'Qxf7', note: "Échec et mat du Berger ! La Dame capture f7, soutenue par le Fou c4." }
+          ] },
+        { id: 'l21c', type: 'line', orient: 'w', title: "Le mat de Légal",
+          fen: 'start',
+          intro: "Le <b>mat de Légal</b> est un chef-d'œuvre : on <b>sacrifie la Dame</b> pour mater avec trois pièces légères. Il punit un clouage mal évalué par les Noirs.",
+          task: "Joue les <b>Blancs</b>. Ose le sacrifice de Dame — le mat est forcé !",
+          done: "Mat de Légal ! Dame sacrifiée, trois pièces légères matent : le plus élégant des pièges.",
+          line: [
+            { san: 'e4',   note: "Le centre." },
+            { san: 'e5',   note: "Symétrie." },
+            { san: 'Nf3',  note: "On attaque e5." },
+            { san: 'Nc6',  note: "Les Noirs défendent e5." },
+            { san: 'Bc4',  note: "Le Fou vise f7." },
+            { san: 'd6',   note: "Les Noirs soutiennent e5 (défense Philidor)." },
+            { san: 'Nc3',  note: "On développe tranquillement." },
+            { san: 'Bg4',  note: "Les Noirs clouent le Cavalier f3 sur la Dame — cela semble fort." },
+            { san: 'h3',   note: "On questionne le Fou : il part ou il reste ?" },
+            { san: 'Bh5',  note: "L'erreur : les Noirs maintiennent un clouage qui n'est qu'apparent." },
+            { san: 'Nxe5', note: "Le sacrifice ! On prend e5 : si ...Fxd1, le mat suit. (Si ...Cxe5, on regagne la pièce par Dxh5.)" },
+            { san: 'Bxd1', note: "Les Noirs prennent la Dame — l'appât. C'est perdant." },
+            { san: 'Bxf7', note: "Échec ! Le Fou prend f7." },
+            { san: 'Ke7',  note: "Seule case : le Roi doit avancer." },
+            { san: 'Nd5',  note: "Échec et mat de Légal ! Les trois mineures matent le Roi au centre." }
+          ] },
+        { id: 'l21d', type: 'line', orient: 'b', title: "Le piège Blackburne-Shilling",
+          fen: 'start',
+          intro: "Côté <b>Noirs</b> : un traquenard contre un adversaire gourmand. On tend un appât en e5 ; si les Blancs mordent, leur Roi s'effondre. À réserver aux joueurs trop pressés de gagner du matériel.",
+          task: "Joue les <b>Noirs</b> et punis la gourmandise blanche.",
+          done: "Piège Blackburne-Shilling ! Mat étouffé : le Roi blanc est enfermé par ses propres pièces.",
+          line: [
+            { san: 'e4',   note: "Les Blancs ouvrent." },
+            { san: 'e5',   note: "On conteste le centre." },
+            { san: 'Nf3',  note: "Les Blancs attaquent e5." },
+            { san: 'Nc6',  note: "On défend e5." },
+            { san: 'Bc4',  note: "Le Fou vise f7." },
+            { san: 'Nd4',  note: "Le piège ! On ignore e5 pour tendre un traquenard. À jouer contre un adversaire gourmand." },
+            { san: 'Nxe5', note: "Les Blancs mordent à l'appât et menacent f7 — mais c'est l'erreur." },
+            { san: 'Qg5',  note: "Double attaque : sur le Cavalier e5 ET sur le pion g2." },
+            { san: 'Nxf7', note: "Les Blancs cherchent la fourchette Dame-Tour… en oubliant leur Roi." },
+            { san: 'Qxg2', note: "On prend g2 et on attaque la Tour h1." },
+            { san: 'Rf1',  note: "Les Blancs sauvent la Tour." },
+            { san: 'Qxe4', note: "Échec ! On récupère tout en gardant l'attaque : le Roi blanc est à nu." },
+            { san: 'Be2',  note: "Les Blancs bloquent l'échec — forcé." },
+            { san: 'Nf3',  note: "Échec et mat ! Mat étouffé : le Roi blanc est enfermé par ses propres pièces." }
+          ] }
+      ]
     }
   ];
 
@@ -621,6 +821,12 @@
   ===================================================================== */
   var view = 'road';          // 'road' | 'lesson'
   var curLv = null, curIdx = 0, chess = null, sel = null, solved = false, usedHint = false, locked = false, matesLeft = 0, lastMove = null;
+  var lineStep = 0, dragFrom = null;   // leçons « ligne » (ouvertures/pièges) + glisser-déposer
+
+  // le joueur joue les pièces de la couleur « orient » ; l'adversaire (= l'autre couleur) est automatique
+  function orientOf(ls) { return (ls && ls.orient === 'b') ? 'b' : 'w'; }
+  // glisser-déposer activé dès que le niveau grimpe (à partir du 11ᵉ niveau et pour tout contenu avancé)
+  function dragEnabled() { try { return LEVELS.indexOf(curLv) >= 10; } catch (e) { return false; } }
 
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
   function sqName(f, r) { return 'abcdefgh'[f] + (r + 1); }
@@ -676,6 +882,7 @@
   function startLesson() {
     var ls = curLv.lessons[curIdx];
     sel = null; solved = false; usedHint = false; locked = false; lastMove = null; matesLeft = mateInOf(ls);
+    lineStep = 0; dragFrom = null;
     if (ls.type === 'quiz' || !ls.fen || ls.fen === 'start') {
       chess = new Chess(); if (ls.fen && ls.fen !== 'start') { try { chess.load(ls.fen); } catch (e) {} }
     } else {
@@ -683,6 +890,8 @@
       if (!ok) { chess = new Chess(); }
     }
     if (ls.preselect) sel = ls.preselect;
+    // leçon « ligne » : joue d'emblée les coups de l'adversaire qui précèdent le 1ᵉʳ coup du joueur
+    if (ls.type === 'line') linePlayAutos(ls, true);
     renderLesson();
   }
 
@@ -703,6 +912,9 @@
     if (ls.intro) h += '<div class="ac-l-intro">'+ ls.intro +'</div>';
     if (ls.task) h += '<div class="ac-l-task"><span class="ac-l-task-ic">🎯</span><div>'+ ls.task +'</div></div>';
     if (ls.type === 'quiz') h += '<div class="ac-quiz" id="acadQuiz"></div>';
+    if (ls.type === 'line') h += '<div class="ac-line"><div class="ac-line-h">📋 La ligne, coup par coup'
+       + ' <span class="ac-line-side">(tu joues les '+ (orientOf(ls) === 'b' ? 'Noirs ♚' : 'Blancs ♔') +')</span></div>'
+       + '<ol class="ac-line-list" id="acLineMoves"></ol></div>';
     h += '<div class="ac-l-actions" id="acadActions"></div>';
     h += '</div></div></div>';
     mount.innerHTML = h;
@@ -711,6 +923,7 @@
 
     if (ls.type === 'quiz') { buildQuiz(ls); }
     else { drawBoard(); }
+    if (ls.type === 'line') renderLineMoves(ls);
     buildActions(ls);
     wireVoice(ls);
   }
@@ -734,13 +947,20 @@
     if (ls.type === 'info') {
       h += '<button class="ac-btn primary" id="acDone">J\'ai compris ✓</button>';
     } else if (ls.type !== 'quiz') {
-      if (ls.hint) h += '<button class="ac-btn ghost" id="acHint">💡 Indice</button>';
+      if (ls.type === 'line') h += '<button class="ac-btn ghost" id="acHint">💡 Quel coup ?</button>';
+      else if (ls.hint) h += '<button class="ac-btn ghost" id="acHint">💡 Indice</button>';
       h += '<button class="ac-btn ghost" id="acReset">↻ Recommencer</button>';
     }
     box.innerHTML = h;
     var d = document.getElementById('acDone'); if (d) d.addEventListener('click', function () { succeed(ls, "Leçon comprise — continue comme ça !"); });
     var hi = document.getElementById('acHint'); if (hi) hi.addEventListener('click', function () {
-      usedHint = true; var ht = ls.hint || "Observe bien les cases proposées."; feedback(ht, 'hint'); speakText(ht);
+      usedHint = true;
+      if (ls.type === 'line') {
+        var exp = lineExpected(ls);
+        var t = exp ? ('Joue ' + sanEnToFr(exp.san) + (exp.note ? ' — ' + exp.note : '')) : 'La ligne est terminée.';
+        feedback('💡 ' + t, 'hint'); speakText(t); return;
+      }
+      var ht = ls.hint || "Observe bien les cases proposées."; feedback(ht, 'hint'); speakText(ht);
     });
     var rs = document.getElementById('acReset'); if (rs) rs.addEventListener('click', function () { startLesson(); });
   }
@@ -798,9 +1018,15 @@
     var targets = sel ? chess.moves({ square: sel, verbose: true }).map(function (m) { return m.to; }) : [];
     var chkSq = chess.in_check() ? kingSquare(chess.turn()) : null;
     var showCoords = ls.coords;
+    var flip = orientOf(ls) === 'b';                 // vue des Noirs (ouvertures en noir)
+    var canDrag = dragEnabled() && ls.type !== 'info' && ls.type !== 'quiz' && !solved;
+    var ranks = flip ? [0,1,2,3,4,5,6,7] : [7,6,5,4,3,2,1,0];
+    var files = flip ? [7,6,5,4,3,2,1,0] : [0,1,2,3,4,5,6,7];
     var html = '';
-    for (var r = 7; r >= 0; r--) {
-      for (var f = 0; f < 8; f++) {
+    for (var ri = 0; ri < 8; ri++) {
+      var r = ranks[ri];
+      for (var fi = 0; fi < 8; fi++) {
+        var f = files[fi];
         var sq = sqName(f, r);
         var piece = board[7 - r][f];
         var light = (f + r) % 2 === 1;
@@ -812,15 +1038,26 @@
         if (sq === chkSq) cls += ' chk';
         html += '<button class="'+ cls +'" data-sq="'+ sq +'">';
         if (showCoords) {
-          if (f === 0) html += '<span class="co rl">'+ (r + 1) +'</span>';
-          if (r === 0) html += '<span class="co cl">'+ 'abcdefgh'[f] +'</span>';
+          if (fi === 0) html += '<span class="co rl">'+ (r + 1) +'</span>';
+          if (ri === 7) html += '<span class="co cl">'+ 'abcdefgh'[f] +'</span>';
         }
-        if (piece) html += '<span class="pc '+ (piece.color === 'w' ? 'pw' : 'pb') +'">'+ GLY[piece.color][piece.type] +'</span>';
+        if (piece) {
+          var drag = canDrag && piece.color === chess.turn();
+          html += '<span class="pc '+ (piece.color === 'w' ? 'pw' : 'pb') +'"'+ (drag ? ' draggable="true"' : '') +' data-sq="'+ sq +'">'+ GLY[piece.color][piece.type] +'</span>';
+        }
         html += '</button>';
       }
     }
     el.innerHTML = html;
-    el.querySelectorAll('.sq').forEach(function (s) { s.addEventListener('click', function () { onSquare(s.getAttribute('data-sq')); }); });
+    el.querySelectorAll('.sq').forEach(function (s) {
+      s.addEventListener('click', function () { onSquare(s.getAttribute('data-sq')); });
+      s.addEventListener('dragover', function (e) { if (dragFrom) e.preventDefault(); });
+      s.addEventListener('drop', function (e) { e.preventDefault(); if (dragFrom) { var from = dragFrom; dragFrom = null; onDrop(from, s.getAttribute('data-sq')); } });
+    });
+    if (canDrag) el.querySelectorAll('.pc[draggable="true"]').forEach(function (p) {
+      p.addEventListener('dragstart', function (e) { dragFrom = p.getAttribute('data-sq'); sel = dragFrom; try { e.dataTransfer.setData('text/plain', dragFrom); e.dataTransfer.effectAllowed = 'move'; } catch (er) {} highlightTargets(); });
+      p.addEventListener('dragend', function () { dragFrom = null; });
+    });
   }
 
   function kingSquare(color) {
@@ -863,7 +1100,7 @@
     if (done) lastMove = { from: done.from, to: done.to };
     drawBoard();
     if (!done) return;
-    evaluateMove(ls, done);
+    if (ls.type === 'line') evaluateLine(ls, done); else evaluateMove(ls, done);
   }
 
   /* ---- Solveur de mat (move/undo pour la vitesse) : l'attaquant au trait force-t-il un mat en <= n ? ---- */
@@ -903,6 +1140,100 @@
       chess.move({ from: pick.from, to: pick.to, promotion: pick.promotion || 'q' });
       lastMove = { from: pick.from, to: pick.to };
     } catch (e) {}
+  }
+
+  /* =====================================================================
+     LEÇONS « LIGNE » — ouvertures (Blancs/Noirs) & pièges, coup par coup.
+     Le joueur joue les coups de la couleur « orient » ; l'adversaire (les
+     coups du livre, ou son erreur dans un piège) est joué automatiquement,
+     chaque coup étant expliqué.
+  ===================================================================== */
+  // joue les coups automatiques (adversaire) tant que ce n'est pas au tour du joueur
+  function linePlayAutos(ls) {
+    var played = [];
+    while (lineStep < ls.line.length && chess.turn() !== orientOf(ls)) {
+      var step = ls.line[lineStep];
+      var m = chess.move(step.san, { sloppy: true });
+      if (!m) break;
+      lastMove = { from: m.from, to: m.to };
+      played.push(lineStep); lineStep++;
+    }
+    return played;
+  }
+  function lineExpected(ls) { return (lineStep < ls.line.length) ? ls.line[lineStep] : null; }
+  function lineFinished(ls) { return lineStep >= ls.line.length; }
+  function lineFinish(ls) {
+    if (chess.in_checkmate()) succeed(ls, ls.done || 'Échec et mat — ligne maîtrisée ! 🎯');
+    else succeed(ls, ls.done || 'Ligne terminée — bien joué !');
+  }
+  function renderLineMoves(ls) {
+    var box = document.getElementById('acLineMoves'); if (!box) return;
+    var h = '';
+    for (var i = 0; i < ls.line.length; i++) {
+      var st = ls.line[i], played = i < lineStep;
+      var you = ((i % 2 === 0 ? 'w' : 'b') === orientOf(ls));
+      h += '<li class="' + (played ? 'done' : 'todo') + (you ? ' you' : ' opp') + '">'
+         + '<span class="ac-mv">' + (played ? sanEnToFr(st.san) : '…') + '</span>'
+         + (played && st.note ? '<span class="ac-nt">' + st.note + '</span>' : '')
+         + '</li>';
+    }
+    box.innerHTML = h;
+  }
+  function evaluateLine(ls, mv) {
+    var exp = lineExpected(ls);
+    var strip = function (s) { return String(s || '').replace(/[+#]+$/, ''); };
+    if (!exp || strip(exp.san) !== strip(mv.san)) {
+      locked = true;
+      var tip = exp ? ('Dans cette ligne, on joue <b>' + sanEnToFr(exp.san) + '</b>.' + (exp.note ? ' ' + exp.note : '')) : '';
+      feedback("Ce n'est pas le coup prévu ici. " + tip + "<br>J'annule — rejoue le bon coup 💪", 'bad');
+      if (tip) speakText(tip);
+      setTimeout(function () { chess.undo(); lastMove = null; locked = false; sel = null; drawBoard(); }, 1150);
+      return;
+    }
+    lineStep++;
+    renderLineMoves(ls);
+    if (lineFinished(ls)) { lineFinish(ls); return; }         // le joueur a joué le dernier coup
+    // bon coup → on explique, puis l'adversaire répond automatiquement
+    feedback('<b>✓ ' + sanEnToFr(exp.san) + '</b> — ' + (exp.note || ''), 'ok');
+    speakText(sanEnToFr(exp.san) + '. ' + (exp.note || ''));
+    locked = true;
+    setTimeout(function () {
+      var autos = linePlayAutos(ls);
+      locked = false; sel = null; drawBoard(); renderLineMoves(ls);
+      if (autos.length) {
+        var la = ls.line[autos[autos.length - 1]];
+        feedback('<b>' + sanEnToFr(la.san) + '</b> — ' + (la.note || ''), '');
+        speakText(sanEnToFr(la.san) + '. ' + (la.note || ''));
+      }
+      if (lineFinished(ls)) lineFinish(ls);
+    }, (exp.note ? 1250 : 700));
+  }
+
+  /* glisser-déposer : on rejoue la même logique de coup que le clic */
+  function highlightTargets() {
+    var el = document.getElementById('acadBoard'); if (!el || !sel) return;
+    var targets = chess.moves({ square: sel, verbose: true }).map(function (m) { return m.to; });
+    el.querySelectorAll('.sq').forEach(function (s) {
+      var sq = s.getAttribute('data-sq');
+      s.classList.toggle('sel', sq === sel);
+      s.classList.toggle('tgt', targets.indexOf(sq) >= 0);
+    });
+  }
+  function onDrop(from, to) {
+    if (solved || locked) return;
+    var ls = curLv.lessons[curIdx];
+    if (ls.type === 'info' || ls.type === 'quiz') return;
+    if (ls.type === 'click') { onSquare(to); return; }
+    if (from === to) { sel = null; drawBoard(); return; }
+    var legal = chess.moves({ square: from, verbose: true });
+    var mv = null; for (var i = 0; i < legal.length; i++) { if (legal[i].to === to) { mv = legal[i]; break; } }
+    if (!mv) { sel = null; drawBoard(); feedback("Déplacement illégal pour cette pièce.", 'bad'); return; }
+    var opts = { from: from, to: to }; if (mv.promotion) opts.promotion = ls.promote || 'q';
+    var done = chess.move(opts); sel = null;
+    if (done) lastMove = { from: done.from, to: done.to };
+    drawBoard();
+    if (!done) return;
+    if (ls.type === 'line') evaluateLine(ls, done); else evaluateMove(ls, done);
   }
 
   function evaluateMove(ls, mv) {
