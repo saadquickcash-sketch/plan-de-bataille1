@@ -791,6 +791,178 @@
             { san: 'Nf3',  note: "Échec et mat ! Mat étouffé : le Roi blanc est enfermé par ses propres pièces." }
           ] }
       ]
+    },
+
+    /* ================== NIVEAU 22 — FINALE : DAME + ROI ================== */
+    {
+      id: 'l22', icon: '♛', title: "Finale : Dame + Roi",
+      sub: "La technique de mat la plus utile : Dame et Roi contre Roi",
+      lessons: [
+        { id: 'l22a', type: 'info', title: "La méthode Dame + Roi",
+          fen: '8/8/8/3k4/8/8/8/1Q2K3 w - - 0 1',
+          intro: "Avec <b>Dame + Roi contre Roi</b>, on mate en repoussant le Roi adverse vers un <b>bord</b>. Méthode : la Dame se place à un <b>saut de Cavalier</b> du Roi ennemi pour l'enfermer, on <b>amène son propre Roi</b>, puis on mate sur le bord. <b>Attention au pat</b> : ne bloque jamais toutes les cases du Roi sans lui donner échec !" },
+        { id: 'l22b', type: 'mate', mateIn: 2, title: "Dame + Roi : mat en 2",
+          fen: '2Q5/8/2K5/k7/8/8/8/8 w - - 0 1',
+          intro: "Le Roi noir est déjà au bord, ton Roi tout proche. Un coup précis de Dame, et c'est mat au coup suivant.",
+          task: "Mate le Roi noir en <b>2 coups</b> avec la Dame.",
+          hint: "Approche la Dame pour confiner le Roi sur la colonne a, en gardant ton propre Roi comme soutien. Évite le pat !",
+          done: "Parfait ! Dame qui enferme + Roi qui soutient = mat au bord." },
+        { id: 'l22c', type: 'mate', mateIn: 2, title: "Dame + Roi : amène ton Roi",
+          fen: '8/8/8/k2K4/7Q/8/8/8 w - - 0 1',
+          intro: "Ici c'est l'approche du <b>Roi</b> qui compte : sans lui, la Dame seule ne mate pas. Rapproche-le et le mat tombe.",
+          task: "Mate en <b>2 coups</b> — pense à faire travailler ton Roi.",
+          hint: "Un pas de Roi vers le Roi ennemi prépare le mat de la Dame au bord.",
+          done: "Excellent ! La règle d'or : la Dame enferme, mais c'est le Roi qui mate." }
+      ]
+    },
+
+    /* ================== NIVEAU 23 — FINALE : TOUR + ROI ================== */
+    {
+      id: 'l23', icon: '♜', title: "Finale : Tour + Roi",
+      sub: "Mater avec la Tour : la technique de l'escalier",
+      lessons: [
+        { id: 'l23a', type: 'info', title: "La méthode Tour + Roi",
+          fen: '8/8/8/3k4/8/8/8/R3K3 w - - 0 1',
+          intro: "<b>Tour + Roi contre Roi</b> : la Tour seule ne peut pas mater au centre — il faut repousser le Roi adverse vers un bord. Les deux Rois se font face (<b>l'opposition</b>), la Tour donne échec pour pousser le Roi d'une rangée, et on recommence : c'est <b>l'escalier</b>. Mat quand le Roi ennemi atteint le bord." },
+        { id: 'l23b', type: 'mate', mateIn: 2, title: "Tour + Roi : mat en 2",
+          fen: '8/8/5K2/7k/8/8/1R6/8 w - - 0 1',
+          intro: "Les Rois sont presque en opposition, le Roi noir près du bord. La Tour va donner le coup décisif.",
+          task: "Mate le Roi noir en <b>2 coups</b> avec la Tour.",
+          hint: "Prends l'opposition avec ton Roi ou coupe une rangée avec la Tour, puis mate sur le bord.",
+          done: "Bravo ! La Tour mate toujours en repoussant le Roi contre un bord." },
+        { id: 'l23c', type: 'mate', mateIn: 2, title: "Tour + Roi : l'opposition",
+          fen: '8/8/8/6R1/2K5/8/8/k7 w - - 0 1',
+          intro: "Le Roi noir est coincé dans le coin. À toi de trouver le filet de mat en deux coups.",
+          task: "Mate en <b>2 coups</b>.",
+          hint: "Amène ton Roi pour ôter les cases de fuite, puis la Tour donne l'échec et mat.",
+          done: "Technique maîtrisée — un atout pour toutes tes finales !" }
+      ]
+    },
+
+    /* ================== NIVEAU 24 — FINALE : LES DEUX FOUS ================== */
+    {
+      id: 'l24', icon: '♝', title: "Finale : les deux Fous",
+      sub: "Mater avec deux Fous : pousser le Roi dans un coin",
+      lessons: [
+        { id: 'l24a', type: 'info', title: "La méthode des deux Fous",
+          fen: '8/8/8/3k4/8/2B5/2B5/4K3 w - - 0 1',
+          intro: "<b>Deux Fous + Roi contre Roi</b> mate dans <b>n'importe quel coin</b>. Les Fous, placés <b>côte à côte</b>, forment un mur qui repousse le Roi ennemi ; le Roi blanc l'escorte jusqu'au coin où arrive le mat. C'est une finale gagnante, un peu technique mais très logique." },
+        { id: 'l24b', type: 'mate', mateIn: 2, title: "Deux Fous : mat en 2",
+          fen: 'k7/2K5/B7/8/8/8/8/2B5 w - - 0 1',
+          intro: "Le Roi noir est dans le coin, tes Fous contrôlent les fuites. Le mat est à deux coups.",
+          task: "Mate le Roi noir en <b>2 coups</b> avec les deux Fous.",
+          hint: "Un Fou donne l'échec pendant que l'autre, soutenu par ton Roi, ferme la dernière case.",
+          done: "Superbe ! Deux Fous coordonnés sont une machine à mater dans le coin." },
+        { id: 'l24c', type: 'mate', mateIn: 3, title: "Deux Fous : mat en 3",
+          fen: 'k7/2K5/8/8/BB6/8/8/8 w - - 0 1',
+          intro: "Un peu plus loin du mat : il faut d'abord resserrer le filet avec les Fous, puis conclure dans le coin.",
+          task: "Mate en <b>3 coups</b> précis.",
+          hint: "Rapproche un Fou pour contrôler les cases de fuite, puis construis le mat dans le coin avec l'aide de ton Roi.",
+          done: "Excellent calcul ! Tu maîtrises la finale des deux Fous." }
+      ]
+    },
+
+    /* ================== NIVEAU 25 — FINALE : FOU + CAVALIER ================== */
+    {
+      id: 'l25', icon: '♞', title: "Finale : Fou + Cavalier",
+      sub: "Le mat le plus difficile — dans le coin de la couleur du Fou",
+      lessons: [
+        { id: 'l25a', type: 'info', title: "La méthode Fou + Cavalier",
+          fen: '8/8/8/3k4/8/2B5/3N4/4K3 w - - 0 1',
+          intro: "<b>Fou + Cavalier + Roi contre Roi</b> est le mat élémentaire le plus <b>difficile</b> : il ne marche que dans l'un des deux coins de la <b>couleur du Fou</b>. On repousse le Roi vers ce bon coin ; si l'adversaire file vers le mauvais coin, on le redirige par la fameuse <b>manœuvre en « W »</b> du Cavalier. Patience et précision !" },
+        { id: 'l25b', type: 'mate', mateIn: 2, title: "Fou + Cavalier : mat en 2",
+          fen: 'k7/2K5/B7/8/8/N7/8/8 w - - 0 1',
+          intro: "Le Roi noir est dans le bon coin (celui de la couleur du Fou). Fou et Cavalier vont conclure en deux coups.",
+          task: "Mate le Roi noir en <b>2 coups</b> avec le Fou et le Cavalier.",
+          hint: "Le Fou contrôle la grande diagonale, le Cavalier vient fermer la dernière case de fuite près du coin.",
+          done: "Bravo ! Même le mat le plus dur n'a plus de secret pour toi." },
+        { id: 'l25c', type: 'mate', mateIn: 3, title: "Fou + Cavalier : mat en 3",
+          fen: 'k1B5/2K5/8/8/4N3/8/8/8 w - - 0 1',
+          intro: "Trois coups à calculer, avec le Cavalier qui doit trouver la bonne case pour verrouiller le coin.",
+          task: "Mate en <b>3 coups</b> — précision maximale.",
+          hint: "Pense à la position de mat finale dans le coin, puis amène le Cavalier et le Fou pour y parvenir.",
+          done: "🏅 Finale Fou + Cavalier réussie — un vrai signe de maîtrise technique !" }
+      ]
+    },
+
+    /* ================== NIVEAU 26 — TACTIQUES : L'ARSENAL ================== */
+    {
+      id: 'l26', icon: '🎯', title: "Tactiques : l'arsenal",
+      sub: "Les motifs qui gagnent du matériel — trouve le coup décisif",
+      lessons: [
+        { id: 'l26a', type: 'info', title: "Les motifs tactiques",
+          fen: '6k1/5ppp/8/8/8/8/5PPP/6K1 w - - 0 1',
+          intro: "Une <b>tactique</b> est une courte suite de coups forcés qui gagne du matériel ou mate. Les grands motifs : la <b>fourchette</b> (une pièce en attaque deux), le <b>clouage</b> (une pièce ne peut pas bouger sans exposer plus précieux derrière), l'<b>enfilade</b> (le clouage à l'envers), l'<b>attaque double</b>, l'<b>échec à la découverte</b>. Entraîne l'œil à les repérer !" },
+        { id: 'l26b', type: 'move', title: "Fourchette de Cavalier",
+          fen: 'r4rk1/5p1p/6p1/3q4/4N3/8/PPP2PPP/R4RK1 w - - 0 1',
+          intro: "Le Cavalier adore attaquer <b>deux pièces à la fois</b>. Ici, une case lui permet de viser le Roi <b>et</b> la Dame en même temps.",
+          task: "Trouve la <b>fourchette</b> qui gagne la Dame noire.",
+          solution: ['Nf6+'],
+          hint: "Un bond de Cavalier qui fait échec au Roi g8 tout en attaquant la Dame d5.",
+          done: "Fourchette ! Après l'échec, le Roi bouge et tu prends la Dame : pièce gagnée." },
+        { id: 'l26c', type: 'move', title: "Le clouage gagnant",
+          fen: '3k4/3q4/8/1B6/8/8/8/3RK3 w - - 0 1',
+          intro: "La Dame noire est <b>clouée</b> : elle protège son Roi et ne peut pas quitter la colonne d. Une pièce clouée est une cible immobile.",
+          task: "Exploite le clouage et <b>gagne la Dame</b>.",
+          solution: ['Rxd7', 'Bxd7'],
+          hint: "Capture la Dame clouée : elle est attaquée deux fois et ne peut pas fuir.",
+          done: "Clouage exploité ! Une pièce clouée finit souvent par tomber." },
+        { id: 'l26d', type: 'move', title: "L'enfilade",
+          fen: 'q7/8/8/8/k7/8/6PP/1R4K1 w - - 0 1',
+          intro: "L'<b>enfilade</b> (ou « brochette ») est l'inverse du clouage : on fait échec au Roi, il doit s'écarter, et on capture la pièce qui était <b>derrière</b> lui.",
+          task: "Donne l'échec qui <b>embroche</b> le Roi et la Dame.",
+          solution: ['Ra1+'],
+          hint: "Une Tour qui fait échec au Roi sur la colonne a : quand il s'écarte, la Dame derrière tombe.",
+          done: "Enfilade ! Le Roi s'écarte, la Tour prend la Dame : matériel gagné." },
+        { id: 'l26e', type: 'move', title: "L'attaque double de la Dame",
+          fen: '6k1/1r6/8/8/8/8/6PP/3QK3 w - - 0 1',
+          intro: "La Dame peut créer une <b>attaque double</b> : faire échec au Roi <b>et</b> viser une pièce non défendue dans le même coup.",
+          task: "Trouve l'<b>attaque double</b> qui gagne la Tour.",
+          solution: ['Qd5+'],
+          hint: "Place la Dame pour faire échec au Roi g8 en attaquant la Tour b7 sur la même diagonale/rangée.",
+          done: "Attaque double ! Le Roi pare l'échec, puis tu croques la Tour." }
+      ]
+    },
+
+    /* ================== NIVEAU 27 — COMBINAISONS À CALCULER ================== */
+    {
+      id: 'l27', icon: '🧮', title: "Combinaisons à calculer",
+      sub: "Des problèmes qui demandent de vraiment calculer",
+      lessons: [
+        { id: 'l27a', type: 'move', title: "Échec à la découverte",
+          fen: '3qk3/8/8/4N3/8/4R3/8/4K3 w - - 0 1',
+          intro: "Dans un <b>échec à la découverte</b>, on déplace une pièce pour <b>démasquer</b> l'échec d'une autre derrière elle. Le coup joue donc sur deux tableaux à la fois.",
+          task: "Déplace le Cavalier pour <b>découvrir</b> l'échec de la Tour et gagner la Dame.",
+          solution: ['Nc6+'],
+          hint: "Le Cavalier quitte la colonne e (démasquant la Tour qui fait échec) en attaquant la Dame d8.",
+          done: "Découverte ! L'échec force le Roi, et le Cavalier emporte la Dame." },
+        { id: 'l27b', type: 'move', title: "Le mat du couloir",
+          fen: '6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1',
+          intro: "Le <b>mat du couloir</b> (ou « back-rank ») punit un Roi enfermé par ses propres pions sur la dernière rangée. Une Tour ou une Dame qui atteint cette rangée délivre le mat.",
+          task: "Donne le <b>mat du couloir</b> en un coup.",
+          solution: ['Ra8'],
+          hint: "La Tour file sur la 8ᵉ rangée : le Roi, bloqué par ses pions f7-g7-h7, ne peut pas fuir.",
+          done: "Mat du couloir ! Pense toujours à créer une « lucarne » pour ton propre Roi afin d'éviter ce mat." },
+        { id: 'l27c', type: 'move', title: "Le coup intermédiaire (zwischenzug)",
+          fen: 'r2q1rk1/ppp2ppp/2n5/3Pp3/1b6/2N2N2/PP3PPP/R1BQ1RK1 w - - 0 1',
+          intro: "Le <b>zwischenzug</b> (« coup intermédiaire ») consiste à intercaler un coup plus fort <b>avant</b> la reprise que l'adversaire attend. Ici, au lieu de défendre, on frappe d'abord.",
+          task: "Trouve le <b>coup intermédiaire</b> qui gagne une pièce.",
+          solution: ['dxc6'],
+          hint: "Ton Cavalier c3 est attaqué par le Fou b4, mais tu as mieux : capture d'abord en c6, et c'est toi qui gagnes du matériel.",
+          done: "Zwischenzug ! Ne réponds pas toujours « du tac au tac » : cherche le coup intermédiaire le plus fort." },
+        { id: 'l27d', type: 'mate', mateIn: 2, title: "Calcule le mat en 2 (1)",
+          fen: '5k2/Q7/8/5K2/8/8/8/8 w - - 0 1',
+          intro: "À toi de calculer : le Roi noir est au bord, ton Roi soutient. Trouve la séquence de mat en deux coups.",
+          task: "Mate le Roi noir en <b>2 coups</b>.",
+          hint: "Prépare le mat en rapprochant ton Roi ou en confinant le Roi noir, sans provoquer le pat.",
+          done: "Bien calculé ! La vision du mat en 2 devient un réflexe." },
+        { id: 'l27e', type: 'mate', mateIn: 2, title: "Calcule le mat en 2 (2)",
+          fen: '8/8/8/R7/8/8/4K3/7k w - - 0 1',
+          intro: "Une dernière pour la route : Tour et Roi contre un Roi acculé dans le coin. Deux coups suffisent.",
+          task: "Mate en <b>2 coups</b> et termine l'Académie en beauté.",
+          hint: "Amène ton Roi au contact ou prends l'opposition, puis la Tour conclut sur la 1ʳᵉ rangée.",
+          done: "🎓 Bravo ! Tactiques et finales : tu disposes maintenant d'un vrai arsenal de joueur complet." }
+      ]
     }
   ];
 
