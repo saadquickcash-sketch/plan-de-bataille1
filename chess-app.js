@@ -21,10 +21,18 @@
   var sf=null, sfReady=false, sfQueue=[], sfCur=null, sfScore=null, sfBest=null;
   function onSF(line){ if(typeof line!=='string') return;
     if(line.indexOf('uciok')>=0){ sfReady=true; try{ sf.postMessage('isready'); sf.postMessage('setoption name MultiPV value 1'); }catch(e){} return; }
+    // collecte des lignes MultiPV (analyse « 3 meilleurs coups » façon lichess)
+    if(sfCur && sfCur.multi && line.indexOf(' pv ')>=0){
+      var im=line.match(/ multipv (\d+)/), sc=line.match(/score (cp|mate) (-?\d+)/), dp=line.match(/ depth (\d+)/);
+      if(im){ var pvArr=line.split(' pv ')[1].trim().split(/\s+/);
+        sfCur.lines[im[1]]={ rank:parseInt(im[1],10), uci:pvArr[0], pv:pvArr, score: sc?{type:sc[1],val:parseInt(sc[2],10)}:null, depth: dp?parseInt(dp[1],10):0 }; }
+    }
     var sm=line.match(/score (cp|mate) (-?\d+)/); if(sm){ sfScore={type:sm[1],val:parseInt(sm[2],10)}; }
-    var bm=line.match(/^bestmove\s+(\S+)/); if(bm){ sfBest=bm[1]; if(sfCur){ var cur=sfCur; sfCur=null; if(cur._to) clearTimeout(cur._to); cur.res({best:bm[1],score:sfScore}); } sfScore=null; pump(); } }
+    var bm=line.match(/^bestmove\s+(\S+)/); if(bm){ sfBest=bm[1]; if(sfCur){ var cur=sfCur; sfCur=null; if(cur._to) clearTimeout(cur._to);
+      if(cur.multi){ var arr=Object.keys(cur.lines).map(function(k){return cur.lines[k];}).sort(function(a,b){return a.rank-b.rank;}); cur.res({best:bm[1],score:sfScore,lines:arr}); }
+      else { cur.res({best:bm[1],score:sfScore}); } } sfScore=null; pump(); } }
   function pump(){ if(sfCur||!sfQueue.length||!sfReady||!sf) return; sfCur=sfQueue.shift();
-    try{ if(sfCur.skill!=null) sf.postMessage('setoption name Skill Level value '+sfCur.skill); sf.postMessage('position fen '+sfCur.fen); sf.postMessage('go '+sfCur.go); }catch(e){ var c=sfCur; sfCur=null; c.res(null); return; }
+    try{ if(sfCur.skill!=null) sf.postMessage('setoption name Skill Level value '+sfCur.skill); sf.postMessage('setoption name MultiPV value '+(sfCur.multi||1)); sf.postMessage('position fen '+sfCur.fen); sf.postMessage('go '+sfCur.go); }catch(e){ var c=sfCur; sfCur=null; c.res(null); return; }
     sfCur._to=setTimeout(function(){ if(sfCur){ var c=sfCur; sfCur=null; c.res(null); pump(); } }, sfCur.tmo||6000); }
   function initSF(){ try{ sf=new Worker('sf.js'); sf.onmessage=function(e){ onSF((typeof e.data==='string')?e.data:(e.data&&e.data.data)||''); }; sf.onerror=function(){ sfReady=false; sf=null; }; sf.postMessage('uci'); }catch(e){ sf=null; sfReady=false; } }
   function sfGo(fen,go,skill,tmo){ return new Promise(function(res){ if(!sfReady||!sf){ res(null); return; } sfQueue.push({fen:fen,go:go,skill:skill,tmo:tmo,res:res}); pump(); }); }
@@ -33,6 +41,9 @@
   function sfEval(fen){ return sfGo(fen,'depth 12',null,5000).then(function(r){ if(!r||!r.score) return null; return cpFromScore(r.score,(fen.split(' ')[1]||'w')); }); }
   /* Analyse d'UNE position pour le bilan : renvoie {best (uci), cp (pov Blancs), mate} */
   function sfAnalyse(fen,depth){ return sfGo(fen,'depth '+(depth||14),null,9000).then(function(r){ if(!r) return null; var turn=(fen.split(' ')[1]||'w'); return { best:r.best, cp: cpFromScore(r.score,turn), mate:(r.score&&r.score.type==='mate')?r.score.val:null }; }); }
+  function sfGoMulti(fen,go,multi,tmo){ return new Promise(function(res){ if(!sfReady||!sf){ res(null); return; } sfQueue.push({fen:fen,go:go,multi:multi,lines:{},tmo:tmo,res:res}); pump(); }); }
+  /* Les N meilleurs coups d'une position (comme lichess) : [{uci,pv,cpW,mate,depth}] triés du meilleur au moins bon (évaluation point de vue Blancs). */
+  function sfAnalyseMulti(fen,depth,n){ n=n||3; return sfGoMulti(fen,'depth '+(depth||16),n,15000).then(function(r){ if(!r||!r.lines||!r.lines.length) return null; var turn=(fen.split(' ')[1]||'w'); return r.lines.map(function(l){ return { uci:l.uci, pv:l.pv, cpW: cpFromScore(l.score,turn), mate:(l.score&&l.score.type==='mate')?(turn==='w'?l.score.val:-l.score.val):null, depth:l.depth }; }); }); }
   initSF();
 
   var LEVELS={'1':{skill:2,mt:200,depth:1},'2':{skill:8,mt:500,depth:2},'3':{skill:14,mt:900,depth:2},'4':{skill:20,mt:1400,depth:3}};
@@ -259,7 +270,7 @@
   render(); if(g.turn()!==human) setTimeout(aiMove,400);
 
   /* expose pour la partie 2 (bilan) */
-  window.__PBchess={ get g(){return g;}, set g(v){g=v;}, Chess:Chess, render:function(){render();}, sfAnalyse:sfAnalyse, sfReady:function(){return sfReady;}, bestMoveLocal:bestMoveLocal, evalWhite:evalWhite,
+  window.__PBchess={ get g(){return g;}, set g(v){g=v;}, Chess:Chess, render:function(){render();}, sfAnalyse:sfAnalyse, sfAnalyseMulti:sfAnalyseMulti, sfReady:function(){return sfReady;}, bestMoveLocal:bestMoveLocal, evalWhite:evalWhite,
     setBar:setBar, boardEl:boardEl, get flip(){return flip;}, sqToXY:sqToXY, glyphs:glyphs,
     setAuto:function(arrows,badge){ autoArrows=arrows||[]; autoBadge=badge||null; },
     setLastMove:function(lm){ lastMove=lm; }, getHuman:function(){return human;},
@@ -396,7 +407,20 @@
     '.rf-nav button:hover{border-color:var(--royal)}.rf-nav button:active{transform:scale(.95)}',
     '.rf-nav .rf-play.on{background:var(--royal);color:#fff;border-color:var(--royal)}',
     '@media(min-width:900px){.rev-fixed{left:auto;right:22px;bottom:22px;width:430px;border:1px solid var(--border);border-radius:16px}}',
-    'body.rev-open{padding-bottom:160px}'
+    'body.rev-open{padding-bottom:160px}',
+    /* panneau « 3 meilleurs coups » (façon lichess) */
+    '.rev-lines{margin:12px 14px 4px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface,var(--card))}',
+    '.rl-hd{display:flex;align-items:center;gap:7px;font-size:.68rem;font-weight:800;padding:8px 12px;border-bottom:1px solid var(--border);color:var(--muted);text-transform:uppercase;letter-spacing:.07em}',
+    '.rl-hd .dot{width:8px;height:8px;border-radius:50%;background:#7ea82a;flex:none}',
+    '.rl-hd .dp{margin-left:auto;font-weight:700;text-transform:none;letter-spacing:0}',
+    '.rl-body{display:flex;flex-direction:column}',
+    '.rl-line{display:flex;gap:10px;align-items:baseline;padding:8px 12px;border-top:1px solid var(--border);font-size:.86rem;cursor:pointer}',
+    '.rl-line:first-child{border-top:0}',
+    '.rl-line:hover{background:var(--surface-2,rgba(120,110,200,.08))}',
+    '.rl-ev{font-weight:800;min-width:3.2em;font-variant-numeric:tabular-nums;font-family:JetBrains Mono,monospace;font-size:.82rem}',
+    '.rl-ev.pos{color:#2fa36b}.rl-ev.neg{color:#d05a4e}.rl-ev.zero{color:var(--muted)}',
+    '.rl-pv{color:var(--text);line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+    '.rl-wait{padding:10px 12px;color:var(--muted);font-size:.82rem}'
   ].join(''); document.head.appendChild(s); })();
   var fixedEl=null;
   function buildFixedBar(){ if(fixedEl) return; fixedEl=document.createElement('div'); fixedEl.className='rev-fixed';
@@ -494,6 +518,7 @@
       +'<button class="rev-play'+(0?' on':'')+'" id="revPlay" title="Lecture">▶</button>'
       +'<button data-nav="1" title="Suivant">›</button><button data-nav="99999" title="Fin">⇥</button></div>';
     h+='<div class="rev-cur" id="revCur"></div>';
+    h+='<div class="rev-lines" id="revLines"><div class="rl-hd"><span class="dot"></span>Moteur — 3 meilleurs coups<span class="dp"></span></div><div class="rl-body"></div></div>';
     h+='<div class="mv-list" id="revList"></div>';
     h+='<div style="text-align:center;padding:8px 14px 14px"><button class="btn" id="revExit">Quitter le bilan</button></div>';
     h+='</div>';
@@ -516,6 +541,40 @@
       h+='<span class="mv'+(i===curIdx?' on':'')+'" data-i="'+i+'"><span class="ic" style="color:'+r.cl.col+'">'+r.cl.icon+'</span> '+side+' '+esc(r.san)+'</span> '; }
     el.innerHTML=h;
     el.querySelectorAll('.mv').forEach(function(b){ b.addEventListener('click',function(){ goTo(parseInt(b.getAttribute('data-i'),10)); }); });
+  }
+
+  /* ---- panneau « 3 meilleurs coups » façon lichess (calcul à la volée) ---- */
+  var FIG={K:'♚',Q:'♛',R:'♜',B:'♝',N:'♞'};
+  function figurineSan(san){ return String(san||'').replace(/[KQRBN]/g,function(c){ return FIG[c]||c; }); }
+  function pvToSanLine(fen,pv,maxPlies){
+    var out=[]; var t; try{ t=new Chess(fen); }catch(e){ return ''; }
+    var parts=fen.split(' '); var num=parseInt(parts[5]||'1',10)||1; var turn=parts[1]||'w'; var first=true;
+    for(var i=0;i<pv.length && i<(maxPlies||8);i++){ var u=pv[i]; if(!u||u.length<4) break;
+      var m; try{ m=t.move({from:u.slice(0,2),to:u.slice(2,4),promotion:u.slice(4,5)||undefined}); }catch(e){ m=null; }
+      if(!m) break; var san=figurineSan(m.san);
+      if(turn==='w') out.push(num+'. '+san); else out.push((first?(num+'… '):'')+san);
+      if(turn==='b') num++; turn=(turn==='w')?'b':'w'; first=false;
+    }
+    return out.join(' ');
+  }
+  function evalLabel(l){ if(l.mate!=null){ return (l.mate>0?'#':'-#')+Math.abs(l.mate); } var v=(l.cpW||0)/100; return (v>=0?'+':'')+v.toFixed(1); }
+  function evalCls(l){ if(l.mate!=null) return l.mate>0?'pos':'neg'; if(l.cpW>=40) return 'pos'; if(l.cpW<=-40) return 'neg'; return 'zero'; }
+  var linesSeq=0, linesCache={}, LINES_DEPTH=16;
+  function renderLines(fen){
+    var box=document.getElementById('revLines'); if(!box) return; var body=box.querySelector('.rl-body'), dp=box.querySelector('.dp');
+    var seq=++linesSeq;
+    function paint(arr){ if(seq!==linesSeq||!body) return;
+      if(!arr||!arr.length){ body.innerHTML='<div class="rl-wait">Aucune ligne (moteur indisponible).</div>'; if(dp)dp.textContent=''; return; }
+      if(dp) dp.textContent='prof. '+(arr[0].depth||LINES_DEPTH);
+      var h=''; for(var i=0;i<arr.length;i++){ var l=arr[i]; var line=pvToSanLine(fen,l.pv,8);
+        h+='<div class="rl-line" data-uci="'+(l.uci||'')+'"><span class="rl-ev '+evalCls(l)+'">'+evalLabel(l)+'</span><span class="rl-pv">'+esc(line)+'</span></div>'; }
+      body.innerHTML=h;
+      body.querySelectorAll('.rl-line').forEach(function(el){ el.addEventListener('click',function(){ var u=el.getAttribute('data-uci'); if(u&&u.length>=4){ API.setAuto([{from:u.slice(0,2),to:u.slice(2,4),color:'#7ea82a'}],null); API.render(); } }); });
+    }
+    if(linesCache[fen]){ paint(linesCache[fen]); return; }
+    body.innerHTML='<div class="rl-wait">Analyse des 3 meilleurs coups…</div>'; if(dp)dp.textContent='';
+    if(!API.sfReady()||!API.sfAnalyseMulti){ paint(null); return; }
+    API.sfAnalyseMulti(fen,LINES_DEPTH,3).then(function(arr){ if(seq!==linesSeq) return; if(arr&&arr.length) linesCache[fen]=arr; paint(arr); });
   }
 
   function goTo(i){ if(!rows.length) return; curIdx=Math.max(0,Math.min(rows.length-1,i)); var r=rows[curIdx];
@@ -541,6 +600,8 @@
     var el=document.getElementById('revList'); if(el){ el.querySelectorAll('.mv').forEach(function(b){ b.classList.toggle('on', parseInt(b.getAttribute('data-i'),10)===curIdx); }); var on=el.querySelector('.mv.on'); if(on){ try{ var lr=el.getBoundingClientRect(), er=on.getBoundingClientRect(); el.scrollTop += (er.top-lr.top) - lr.height/2 + er.height/2; }catch(e){} } }
     // barre fixe + voix
     updateFixedBar();
+    // 3 meilleurs coups de la position affichée (comme lichess), calculés à la volée
+    renderLines(r.fenAfter);
     speak(comment(r));
   }
   function setPlayBtn(){ var btn=document.getElementById('revPlay'); if(btn){ btn.classList.toggle('on',!!autoTimer); btn.textContent=autoTimer?'❙❙':'▶'; } updateFixedBar(); }

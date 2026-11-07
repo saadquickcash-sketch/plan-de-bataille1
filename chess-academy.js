@@ -963,6 +963,137 @@
           hint: "Amène ton Roi au contact ou prends l'opposition, puis la Tour conclut sur la 1ʳᵉ rangée.",
           done: "🎓 Bravo ! Tactiques et finales : tu disposes maintenant d'un vrai arsenal de joueur complet." }
       ]
+    },
+
+    /* ================== NIVEAU 28 — MAT EN 3 : POSITIONS DE MAÎTRE ================== */
+    {
+      id: 'l28', icon: '🧠', title: "Mat en 3 : positions de maître",
+      sub: "De vrais problèmes à calculer, avec pièces et défenses",
+      lessons: [
+        { id: 'l28a', type: 'info', title: "Calculer en profondeur",
+          fen: '6k1/5ppp/8/8/8/8/5PPP/6K1 w - - 0 1',
+          intro: "À partir d'ici, on <b>calcule</b> comme un joueur de club avancé. Ces positions ont des <b>défenses</b> (pions, pièces) : il faut trouver la séquence <b>forcée</b> qui mate en trois coups. Méthode : cherche les coups les plus <b>forçants</b> (échecs, prises, menaces), imagine la réponse adverse, puis le coup suivant. Le moteur valide : tant que ton coup garde le mat forcé, il est accepté." },
+        { id: 'l28b', type: 'mate', mateIn: 3, title: "Mat en 3 — attaque Dame-Tour (1)",
+          fen: 'k7/4bppp/2R5/2Q5/8/8/8/5K2 w - - 0 1',
+          intro: "Le Roi noir est enfermé dans le coin, protégé par ses pions et un Fou. Trouve la combinaison qui mate en trois.",
+          task: "Mate le Roi noir en <b>3 coups</b>.",
+          hint: "Cherche l'échec qui réduit l'espace du Roi, prévois la seule défense, puis conclus. Les coups forçants d'abord !",
+          done: "Superbe calcul ! Tu as vu à travers la défense noire." },
+        { id: 'l28c', type: 'mate', mateIn: 3, title: "Mat en 3 — attaque Dame-Tour (2)",
+          fen: '7k/4bpp1/4R3/4Q3/8/8/8/5K2 w - - 0 1',
+          intro: "Même matériel, autre filet de mat. La colonne e est ta grande alliée.",
+          task: "Mate en <b>3 coups</b>.",
+          hint: "La Tour et la Dame sur la colonne e : un sacrifice ou un échec bien placé ouvre le mat.",
+          done: "Excellent ! La coordination Dame + Tour est dévastatrice." },
+        { id: 'l28d', type: 'mate', mateIn: 3, title: "Mat en 3 — le Roi exposé",
+          fen: '8/5pkp/5r1R/8/3Q1B2/8/8/2K5 w - - 0 1',
+          intro: "Le Roi noir en g7 a l'air protégé… mais ta Dame, ta Tour et ton Fou visent tous son abri. Calcule le mat.",
+          task: "Mate en <b>3 coups</b> précis.",
+          hint: "Un sacrifice pour démolir le bouclier de pions, puis la Dame et le Fou concluent.",
+          done: "Du grand art ! Démolir l'abri du Roi est une arme de maître." },
+        { id: 'l28e', type: 'mate', mateIn: 3, title: "Mat en 3 — brise la défense",
+          fen: '8/5pkp/4Bn1R/8/7Q/8/8/2K5 w - - 0 1',
+          intro: "Le Cavalier f6 défend le Roi. À toi de trouver les trois coups qui percent malgré lui.",
+          task: "Mate en <b>3 coups</b>.",
+          hint: "Les coups forçants d'abord : échec ou prise qui désorganise la défense, puis le mat.",
+          done: "Maîtrise totale du mat en 3. Ton calcul atteint un vrai niveau de club." }
+      ]
+    },
+
+    /* ================== NIVEAU 29 — CALCUL PROFOND : MAT EN 4 ================== */
+    {
+      id: 'l29', icon: '🎯', title: "Calcul profond : mat en 4",
+      sub: "Des combinaisons forcées de quatre coups — niveau expert",
+      lessons: [
+        { id: 'l29a', type: 'info', title: "Voir quatre coups à l'avance",
+          fen: '6k1/5ppp/8/8/8/8/5PPP/6K1 w - - 0 1',
+          intro: "Les <b>mats en 4</b> séparent les joueurs forts des autres : il faut tenir toute la séquence <b>forcée</b> dans sa tête. Ici tu <b>joues chaque coup toi-même</b> (les coups blancs) ; l'adversaire répond par sa meilleure défense. Chaque coup est validé : ces combinaisons sont <b>exactes</b> (mat forcé prouvé par Stockfish). Prends ton temps, visualise, et exécute." },
+        { id: 'l29b', type: 'line', orient: 'w', title: "Mat en 4 — le filet tranquille",
+          fen: '3B2k1/5ppp/8/3R3Q/8/8/8/4K3 w - - 0 1',
+          intro: "Dame, Tour et Fou contre un Roi roqué. La clé n'est pas un échec immédiat, mais un coup <b>calme</b> qui prépare un mat imparable.",
+          task: "Joue les <b>Blancs</b> et mate en 4 coups forcés.",
+          done: "Mat en 4 maîtrisé ! Un coup tranquille suivi d'une attaque imparable — pensée de maître.",
+          line: [
+            { san: 'Be7', note: "Coup calme et mortel : le Fou verrouille f8 et prépare l'assaut. (Toutes les menaces ne sont pas des échecs !)" },
+            { san: 'h6',  note: "Les Noirs font de l'air à leur Roi — mais c'est trop tard." },
+            { san: 'Rd8+', note: "La Tour cloue le Roi sur la 8ᵉ rangée." },
+            { san: 'Kh7', note: "Seule case disponible." },
+            { san: 'Qf5+', note: "La Dame rejoint l'attaque avec échec." },
+            { san: 'g6',  note: "Forcé : le pion doit bloquer." },
+            { san: 'Qxf7#', note: "Échec et mat ! La Dame mate en f7, le Fou e7 et la Tour d8 scellent toute fuite." }
+          ] },
+        { id: 'l29c', type: 'line', orient: 'w', title: "Mat en 4 — la chasse au Roi",
+          fen: '4R3/5pkp/1n1Q4/8/8/8/8/5K2 w - - 0 1',
+          intro: "Ici on <b>traque</b> le Roi à découvert avec la Dame et la Tour, échec après échec, jusqu'au filet final.",
+          task: "Joue les <b>Blancs</b> : mate en 4 par une chasse forcée.",
+          done: "Chasse au Roi réussie ! Dame et Tour qui se relaient : un classique du calcul.",
+          line: [
+            { san: 'Qg3+', note: "On lance la chasse avec échec." },
+            { san: 'Kf6',  note: "Le Roi doit avancer vers le danger." },
+            { san: 'Qe5+', note: "La Dame resserre le filet." },
+            { san: 'Kg6',  note: "Forcé." },
+            { san: 'Rg8+', note: "La Tour entre avec échec et coupe la fuite." },
+            { san: 'Kh6',  note: "Le Roi est acculé au bord." },
+            { san: 'Qg5#', note: "Échec et mat ! Dame et Tour en parfaite coordination." }
+          ] },
+        { id: 'l29d', type: 'line', orient: 'w', title: "Mat en 4 — double sacrifice",
+          fen: '4r1k1/5ppp/3Q4/4N1R1/8/8/8/5K2 w - - 0 1',
+          intro: "La combinaison la plus spectaculaire : un coup calme, puis <b>deux sacrifices</b> pour ouvrir le Roi et mater au Cavalier.",
+          task: "Joue les <b>Blancs</b> : trouve le mat en 4 par sacrifices.",
+          done: "🔥 Chef-d'œuvre ! Dame et Tour sacrifiées, le Cavalier donne le mat : du pur calcul de maître.",
+          line: [
+            { san: 'Qf6', note: "Coup calme et écrasant : on menace le mat en g7/f7." },
+            { san: 'g6',  note: "Les Noirs cherchent une défense." },
+            { san: 'Qxf7+', note: "Premier sacrifice : la Dame force le Roi dans le coin." },
+            { san: 'Kh8', note: "Forcé." },
+            { san: 'Rxg6', note: "Second sacrifice : la Tour ouvre la colonne g." },
+            { san: 'hxg6', note: "Forcé, sinon le mat tombe tout de suite." },
+            { san: 'Nxg6#', note: "Échec et mat du Cavalier ! Un final en feu d'artifice." }
+          ] }
+      ]
+    },
+
+    /* ================== NIVEAU 30 — VISION DE GRAND MAÎTRE : MAT EN 5 ================== */
+    {
+      id: 'l30', icon: '🏆', title: "Vision de grand maître : mat en 5",
+      sub: "Cinq coups forcés — le sommet du calcul",
+      lessons: [
+        { id: 'l30a', type: 'info', title: "La vision du grand maître",
+          fen: '6k1/5ppp/8/8/8/8/5PPP/6K1 w - - 0 1',
+          intro: "Le <b>mat en 5</b> est le sommet de cette académie : une séquence <b>entièrement forcée</b> de cinq coups, que les grands maîtres voient d'un coup d'œil. Tu joues les coups blancs, l'adversaire se défend au mieux. Ces combinaisons sont <b>prouvées exactes</b> par Stockfish. Visualise toute la ligne avant de jouer : c'est ainsi que l'on calcule au plus haut niveau." },
+        { id: 'l30b', type: 'line', orient: 'w', title: "Mat en 5 — la traque totale",
+          fen: '4RQ2/4np1k/8/8/8/8/8/4K3 w - - 0 1',
+          intro: "Le Roi noir va être pourchassé <b>d'un bord à l'autre</b> de l'échiquier. Cinq échecs forcés, aucune échappatoire.",
+          task: "Joue les <b>Blancs</b> : mate en 5 par une traque forcée.",
+          done: "🏆 Traque magistrale ! Pourchasser le Roi sur tout l'échiquier : une vraie vision de grand maître.",
+          line: [
+            { san: 'Qxf7+', note: "On ouvre la chasse par une prise avec échec." },
+            { san: 'Kh6',   note: "Le Roi fuit vers le bord." },
+            { san: 'Qf6+',  note: "La Dame poursuit sans répit." },
+            { san: 'Kh5',   note: "Toujours plus loin." },
+            { san: 'Rh8+',  note: "La Tour entre dans la chasse." },
+            { san: 'Kg4',   note: "Le Roi file vers le centre." },
+            { san: 'Rh4+',  note: "Échec ! Le filet se resserre." },
+            { san: 'Kg3',   note: "Dernière case libre." },
+            { san: 'Qf2#',  note: "Échec et mat ! Une traque d'un bout à l'autre de l'échiquier." }
+          ] },
+        { id: 'l30c', type: 'line', orient: 'w', title: "Mat en 5 — la rafale décisive",
+          fen: '5b2/6kp/4R3/3Q1B2/8/8/8/5K2 w - - 0 1',
+          intro: "Une cascade d'échecs et de prises où la Dame et la Tour ne laissent jamais respirer le Roi noir.",
+          task: "Joue les <b>Blancs</b> : mate en 5 coups forcés.",
+          done: "🏆 Diplôme de grand calcul ! Tu as parcouru toute l'Académie — des règles de base jusqu'au mat en 5 forcé. Félicitations, champion !",
+          line: [
+            { san: 'Qd7+',  note: "Échec qui force la défense." },
+            { san: 'Be7',   note: "Les Noirs interposent le Fou." },
+            { san: 'Qxe7+', note: "On capture l'interposition, toujours avec échec." },
+            { san: 'Kg8',   note: "Forcé." },
+            { san: 'Qxh7+', note: "La Dame ramasse un pion et chasse le Roi." },
+            { san: 'Kf8',   note: "Le Roi revient." },
+            { san: 'Rf6+',  note: "La Tour entre avec un échec décisif." },
+            { san: 'Ke8',   note: "Seule case." },
+            { san: 'Qd7#',  note: "Échec et mat ! Dame et Tour en coordination parfaite — bravo !" }
+          ] }
+      ]
     }
   ];
 
