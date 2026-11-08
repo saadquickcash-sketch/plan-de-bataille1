@@ -188,8 +188,18 @@
   var reviewStep=function(d){};
   function onDown(e){ try{ var _c=ensureCtx(); if(_c&&_c.state==='suspended') _c.resume(); }catch(_){}
     var sq=sqUnder(e.clientX,e.clientY);
-    if(reviewMode){ down={rev:true,x:e.clientX,y:e.clientY}; try{ wrapEl.setPointerCapture(e.pointerId); }catch(_){}; return; }
     if(e.button===2){ if(sq){ down={sq:sq,btn:2}; } e.preventDefault(); try{ wrapEl.setPointerCapture(e.pointerId); }catch(_){}; return; }
+    if(reviewMode){
+      // En analyse : on peut JOUER librement les pièces du camp au trait (exploration) ;
+      // sinon, un glissement sur une case vide sert à naviguer dans la partie.
+      var pr=sq?pieceAt(sq):null;
+      if(sq && pr && pr.color===g.turn()){
+        if(userArrows.length||userHi.length){ userArrows=[]; userHi=[]; drawArrows(); render(); }
+        down={sq:sq,btn:0,x:e.clientX,y:e.clientY,moved:false,analysis:true};
+        try{ wrapEl.setPointerCapture(e.pointerId); }catch(_){}; return;
+      }
+      down={rev:true,x:e.clientX,y:e.clientY}; try{ wrapEl.setPointerCapture(e.pointerId); }catch(_){}; return;
+    }
     // clic/tap gauche : efface flèches/surbrillances de l'élève
     if(userArrows.length||userHi.length){ userArrows=[]; userHi=[]; drawArrows(); render(); }
     if(thinking||over||pendPromo||g.turn()!==human){ return; }
@@ -200,7 +210,7 @@
     try{ wrapEl.setPointerCapture(e.pointerId); }catch(_){}
   }
   function onMove(e){ if(!down||down.rev||down.btn!==0) return; var dx=e.clientX-down.x, dy=e.clientY-down.y;
-    if(!down.moved && (Math.abs(dx)>5||Math.abs(dy)>5)){ var p=pieceAt(down.sq); if(p&&p.color===human){ down.moved=true; sel=down.sq; render(); startGhost(down.sq,e.clientX,e.clientY); } }
+    if(!down.moved && (Math.abs(dx)>5||Math.abs(dy)>5)){ var p=pieceAt(down.sq); var who=down.analysis?g.turn():human; if(p&&p.color===who){ down.moved=true; sel=down.sq; render(); startGhost(down.sq,e.clientX,e.clientY); } }
     if(down.moved){ moveGhost(e.clientX,e.clientY); if(e.cancelable) e.preventDefault(); } }
   function onUp(e){ if(!down) return; var upSq=sqUnder(e.clientX,e.clientY);
     if(down.rev){ var dx=e.clientX-down.x, dy=e.clientY-down.y; if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)){ reviewStep(dx<0?1:-1); } down=null; return; }
@@ -212,9 +222,9 @@
   }
   function toggleArrow(from,to){ for(var i=0;i<userArrows.length;i++){ if(userArrows[i].from===from&&userArrows[i].to===to){ userArrows.splice(i,1); drawArrows(); return; } } userArrows.push({from:from,to:to}); drawArrows(); }
   function toggleHi(sq){ var i=userHi.indexOf(sq); if(i>=0) userHi.splice(i,1); else userHi.push(sq); render(); }
-  function clickSquare(sq){ if(thinking||over||pendPromo||g.turn()!==human) return; var p=pieceAt(sq);
-    if(sel){ if(sq===sel){ sel=null; render(); return; } var legal=g.moves({square:sel,verbose:true}).filter(function(m){return m.to===sq;}); if(legal.length){ tryMove(sel,sq); return; } if(p&&p.color===human){ sel=sq; render(); return; } sel=null; render(); return; }
-    if(p&&p.color===human){ sel=sq; render(); } }
+  function clickSquare(sq){ if(thinking||pendPromo) return; if(!reviewMode && (over||g.turn()!==human)) return; var who=reviewMode?g.turn():human; var p=pieceAt(sq);
+    if(sel){ if(sq===sel){ sel=null; render(); return; } var legal=g.moves({square:sel,verbose:true}).filter(function(m){return m.to===sq;}); if(legal.length){ tryMove(sel,sq); return; } if(p&&p.color===who){ sel=sq; render(); return; } sel=null; render(); return; }
+    if(p&&p.color===who){ sel=sq; render(); } }
   function tryMove(from,to){ var legal=g.moves({square:from,verbose:true}).filter(function(m){return m.to===to;}); if(!legal.length){ sel=null; render(); return; } if(legal[0].promotion){ askPromo(from,to); return; } doMove({from:from,to:to}); }
 
   function bindPointer(){ ensureWrap(); wrapEl.style.touchAction='none'; boardEl.style.touchAction='none';
@@ -226,7 +236,9 @@
   }
 
   /* ---------------- Coups, promotion, IA ---------------- */
-  function doMove(mo){ var m=g.move(mo); if(!m) return; lastMove={from:m.from,to:m.to}; sel=null; userArrows=[]; userHi=[]; render(); playSound(soundFor(m)); setTimeout(aiMove,150); }
+  function doMove(mo){ var m=g.move(mo); if(!m) return; lastMove={from:m.from,to:m.to}; sel=null; userArrows=[]; userHi=[]; render(); playSound(soundFor(m));
+    if(reviewMode){ if(analysisHook){ try{ analysisHook(g.fen()); }catch(e){} } return; }  // mode analyse : pas d'IA, on rafraîchit les meilleurs coups
+    setTimeout(aiMove,150); }
   function askPromo(from,to){ pendPromo={from:from,to:to}; var ov=document.getElementById('promoPick'); if(!ov){ doMove({from:from,to:to,promotion:'q'}); pendPromo=null; return; } ov.hidden=false; }
   function aiMove(){ if(over||g.turn()===human) return; thinking=true; status(); var opt=LEVELS[lvl]||LEVELS['4']; var fen=g.fen();
     Promise.resolve().then(function(){ return sfReady? sfMove(fen,opt): null; }).then(function(uci){ var applied=false, mvObj=null;
@@ -252,7 +264,7 @@
   function renderMoves(){ if(!movesEl) return; var h=g.history(); var o=''; for(var i=0;i<h.length;i+=2){ o+=(i/2+1)+'. '+h[i]+' '+(h[i+1]||'')+'   '; } movesEl.textContent=o||'La partie commence.'; }
 
   /* review functions defined in part 2 (declared with var to hoist reference) */
-  var reviewMode=false;
+  var reviewMode=false, analysisHook=null;
   var offerReview=function(){}, exitReview=function(){};
 
   /* ---------------- Contrôles ---------------- */
@@ -276,6 +288,9 @@
     setLastMove:function(lm){ lastMove=lm; }, getHuman:function(){return human;},
     get theme(){return theme;}, get pcs(){return pcs;},
     setReview:function(v){ reviewMode=v; }, isReview:function(){return reviewMode;},
+    setAnalysisMove:function(cb){ analysisHook=cb; },
+    playMove:function(uci){ if(!uci||uci.length<4) return; try{ doMove({from:uci.slice(0,2),to:uci.slice(2,4),promotion:uci.slice(4,5)||undefined}); }catch(e){} },
+    curFen:function(){ try{ return g.fen(); }catch(e){ return ''; } },
     st:st, movesEl:movesEl,
     get voiceOn(){return voiceOn;}, set voiceOn(v){ voiceOn=v; var o=pref(); o.voice=v; savePref(o); },
     sound:playSound, soundFor:soundFor,
@@ -420,7 +435,12 @@
     '.rl-ev{font-weight:800;min-width:3.2em;font-variant-numeric:tabular-nums;font-family:JetBrains Mono,monospace;font-size:.82rem}',
     '.rl-ev.pos{color:#2fa36b}.rl-ev.neg{color:#d05a4e}.rl-ev.zero{color:var(--muted)}',
     '.rl-pv{color:var(--text);line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
-    '.rl-wait{padding:10px 12px;color:var(--muted);font-size:.82rem}'
+    '.rl-wait{padding:10px 12px;color:var(--muted);font-size:.82rem}',
+    '.eng-top{margin:10px 0 14px}',
+    '.rl-foot{padding:8px 12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap}',
+    '.eng-note{font-size:.73rem;color:var(--muted);line-height:1.35}',
+    '.eng-back{margin-left:auto;border:1px solid var(--royal);background:var(--royal);color:#fff;border-radius:9px;padding:5px 11px;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap}',
+    '.eng-back:hover{filter:brightness(1.08)}'
   ].join(''); document.head.appendChild(s); })();
   var fixedEl=null;
   function buildFixedBar(){ if(fixedEl) return; fixedEl=document.createElement('div'); fixedEl.className='rev-fixed';
@@ -447,7 +467,7 @@
     an.innerHTML='<div style="text-align:center;padding:12px"><button id="revStart" class="btn ask" style="font-size:.95rem;padding:10px 18px">✦ Voir le bilan de la partie</button><div class="src-note" style="margin-top:6px">Analyse complète coup par coup, comme sur chess.com.</div></div>';
     document.getElementById('revStart').addEventListener('click',startReview);
   }
-  function exitReview(){ stopVoice(); if(autoTimer){clearInterval(autoTimer);autoTimer=null;} API.setReview(false); API.setAuto([],null); removeFixedBar(); }
+  function exitReview(){ stopVoice(); if(autoTimer){clearInterval(autoTimer);autoTimer=null;} API.setReview(false); API.setAuto([],null); removeFixedBar(); exploring=false; showEng(false); }
 
   function startReview(){
     var g=API.g; var hist=g.history({verbose:true}); if(hist.length<2){ an.innerHTML='<div class="src-note">Joue quelques coups, puis lance le bilan.</div>'; return; }
@@ -518,7 +538,6 @@
       +'<button class="rev-play'+(0?' on':'')+'" id="revPlay" title="Lecture">▶</button>'
       +'<button data-nav="1" title="Suivant">›</button><button data-nav="99999" title="Fin">⇥</button></div>';
     h+='<div class="rev-cur" id="revCur"></div>';
-    h+='<div class="rev-lines" id="revLines"><div class="rl-hd"><span class="dot"></span>Moteur — 3 meilleurs coups<span class="dp"></span></div><div class="rl-body"></div></div>';
     h+='<div class="mv-list" id="revList"></div>';
     h+='<div style="text-align:center;padding:8px 14px 14px"><button class="btn" id="revExit">Quitter le bilan</button></div>';
     h+='</div>';
@@ -559,23 +578,40 @@
   }
   function evalLabel(l){ if(l.mate!=null){ return (l.mate>0?'#':'-#')+Math.abs(l.mate); } var v=(l.cpW||0)/100; return (v>=0?'+':'')+v.toFixed(1); }
   function evalCls(l){ if(l.mate!=null) return l.mate>0?'pos':'neg'; if(l.cpW>=40) return 'pos'; if(l.cpW<=-40) return 'neg'; return 'zero'; }
-  var linesSeq=0, linesCache={}, LINES_DEPTH=16;
+  var linesSeq=0, linesCache={}, LINES_DEPTH=16, exploring=false, engWrap=null;
+  function sidePanel(){ return an ? (an.closest ? an.closest('.chess-side') : null) : null; }
+  function ensureEngWrap(){ if(engWrap && document.body.contains(engWrap)) return engWrap;
+    engWrap=document.createElement('div'); engWrap.id='engLines'; engWrap.className='rev-lines eng-top'; engWrap.style.display='none';
+    engWrap.innerHTML='<div class="rl-hd"><span class="dot"></span><span>Moteur — 3 meilleurs coups</span><span class="dp"></span></div><div class="rl-body"></div><div class="rl-foot" id="engFoot"></div>';
+    var side=sidePanel();
+    if(side){ var status=document.getElementById('chessStatus'); if(status&&status.parentNode===side) side.insertBefore(engWrap,status.nextSibling); else side.insertBefore(engWrap,side.firstChild); }
+    else if(an&&an.parentNode){ an.parentNode.insertBefore(engWrap,an); }
+    return engWrap; }
+  function showEng(on){ ensureEngWrap().style.display=on?'block':'none'; }
+  function updateFoot(){ var f=document.getElementById('engFoot'); if(!f) return;
+    if(exploring){ f.innerHTML='<span class="eng-note">Position d’analyse (hors partie) — explore librement.</span><button class="eng-back" id="engBack">↩︎ Revenir à la partie</button>';
+      var bk=document.getElementById('engBack'); if(bk) bk.addEventListener('click',function(){ exploring=false; goTo(curIdx); }); }
+    else { f.innerHTML='<span class="eng-note">💡 Joue un coup sur l’échiquier (ou clique une ligne) pour explorer les variantes.</span>'; } }
   function renderLines(fen){
-    var box=document.getElementById('revLines'); if(!box) return; var body=box.querySelector('.rl-body'), dp=box.querySelector('.dp');
+    var box=ensureEngWrap(); showEng(true); var body=box.querySelector('.rl-body'), dp=box.querySelector('.dp');
     var seq=++linesSeq;
     function paint(arr){ if(seq!==linesSeq||!body) return;
-      if(!arr||!arr.length){ body.innerHTML='<div class="rl-wait">Aucune ligne (moteur indisponible).</div>'; if(dp)dp.textContent=''; return; }
+      if(!arr||!arr.length){ body.innerHTML='<div class="rl-wait">Moteur indisponible pour l’analyse en direct.</div>'; if(dp)dp.textContent=''; return; }
       if(dp) dp.textContent='prof. '+(arr[0].depth||LINES_DEPTH);
+      var top=arr[0]; var cpW=(top.mate!=null)?(top.mate>0?99000:-99000):top.cpW; try{ API.setBar(cpW); }catch(e){}
       var h=''; for(var i=0;i<arr.length;i++){ var l=arr[i]; var line=pvToSanLine(fen,l.pv,8);
-        h+='<div class="rl-line" data-uci="'+(l.uci||'')+'"><span class="rl-ev '+evalCls(l)+'">'+evalLabel(l)+'</span><span class="rl-pv">'+esc(line)+'</span></div>'; }
+        h+='<div class="rl-line" data-uci="'+(l.uci||'')+'" title="Cliquer pour jouer ce coup et explorer"><span class="rl-ev '+evalCls(l)+'">'+evalLabel(l)+'</span><span class="rl-pv">'+esc(line)+'</span></div>'; }
       body.innerHTML=h;
-      body.querySelectorAll('.rl-line').forEach(function(el){ el.addEventListener('click',function(){ var u=el.getAttribute('data-uci'); if(u&&u.length>=4){ API.setAuto([{from:u.slice(0,2),to:u.slice(2,4),color:'#7ea82a'}],null); API.render(); } }); });
+      body.querySelectorAll('.rl-line').forEach(function(el){ el.addEventListener('click',function(){ var u=el.getAttribute('data-uci'); if(u&&u.length>=4){ API.playMove(u); } }); });
     }
+    updateFoot();
     if(linesCache[fen]){ paint(linesCache[fen]); return; }
     body.innerHTML='<div class="rl-wait">Analyse des 3 meilleurs coups…</div>'; if(dp)dp.textContent='';
     if(!API.sfReady()||!API.sfAnalyseMulti){ paint(null); return; }
     API.sfAnalyseMulti(fen,LINES_DEPTH,3).then(function(arr){ if(seq!==linesSeq) return; if(arr&&arr.length) linesCache[fen]=arr; paint(arr); });
   }
+  // coup joué librement sur l'échiquier d'analyse -> on explore la variante
+  API.setAnalysisMove(function(fen){ exploring=true; renderLines(fen); });
 
   function goTo(i){ if(!rows.length) return; curIdx=Math.max(0,Math.min(rows.length-1,i)); var r=rows[curIdx];
     // position du plateau APRÈS le coup courant
@@ -601,7 +637,7 @@
     // barre fixe + voix
     updateFixedBar();
     // 3 meilleurs coups de la position affichée (comme lichess), calculés à la volée
-    renderLines(r.fenAfter);
+    exploring=false; renderLines(r.fenAfter);
     speak(comment(r));
   }
   function setPlayBtn(){ var btn=document.getElementById('revPlay'); if(btn){ btn.classList.toggle('on',!!autoTimer); btn.textContent=autoTimer?'❙❙':'▶'; } updateFixedBar(); }
