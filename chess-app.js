@@ -25,11 +25,17 @@
     if(sfCur && sfCur.multi && line.indexOf(' pv ')>=0){
       var im=line.match(/ multipv (\d+)/), sc=line.match(/score (cp|mate) (-?\d+)/), dp=line.match(/ depth (\d+)/);
       if(im){ var pvArr=line.split(' pv ')[1].trim().split(/\s+/);
-        sfCur.lines[im[1]]={ rank:parseInt(im[1],10), uci:pvArr[0], pv:pvArr, score: sc?{type:sc[1],val:parseInt(sc[2],10)}:null, depth: dp?parseInt(dp[1],10):0 }; }
+        sfCur.lines[im[1]]={ rank:parseInt(im[1],10), uci:pvArr[0], pv:pvArr, score: sc?{type:sc[1],val:parseInt(sc[2],10)}:null, depth: dp?parseInt(dp[1],10):0 };
+        // streaming : on pousse des mises à jour progressives (affichage quasi instantané qui s'affine)
+        if(sfCur.stream && sfCur.onUpdate){ var d=dp?parseInt(dp[1],10):0, now=Date.now();
+          if(d>(sfCur._d||0) || now-(sfCur._t||0)>70){ sfCur._d=Math.max(sfCur._d||0,d); sfCur._t=now;
+            var a0=Object.keys(sfCur.lines).map(function(k){return sfCur.lines[k];}).sort(function(x,y){return x.rank-y.rank;});
+            try{ sfCur.onUpdate(a0,d); }catch(e){} } }
+      }
     }
     var sm=line.match(/score (cp|mate) (-?\d+)/); if(sm){ sfScore={type:sm[1],val:parseInt(sm[2],10)}; }
     var bm=line.match(/^bestmove\s+(\S+)/); if(bm){ sfBest=bm[1]; if(sfCur){ var cur=sfCur; sfCur=null; if(cur._to) clearTimeout(cur._to);
-      if(cur.multi){ var arr=Object.keys(cur.lines).map(function(k){return cur.lines[k];}).sort(function(a,b){return a.rank-b.rank;}); cur.res({best:bm[1],score:sfScore,lines:arr}); }
+      if(cur.multi){ var arr=Object.keys(cur.lines).map(function(k){return cur.lines[k];}).sort(function(a,b){return a.rank-b.rank;}); if(cur.stream&&cur.onUpdate&&arr.length){ try{ cur.onUpdate(arr,cur._d||0); }catch(e){} } cur.res({best:bm[1],score:sfScore,lines:arr}); }
       else { cur.res({best:bm[1],score:sfScore}); } } sfScore=null; pump(); } }
   function pump(){ if(sfCur||!sfQueue.length||!sfReady||!sf) return; sfCur=sfQueue.shift();
     try{ if(sfCur.skill!=null) sf.postMessage('setoption name Skill Level value '+sfCur.skill); sf.postMessage('setoption name MultiPV value '+(sfCur.multi||1)); sf.postMessage('position fen '+sfCur.fen); sf.postMessage('go '+sfCur.go); }catch(e){ var c=sfCur; sfCur=null; c.res(null); return; }
@@ -42,6 +48,18 @@
   /* Analyse d'UNE position pour le bilan : renvoie {best (uci), cp (pov Blancs), mate} */
   function sfAnalyse(fen,depth){ return sfGo(fen,'depth '+(depth||14),null,9000).then(function(r){ if(!r) return null; var turn=(fen.split(' ')[1]||'w'); return { best:r.best, cp: cpFromScore(r.score,turn), mate:(r.score&&r.score.type==='mate')?r.score.val:null }; }); }
   function sfGoMulti(fen,go,multi,tmo){ return new Promise(function(res){ if(!sfReady||!sf){ res(null); return; } sfQueue.push({fen:fen,go:go,multi:multi,lines:{},tmo:tmo,res:res}); pump(); }); }
+  function sfStop(){ try{ if(sf&&sfReady) sf.postMessage('stop'); }catch(e){} }
+  function mapMulti(arr,turn){ return (arr||[]).map(function(l){ return { uci:l.uci, pv:l.pv, cpW: cpFromScore(l.score,turn), mate:(l.score&&l.score.type==='mate')?(turn==='w'?l.score.val:-l.score.val):null, depth:l.depth }; }); }
+  /* Analyse en STREAMING (façon lichess) : onUpdate reçoit les lignes à chaque palier de profondeur
+     (affichage quasi immédiat qui s'affine), la promesse renvoie le résultat final. */
+  function sfStreamMulti(fen,depth,n,onUpdate){ return new Promise(function(res){ if(!sfReady||!sf){ res(null); return; }
+    var turn=(fen.split(' ')[1]||'w');
+    sfQueue=sfQueue.filter(function(it){ return !it.stream; });  // on abandonne les analyses en attente devenues inutiles
+    sfQueue.push({ fen:fen, go:'depth '+(depth||18), multi:(n||3), stream:true, lines:{},
+      onUpdate:function(a,d){ if(onUpdate) onUpdate(mapMulti(a,turn),d); }, tmo:30000,
+      res:function(r){ res(r?mapMulti(r.lines,turn):null); } });
+    if(sfCur) sfStop();   // interrompt la recherche en cours pour démarrer la nouvelle sans attendre
+    pump(); }); }
   /* Les N meilleurs coups d'une position (comme lichess) : [{uci,pv,cpW,mate,depth}] triés du meilleur au moins bon (évaluation point de vue Blancs). */
   function sfAnalyseMulti(fen,depth,n){ n=n||3; return sfGoMulti(fen,'depth '+(depth||16),n,15000).then(function(r){ if(!r||!r.lines||!r.lines.length) return null; var turn=(fen.split(' ')[1]||'w'); return r.lines.map(function(l){ return { uci:l.uci, pv:l.pv, cpW: cpFromScore(l.score,turn), mate:(l.score&&l.score.type==='mate')?(turn==='w'?l.score.val:-l.score.val):null, depth:l.depth }; }); }); }
   initSF();
@@ -282,7 +300,7 @@
   render(); if(g.turn()!==human) setTimeout(aiMove,400);
 
   /* expose pour la partie 2 (bilan) */
-  window.__PBchess={ get g(){return g;}, set g(v){g=v;}, Chess:Chess, render:function(){render();}, sfAnalyse:sfAnalyse, sfAnalyseMulti:sfAnalyseMulti, sfReady:function(){return sfReady;}, bestMoveLocal:bestMoveLocal, evalWhite:evalWhite,
+  window.__PBchess={ get g(){return g;}, set g(v){g=v;}, Chess:Chess, render:function(){render();}, sfAnalyse:sfAnalyse, sfAnalyseMulti:sfAnalyseMulti, sfStreamMulti:sfStreamMulti, sfStop:sfStop, sfReady:function(){return sfReady;}, bestMoveLocal:bestMoveLocal, evalWhite:evalWhite,
     setBar:setBar, boardEl:boardEl, get flip(){return flip;}, sqToXY:sqToXY, glyphs:glyphs,
     setAuto:function(arrows,badge){ autoArrows=arrows||[]; autoBadge=badge||null; },
     setLastMove:function(lm){ lastMove=lm; }, getHuman:function(){return human;},
@@ -348,6 +366,31 @@
   }
   function accuracy(winBefore,winAfter){ var d=Math.max(0,winBefore-winAfter); var a=103.1668*Math.exp(-0.04354*d)-3.1669; return Math.max(0,Math.min(100,a)); }
 
+  /* ---- faits tactiques concrets (pour un commentaire type chess.com) ---- */
+  var EN2FR_C={K:'R',Q:'D',R:'T',B:'F',N:'C'};
+  function frSan(s){ return String(s==null?'':s).replace(/^([KQRBN])/,function(_,p){return EN2FR_C[p]||p;}).replace(/=([KQRBN])/,function(_,p){return '='+(EN2FR_C[p]||p);}); }
+  // nombre de pièces de `side` qui attaquent (peuvent capturer sur) la case sq
+  function attackers(fen, sq, side){ try{
+    var parts=fen.split(' '); if(parts[1]!==side){ parts[1]=side; parts[3]='-'; }
+    var c=new Chess(); if(!c.load(parts.join(' '))) return 0;
+    var occ=c.get(sq); var enemy=(side==='w')?'b':'w';
+    if(!occ || occ.color===side){ try{ c.remove(sq); c.put({type:'q',color:enemy}, sq); }catch(e){ return 0; } }
+    var ms; try{ ms=c.moves({verbose:true}); }catch(e){ return 0; }
+    var n=0; for(var i=0;i<ms.length;i++){ if(ms[i].to===sq) n++; } return n;
+  }catch(e){ return 0; } }
+  // une pièce de `side` (valeur >= mineure) laissée en prise (attaquée plus que défendue) ? renvoie {sq,type} la plus chère
+  function hangingPieceOf(fen, side){ try{
+    var c=new Chess(); if(!c.load(fen)) return null; var b=c.board(); var enemy=(side==='w')?'b':'w'; var worst=null;
+    for(var r=0;r<8;r++)for(var f=0;f<8;f++){ var p=b[r][f]; if(!p||p.color!==side||p.type==='k') continue;
+      var sq='abcdefgh'[f]+(8-r); var att=attackers(fen,sq,enemy); if(att<=0) continue; var def=attackers(fen,sq,side);
+      if(att>def && PV[p.type]>=300){ if(!worst||PV[p.type]>PV[worst.type]) worst={sq:sq,type:p.type}; } }
+    return worst;
+  }catch(e){ return null; } }
+  // le coup capture-t-il une pièce (>= mineure) non défendue ? (« pièce gratuite »)
+  function isFreeCapture(fenBefore, played){ try{ if(!played.captured || PV[played.captured]<300) return false;
+    var opp=(played.color==='w')?'b':'w'; return attackers(fenBefore, played.to, opp)===0;
+  }catch(e){ return false; } }
+
   /* ---- commentaire type entraîneur GM (FR, développé) ---- */
   function pieceName(t){ return {p:'le pion',n:'le cavalier',b:'le fou',r:'la tour',q:'la dame',k:'le roi'}[t]||'la pièce'; }
   function sideName(mv){ return mv==='w'?'les Blancs':'les Noirs'; }
@@ -371,23 +414,41 @@
     if(m.piece==='k') return 'déplacent '+who+' en '+m.to;
     return 'jouent '+who+' en '+m.to;
   }
-  function comment(row){ var m=row.played; var cl=row.cl.key; var best=row.bestSan?('<span class="best">'+esc(row.bestSan)+'</span>'):'';
-    var side=sideName(row.mover); var Side=side.charAt(0).toUpperCase()+side.slice(1); var pov=povEval(row); var evW=evalTxtWhite(row.afterW); var ph=phaseOf(row); var act=actionPhrase(m,row.mover);
-    var check=(m.san.indexOf('+')>=0), mate=(m.san.indexOf('#')>=0);
+  // décrit concrètement la réfutation adverse : « L'adversaire joue Cxe5 et gagne le cavalier. »
+  function refutation(row){ if(!row.bestReplyUci) return '';
+    var san=row.bestReplySan?frSan(row.bestReplySan):null; if(!san) return '';
+    var gain=''; try{ var t=new Chess(row.fenAfter); var mm=t.move({from:row.bestReplyUci.slice(0,2),to:row.bestReplyUci.slice(2,4),promotion:row.bestReplyUci.slice(4,5)||undefined});
+      if(mm){ if(mm.san.indexOf('#')>=0) gain=' avec un mat'; else if(mm.captured) gain=' et gagne '+pieceName(mm.captured); else if(mm.san.indexOf('+')>=0) gain=' avec échec'; } }catch(e){}
+    return ' L’adversaire enchaîne par '+san+gain+'.'; }
+  function betterMove(row){ if(!row.bestSan || row.isBest) return ''; return ' Il fallait jouer '+frSan(row.bestSan)+'.'; }
+  function hangTxt(h){ return h?(pieceName(h.type)+' en '+h.sq):''; }
+
+  function comment(row){ var m=row.played; var cl=row.cl.key;
+    var side=sideName(row.mover); var Side=side.charAt(0).toUpperCase()+side.slice(1);
+    var pov=povEval(row); var evW=evalTxtWhite(row.afterW); var played=frSan(row.san); var act=actionPhrase(m,row.mover);
+    var cap=m.captured?pieceName(m.captured):null; var check=(m.san.indexOf('+')>=0), mate=(m.san.indexOf('#')>=0);
     if(row.san==null) row.san=m.san;
-    if(mate) return 'Échec et mat ! '+Side+' '+act+' et concluent la partie. Une finition nette : la coordination des pièces a fait la différence.';
-    var head=Side+' '+act+(check?', avec échec':'')+'.';
-    if(cl==='book') return head+' '+pick(["Un coup d'ouverture connu, dans les grands principes : contrôle du centre, développement rapide et sécurité du roi.","Coup de théorie : on développe les pièces mineures et on prépare le roque plutôt que de sortir la dame trop tôt.","Entrée d'ouverture classique — priorité à un développement harmonieux et à la lutte pour le centre."], row.idx);
-    if(cl==='forced') return head+" Coup forcé : c'était l'unique réponse pour parer la menace et rester dans la partie.";
-    if(cl==='brilliant') return 'Coup brillant ! '+Side+' '+act+'. '+pick(["Un sacrifice audacieux que le moteur valide : le matériel donné est largement compensé par l'initiative et l'attaque sur le roi.","Une idée de grand maître — on rend du matériel pour ouvrir les lignes et prendre l'adversaire de vitesse."], row.idx)+' La position reste '+assessWord(pov)+' ('+evW+').';
-    if(cl==='best') return head+' '+pick(["C'est précisément le meilleur coup : il suit le plan logique de la position et ne laisse aucune contre-chance.","Le choix d'un maître : ce coup améliore ta pièce la moins active tout en maintenant la pression.","Coup de premier ordre — il allie sécurité et activité, exactement ce que réclame "+ph+"."], row.idx)+' La position est '+assessWord(pov)+' ('+evW+').';
-    if(cl==='excellent') return head+' '+pick(["Excellent : tu restes fidèle au plan et gardes toutes tes options ouvertes.","Un très bon coup, dans l'esprit de la position, qui conserve l'harmonie de tes pièces."], row.idx)+' Évaluation : '+evW+'.';
-    if(cl==='good') return head+' Un coup solide qui ne gâche rien. '+pick(["Tu pourrais viser un peu plus d'activité, mais la position reste saine.","Bon réflexe ; pense toujours à améliorer ta pièce la moins bien placée."], row.idx)+' ('+evW+').';
-    if(cl==='inacc') return head+' Petite imprécision : '+pick(['cela relâche un peu la pression.',"tu perds une nuance dans l'ordre des coups.","un temps précieux s'échappe."], row.idx)+(best?(' Plus précis était '+best+", qui gardait davantage l'initiative."):'')+' La position devient '+assessWord(pov)+' ('+evW+').';
-    if(cl==='miss') return head+" Occasion manquée : tu étais en mesure de prendre un avantage décisif. "+(best?(''+best+' était bien plus fort'):'Une ressource plus énergique existait')+" — après ce coup l'avantage retombe ("+evW+"). Quand tu domines, cherche toujours le coup le plus forçant.";
-    if(cl==='mistake') return head+' Erreur : '+pick(["ce coup dégrade ta position et offre du contre-jeu à l'adversaire.",'tu laisses passer une menace adverse importante.','la coordination de tes pièces en souffre.'], row.idx)+(best?(' Il fallait jouer '+best+', qui gardait le contrôle.'):'')+' La position est désormais '+assessWord(pov)+' ('+evW+').';
-    if(cl==='blunder') return head+' Grave erreur : '+pick(['ce coup coûte du matériel ou permet une attaque décisive.',"l'adversaire dispose d'une réponse très forte.",'une tactique renverse complètement l\'évaluation.'], row.idx)+(best?(' Il fallait absolument '+best+'.'):'')+" L'évaluation chute à "+evW+'. Avant de jouer, vérifie systématiquement les échecs, les prises et les menaces adverses.';
-    return head+' '+evW+'.';
+
+    if(mate){
+      if(row.hangBefore) return 'Brillant — '+played+' donne échec et mat alors que '+hangTxt(row.hangBefore)+' était en prise ! Vous avez vu plus loin que le danger immédiat. La partie est gagnée.';
+      if(isSac(m._fenBefore,m)) return 'Magnifique — '+played+' : un sacrifice qui force le mat. La partie est terminée.';
+      return 'Échec et mat — '+played+' ! '+Side+' concluent avec une attaque bien menée.';
+    }
+    if(cl==='brilliant') return 'Coup brillant — '+played+' ! '+(isSac(m._fenBefore,m)?'Un sacrifice que le moteur valide : le matériel rendu est largement compensé par l’attaque.':'Une idée de maître qui saisit l’initiative.')+' Position '+assessWord(pov)+' ('+evW+').';
+    if(cl==='book') return Side+' jouent '+played+' — un coup d’ouverture connu : on se bat pour le centre, on développe et on vise la sécurité du roi.';
+    if(cl==='forced') return Side+' jouent '+played+' — coup forcé, l’unique parade à la menace. ('+evW+').';
+    if(cl==='best'||cl==='excellent'||cl==='good'){
+      var q=(cl==='best')?'le meilleur coup':(cl==='excellent'?'un excellent coup':'un bon coup');
+      if(row.freeCap && cap) return Side+' s’emparent de '+cap+' en '+m.to+' — une pièce que l’adversaire laissait sans défense : du matériel gagné. C’est '+q+'. ('+evW+').';
+      if(mate===false && check) return Side+' jouent '+played+' avec échec — '+q+', qui garde l’initiative. ('+evW+').';
+      if(cl==='best') return Side+' jouent '+played+' — '+q+'. '+pick(['Il suit le plan logique de la position et ne laisse aucune contre-chance.','Il améliore la pièce la moins active tout en maintenant la pression.','Il allie sécurité et activité.'], row.idx)+' Position '+assessWord(pov)+' ('+evW+').';
+      return Side+' jouent '+played+' — '+q+', fidèle au plan. ('+evW+').';
+    }
+    if(cl==='inacc') return 'Imprécision — '+played+'. La pression retombe un peu.'+betterMove(row)+' Position '+assessWord(pov)+' ('+evW+').';
+    if(cl==='miss') return 'Occasion manquée — '+played+'. '+(row.mateBest?('Vous aviez un mat forcé avec '+frSan(row.bestSan)+' !'):(row.bestSan?('Bien plus fort était '+frSan(row.bestSan)+', qui prenait un avantage décisif.'):'Une ressource gagnante existait.'))+' L’avantage retombe ('+evW+'). Quand tu domines, cherche le coup le plus forçant.';
+    if(cl==='mistake') return 'Erreur — '+played+'.'+(row.hangAfter?(' Vous laissez '+hangTxt(row.hangAfter)+'.'):'')+refutation(row)+betterMove(row)+' Position désormais '+assessWord(pov)+' ('+evW+').';
+    if(cl==='blunder') return 'Gaffe — '+played+'.'+(row.hangAfter?(' Vous laissez '+hangTxt(row.hangAfter)+' sans protection.'):'')+refutation(row)+betterMove(row)+' L’évaluation chute ('+evW+'). Réflexe à prendre : avant de jouer, vérifie les échecs, les prises et les menaces.';
+    return Side+' '+act+'. ('+evW+').';
   }
 
   /* ---- voix (français) : voix serveur /api/tts (fiable sur mobile) + repli navigateur ---- */
@@ -477,7 +538,7 @@
     an.innerHTML='<div class="rev-panel"><div class="rev-hd"><b>✦ Bilan de la partie</b></div><div class="rev-progress"><i id="revBar"></i></div><div class="src-note" style="padding:0 14px 12px" id="revMsg">Analyse par Stockfish… 0%</div></div>';
     var A=new Array(fens.length), k=0;
     var useSF=API.sfReady();
-    var RDEPTH = fens.length>60?11:(fens.length>36?12:14); // profondeur adaptée à la longueur
+    var RDEPTH = fens.length>70?12:(fens.length>44?14:16); // profondeur adaptée à la longueur
     function analyseNext(){
       if(k>=fens.length){ done(); return; }
       var fen=fens[k];
@@ -502,8 +563,17 @@
         var bestUci=A[j]?A[j].best:null; var bestSan=bestUci?uciToSan(fenBefore,bestUci):null;
         var info=classify(before,after,bestUci,played,mover,j,legalCount);
         var winB=winPct(info.bestForMover), winA=winPct(info.playedForMover);
+        // faits concrets pour un commentaire type chess.com (+ réfutation de l'adversaire)
+        var fenAfter=fens[j+1];
+        var bestReplyUci=A[j+1]?A[j+1].best:null; var bestReplySan=bestReplyUci?uciToSan(fenAfter,bestReplyUci):null;
+        var mateBest=A[j]?A[j].mate:null;
+        var freeCap=isFreeCapture(fenBefore, played);
+        var hangBefore=hangingPieceOf(fenBefore, mover);
+        var hangAfter=(info.cl.key==='mistake'||info.cl.key==='blunder'||info.cl.key==='inacc')?hangingPieceOf(fenAfter, mover):null;
         rows.push({idx:j, mover:mover, san:played.san, played:played, cl:info.cl, cpl:info.cpl, isBest:info.isBest,
-                   bestUci:bestUci, bestSan:bestSan, beforeW:before, afterW:after, acc:accuracy(winB,winA), fenAfter:fens[j+1]});
+                   bestUci:bestUci, bestSan:bestSan, bestReplyUci:bestReplyUci, bestReplySan:bestReplySan, mateBest:mateBest,
+                   freeCap:freeCap, hangBefore:hangBefore, hangAfter:hangAfter,
+                   beforeW:before, afterW:after, acc:accuracy(winB,winA), fenAfter:fenAfter});
       }
       API.setReview(true);
       drawPanel();
@@ -578,7 +648,7 @@
   }
   function evalLabel(l){ if(l.mate!=null){ return (l.mate>0?'#':'-#')+Math.abs(l.mate); } var v=(l.cpW||0)/100; return (v>=0?'+':'')+v.toFixed(1); }
   function evalCls(l){ if(l.mate!=null) return l.mate>0?'pos':'neg'; if(l.cpW>=40) return 'pos'; if(l.cpW<=-40) return 'neg'; return 'zero'; }
-  var linesSeq=0, linesCache={}, LINES_DEPTH=16, exploring=false, engWrap=null;
+  var linesSeq=0, linesCache={}, LINES_DEPTH=18, exploring=false, engWrap=null;
   function sidePanel(){ return an ? (an.closest ? an.closest('.chess-side') : null) : null; }
   function ensureEngWrap(){ if(engWrap && document.body.contains(engWrap)) return engWrap;
     engWrap=document.createElement('div'); engWrap.id='engLines'; engWrap.className='rev-lines eng-top'; engWrap.style.display='none';
@@ -592,23 +662,28 @@
     if(exploring){ f.innerHTML='<span class="eng-note">Position d’analyse (hors partie) — explore librement.</span><button class="eng-back" id="engBack">↩︎ Revenir à la partie</button>';
       var bk=document.getElementById('engBack'); if(bk) bk.addEventListener('click',function(){ exploring=false; goTo(curIdx); }); }
     else { f.innerHTML='<span class="eng-note">💡 Joue un coup sur l’échiquier (ou clique une ligne) pour explorer les variantes.</span>'; } }
+  function paintLines(fen,arr,seq){ var box=ensureEngWrap(); var body=box.querySelector('.rl-body'), dp=box.querySelector('.dp');
+    if(seq!==linesSeq||!body) return;
+    if(!arr||!arr.length){ body.innerHTML='<div class="rl-wait">Analyse des 3 meilleurs coups…</div>'; if(dp)dp.textContent=''; return; }
+    if(dp) dp.textContent='prof. '+(arr[0].depth||'');
+    var top=arr[0]; var cpW=(top.mate!=null)?(top.mate>0?99000:-99000):top.cpW; if(cpW!=null){ try{ API.setBar(cpW); }catch(e){} }
+    var h=''; for(var i=0;i<arr.length;i++){ var l=arr[i]; var line=pvToSanLine(fen,l.pv,8);
+      h+='<div class="rl-line" data-uci="'+(l.uci||'')+'" title="Cliquer pour jouer ce coup et explorer"><span class="rl-ev '+evalCls(l)+'">'+evalLabel(l)+'</span><span class="rl-pv">'+esc(line)+'</span></div>'; }
+    body.innerHTML=h;
+    body.querySelectorAll('.rl-line').forEach(function(el){ el.addEventListener('click',function(){ var u=el.getAttribute('data-uci'); if(u&&u.length>=4){ API.playMove(u); } }); });
+  }
   function renderLines(fen){
     var box=ensureEngWrap(); showEng(true); var body=box.querySelector('.rl-body'), dp=box.querySelector('.dp');
-    var seq=++linesSeq;
-    function paint(arr){ if(seq!==linesSeq||!body) return;
-      if(!arr||!arr.length){ body.innerHTML='<div class="rl-wait">Moteur indisponible pour l’analyse en direct.</div>'; if(dp)dp.textContent=''; return; }
-      if(dp) dp.textContent='prof. '+(arr[0].depth||LINES_DEPTH);
-      var top=arr[0]; var cpW=(top.mate!=null)?(top.mate>0?99000:-99000):top.cpW; try{ API.setBar(cpW); }catch(e){}
-      var h=''; for(var i=0;i<arr.length;i++){ var l=arr[i]; var line=pvToSanLine(fen,l.pv,8);
-        h+='<div class="rl-line" data-uci="'+(l.uci||'')+'" title="Cliquer pour jouer ce coup et explorer"><span class="rl-ev '+evalCls(l)+'">'+evalLabel(l)+'</span><span class="rl-pv">'+esc(line)+'</span></div>'; }
-      body.innerHTML=h;
-      body.querySelectorAll('.rl-line').forEach(function(el){ el.addEventListener('click',function(){ var u=el.getAttribute('data-uci'); if(u&&u.length>=4){ API.playMove(u); } }); });
+    var seq=++linesSeq; updateFoot();
+    if(linesCache[fen]){ paintLines(fen,linesCache[fen],seq); return; }
+    body.innerHTML='<div class="rl-wait">Analyse…</div>'; if(dp)dp.textContent='';
+    if(!API.sfReady()){ body.innerHTML='<div class="rl-wait">Moteur indisponible pour l’analyse en direct.</div>'; return; }
+    if(API.sfStreamMulti){
+      API.sfStreamMulti(fen,LINES_DEPTH,3,function(arr,depth){ if(seq!==linesSeq) return; paintLines(fen,arr,seq); })
+        .then(function(arr){ if(seq!==linesSeq||!arr||!arr.length) return; linesCache[fen]=arr; paintLines(fen,arr,seq); });
+    } else if(API.sfAnalyseMulti){
+      API.sfAnalyseMulti(fen,LINES_DEPTH,3).then(function(arr){ if(seq!==linesSeq) return; if(arr&&arr.length) linesCache[fen]=arr; paintLines(fen,arr,seq); });
     }
-    updateFoot();
-    if(linesCache[fen]){ paint(linesCache[fen]); return; }
-    body.innerHTML='<div class="rl-wait">Analyse des 3 meilleurs coups…</div>'; if(dp)dp.textContent='';
-    if(!API.sfReady()||!API.sfAnalyseMulti){ paint(null); return; }
-    API.sfAnalyseMulti(fen,LINES_DEPTH,3).then(function(arr){ if(seq!==linesSeq) return; if(arr&&arr.length) linesCache[fen]=arr; paint(arr); });
   }
   // coup joué librement sur l'échiquier d'analyse -> on explore la variante
   API.setAnalysisMove(function(fen){ exploring=true; renderLines(fen); });
