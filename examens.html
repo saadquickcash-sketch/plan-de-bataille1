@@ -1,4 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Vrais examens régionaux par région (AlloSchool) + examens blancs originaux avec corrigés."><meta name="theme-color" content="#1f3a5f"><title>Examens — 1ère Bac SM</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"><link rel="stylesheet" href="styles.css?v=157"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icons/icon-192.png"><link rel="icon" type="image/svg+xml" href="icons/brio.svg"><link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png"><script src="data.js?v=157"></script><script src="examens.js?v=157"></script><script src="examens-sciences.js?v=157"></script></head><body><script>window.PB_PAGE={id:"exam",label:"Examens"};</script><nav class="sitenav"><div class="in"><a class="brand" href="index.html"><span class="m"><svg class="brio-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c.45 3.2 1.35 5.4 2.95 7 1.6 1.6 3.8 2.5 7 2.95-3.2.45-5.4 1.35-7 2.95-1.6 1.6-2.5 3.8-2.95 7-.45-3.2-1.35-5.4-2.95-7-1.6-1.6-3.8-2.5-7-2.95 3.2-.45 5.4-1.35 7-2.95 1.6-1.6 2.5-3.8 2.95-7z"/></svg></span><span class="t2">Brio</span></a><a class="lnk" href="index.html">Accueil</a><a class="lnk" href="revision.html">Cours</a><a class="lnk" href="qcm.html">QCM</a><a class="lnk" href="flashcards.html">Cartes</a><a class="lnk" href="outils.html">Outils</a><a class="lnk" href="progres.html">Progrès</a><a class="lnk active" href="examens.html">Examens</a><a class="lnk" href="echecs.html">&#9822; Échecs</a><a class="lnk" href="code.html">&#9001;/&#9002; Code</a><a class="lnk" href="youssef.html">Coran</a><a class="lnk lnk-prem" href="premium.html" title="Compte Premium">&#9733; Premium</a><a class="lnk nav-pages" href="#" title="Pages créées par Brio">&#10022; Cr&eacute;ations <span class="nav-pages-badge"></span></a><span class="sp"></span><button class="theme-btn" id="themeBtn" aria-label="Thème"><span id="themeIcon">◐</span><span id="themeTxt">Thème</span></button><button class="acct-btn" id="acctBtn" aria-label="Compte"><span class="acct-av" id="acctAv">&#128100;</span><span id="acctLabel">Compte</span></button></div></nav><div class="auth-modal" id="authModal" hidden><div class="auth-in"><button class="auth-x" id="authClose" aria-label="Fermer">&times;</button><div class="auth-brand"><span class="m"><svg class="brio-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c.45 3.2 1.35 5.4 2.95 7 1.6 1.6 3.8 2.5 7 2.95-3.2.45-5.4 1.35-7 2.95-1.6 1.6-2.5 3.8-2.95 7-.45-3.2-1.35-5.4-2.95-7-1.6-1.6-3.8-2.5-7-2.95 3.2-.45 5.4-1.35 7-2.95 1.6-1.6 2.5-3.8 2.95-7z"/></svg></span> Brio</div><div id="authForms"><div class="auth-tabs"><button class="auth-tab on" data-tab="login">Se connecter</button><button class="auth-tab" data-tab="signup">S’inscrire</button></div><button class="auth-google" id="authGoogle"><span class="g-ic">G</span> Continuer avec Google</button><div class="auth-or"><span>ou</span></div><label class="auth-l" id="nameWrap" hidden>Nom (facultatif)<input type="text" id="authName" autocomplete="name"></label><label class="auth-l">Adresse e-mail<input type="email" id="authEmail" autocomplete="email" placeholder="ton@email.com"></label><label class="auth-l">Mot de passe<input type="password" id="authPass" autocomplete="current-password" placeholder="au moins 6 caractères"></label><button class="btn ask auth-submit" id="authSubmit">Se connecter</button><button class="auth-reset" id="authReset" hidden>Mot de passe oublié ?</button><div class="auth-msg" id="authMsg"></div></div><div id="authProfile" hidden><div class="auth-hi">Connecté</div><div class="auth-who"><span class="auth-avatar" id="profAv">S</span><div><div class="auth-name" id="profName"></div><div class="auth-email" id="profEmail"></div></div></div><a class="auth-prem" href="premium.html">&#9733; Passer à Premium — IA puissante & illimitée</a><a class="auth-admin" id="authAdmin" href="admin.html" hidden>&#127915; Générer des codes Premium</a><p class="auth-note">Tes conversations avec le tuteur IA sont enregistrées sur ton compte et te suivent sur tous tes appareils.</p><button class="btn auth-logout" id="authLogout">Se déconnecter</button></div><div class="auth-setup" id="authSetup" hidden>Les comptes ne sont pas encore activés. Ouvre le fichier <b>COMPTE-configuration.txt</b> (dans le dossier du site) pour connecter une base Firebase gratuite en 5 minutes.</div></div></div><header class="phero"><div class="in"><div class="eyebrow" style="color:var(--accent);font-family:JetBrains Mono,monospace;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase">Entraînement</div><h1>Examens &amp; devoirs surveillés</h1><p>Trois ressources : les <b>vrais examens régionaux</b> (français, arabe, islamique, histoire-géo), nos <b>examens blancs</b> au format officiel, et les <b>devoirs surveillés scientifiques</b> — <b>maths, physique-chimie et SVT</b> — au programme de la 1ère Bac Sciences Maths. Méthode : compose seul en temps limité, puis laisse Brio corriger ta copie et t'expliquer chaque erreur.</p></div></header><style>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Vrais examens régionaux par région (AlloSchool) + examens blancs originaux avec corrigés."><meta name="theme-color" content="#1f3a5f"><title>Examens — 1ère Bac SM</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"><link rel="stylesheet" href="styles.css?v=158"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icons/icon-192.png"><link rel="icon" type="image/svg+xml" href="icons/brio.svg"><link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png"><script src="data.js?v=158"></script><script src="examens.js?v=158"></script><script src="examens-sciences.js?v=158"></script></head><body><script>window.PB_PAGE={id:"exam",label:"Examens"};</script><nav class="sitenav"><div class="in"><a class="brand" href="index.html"><span class="m"><svg class="brio-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c.45 3.2 1.35 5.4 2.95 7 1.6 1.6 3.8 2.5 7 2.95-3.2.45-5.4 1.35-7 2.95-1.6 1.6-2.5 3.8-2.95 7-.45-3.2-1.35-5.4-2.95-7-1.6-1.6-3.8-2.5-7-2.95 3.2-.45 5.4-1.35 7-2.95 1.6-1.6 2.5-3.8 2.95-7z"/></svg></span><span class="t2">Brio</span></a><a class="lnk" href="index.html">Accueil</a><a class="lnk" href="revision.html">Cours</a><a class="lnk" href="qcm.html">QCM</a><a class="lnk" href="flashcards.html">Cartes</a><a class="lnk" href="outils.html">Outils</a><a class="lnk" href="progres.html">Progrès</a><a class="lnk active" href="examens.html">Examens</a><a class="lnk" href="echecs.html">&#9822; Échecs</a><a class="lnk" href="code.html">&#9001;/&#9002; Code</a><a class="lnk" href="youssef.html">Coran</a><a class="lnk lnk-prem" href="premium.html" title="Compte Premium">&#9733; Premium</a><a class="lnk nav-pages" href="#" title="Pages créées par Brio">&#10022; Cr&eacute;ations <span class="nav-pages-badge"></span></a><span class="sp"></span><button class="theme-btn" id="themeBtn" aria-label="Thème"><span id="themeIcon">◐</span><span id="themeTxt">Thème</span></button><button class="acct-btn" id="acctBtn" aria-label="Compte"><span class="acct-av" id="acctAv">&#128100;</span><span id="acctLabel">Compte</span></button></div></nav><div class="auth-modal" id="authModal" hidden><div class="auth-in"><button class="auth-x" id="authClose" aria-label="Fermer">&times;</button><div class="auth-brand"><span class="m"><svg class="brio-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c.45 3.2 1.35 5.4 2.95 7 1.6 1.6 3.8 2.5 7 2.95-3.2.45-5.4 1.35-7 2.95-1.6 1.6-2.5 3.8-2.95 7-.45-3.2-1.35-5.4-2.95-7-1.6-1.6-3.8-2.5-7-2.95 3.2-.45 5.4-1.35 7-2.95 1.6-1.6 2.5-3.8 2.95-7z"/></svg></span> Brio</div><div id="authForms"><div class="auth-tabs"><button class="auth-tab on" data-tab="login">Se connecter</button><button class="auth-tab" data-tab="signup">S’inscrire</button></div><button class="auth-google" id="authGoogle"><span class="g-ic">G</span> Continuer avec Google</button><div class="auth-or"><span>ou</span></div><label class="auth-l" id="nameWrap" hidden>Nom (facultatif)<input type="text" id="authName" autocomplete="name"></label><label class="auth-l">Adresse e-mail<input type="email" id="authEmail" autocomplete="email" placeholder="ton@email.com"></label><label class="auth-l">Mot de passe<input type="password" id="authPass" autocomplete="current-password" placeholder="au moins 6 caractères"></label><button class="btn ask auth-submit" id="authSubmit">Se connecter</button><button class="auth-reset" id="authReset" hidden>Mot de passe oublié ?</button><div class="auth-msg" id="authMsg"></div></div><div id="authProfile" hidden><div class="auth-hi">Connecté</div><div class="auth-who"><span class="auth-avatar" id="profAv">S</span><div><div class="auth-name" id="profName"></div><div class="auth-email" id="profEmail"></div></div></div><a class="auth-prem" href="premium.html">&#9733; Passer à Premium — IA puissante & illimitée</a><a class="auth-admin" id="authAdmin" href="admin.html" hidden>&#127915; Générer des codes Premium</a><p class="auth-note">Tes conversations avec le tuteur IA sont enregistrées sur ton compte et te suivent sur tous tes appareils.</p><button class="btn auth-logout" id="authLogout">Se déconnecter</button></div><div class="auth-setup" id="authSetup" hidden>Les comptes ne sont pas encore activés. Ouvre le fichier <b>COMPTE-configuration.txt</b> (dans le dossier du site) pour connecter une base Firebase gratuite en 5 minutes.</div></div></div><header class="phero"><div class="in"><div class="eyebrow" style="color:var(--accent);font-family:JetBrains Mono,monospace;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase">Entraînement</div><h1>Examens &amp; devoirs surveillés</h1><p>Trois ressources : les <b>vrais examens régionaux</b> (français, arabe, islamique, histoire-géo), nos <b>examens blancs</b> au format officiel, et les <b>devoirs surveillés scientifiques</b> — <b>maths, physique-chimie et SVT</b> — au programme de la 1ère Bac Sciences Maths. Méthode : compose seul en temps limité, puis laisse Brio corriger ta copie et t'expliquer chaque erreur.</p></div></header><style>
 /* ===== Tableau de bord Examens ===== */
 .exam-dash{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:14px;margin:2px 0 14px}
 .ed-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px;box-sizing:border-box;min-width:0}
@@ -78,6 +78,26 @@
 .exam-rtl .exam-qrich th,.exam-rtl .exam-qrich td{text-align:right}
 .exam-rtl .exam-qrich .tcell{text-align:right;font-family:'Amiri',serif;font-size:1rem}
 .exam-rtl .exam-q .qt{font-size:1.06rem}
+/* ---- clavier de symboles scientifiques ---- */
+.sym-pad{margin:6px 0 2px;border:1px solid var(--border);border-radius:11px;background:var(--surface,var(--card));padding:7px 8px 6px;box-shadow:0 6px 18px rgba(0,0,0,.07)}
+.sym-row{display:flex;gap:5px;overflow-x:auto;padding-bottom:5px;scrollbar-width:thin}
+.sym-row::-webkit-scrollbar{height:5px}
+.sym-row::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.sym-b{flex:0 0 auto;min-width:36px;height:36px;padding:0 9px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:9px;font-size:1.02rem;font-family:inherit;cursor:pointer;line-height:1;display:inline-flex;align-items:center;justify-content:center;transition:.12s}
+.sym-b.wide{font-size:.8rem;font-family:JetBrains Mono,monospace}
+.sym-b:hover{border-color:var(--royal);background:var(--surface-2,rgba(120,110,200,.1))}
+.sym-b:active{transform:scale(.93)}
+.sym-tip{font-size:.72rem;color:var(--muted);margin-top:3px;line-height:1.4}
+.sym-tip b{font-family:JetBrains Mono,monospace;color:var(--royal)}
+/* ---- photo de la copie manuscrite ---- */
+.ans-photo{margin:6px 0 2px;display:flex;flex-wrap:wrap;gap:9px;align-items:flex-start}
+.ph-btn{font-family:inherit;font-size:.8rem;font-weight:600;padding:7px 12px;border-radius:10px;border:1px dashed var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:.14s}
+.ph-btn:hover{border-color:var(--royal);color:var(--royal);border-style:solid}
+.ph-thumb{position:relative;display:inline-flex;flex-direction:column;gap:5px;align-items:flex-start}
+.ph-thumb img{max-width:190px;max-height:150px;border-radius:10px;border:1px solid var(--border);display:block}
+.ph-x{font-family:inherit;font-size:.72rem;padding:4px 9px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer}
+.ph-x:hover{border-color:#c0392b;color:#c0392b}
+@media(max-width:600px){.sym-b{min-width:34px;height:34px;font-size:.98rem}.sym-tip{font-size:.68rem}}
 .exam-rtl .corr-ans,.exam-rtl .corr-fb,.exam-rtl .corr-model{text-align:right}
 /* les scores « X / Y » doivent rester en LTR même en arabe (sinon les chiffres s'inversent) */
 .exam-rtl .rn,.exam-rtl .pts,.exam-rtl .qp,.exam-rtl .bil-n{direction:ltr;unicode-bidi:isolate;display:inline-block}
@@ -246,6 +266,127 @@ document.addEventListener('DOMContentLoaded',function(){
     }).join('')+'</div>';
   }
   function renderList(){ try{renderDash();}catch(e){} try{renderReco();}catch(e){} try{renderFilters();}catch(e){} renderCards(); try{renderBadges();}catch(e){} }
+  /* ===== Clavier de symboles scientifiques + raccourcis de saisie =====
+     Un élève ne peut pas taper √, ², ∈, ⁻¹, ₂, Δ… au clavier : on lui donne
+     une palette contextuelle (maths / physique-chimie / SVT) sous la zone de
+     réponse, plus des raccourcis (^2 → ², <= → ≤, sqrt → √). */
+  var SYMS={
+    maths:[
+      ['√','²','³','ⁿ','⁻¹','≤','≥','≠','≈','×','·','±','∞','π'],
+      ['∈','∉','⊂','∪','∩','∅','∀','∃','ℝ','ℕ','ℤ','ℚ','⇒','⟺','→'],
+      ['₀','₁','₂','₃','ₙ','′','Δ','α','β','θ','∑','∫','⌊','⌋','≡']
+    ],
+    pc:[
+      ['·','⁻¹','⁻²','²','³','×','≈','±','°','Δ','→','⇌','√','∞'],
+      ['α','β','γ','θ','λ','μ','ν','ρ','σ','Ω','π','φ','ω','ε'],
+      ['₁','₂','₃','₄','⁺','⁻','²⁺','³⁺','m·s⁻¹','mol·L⁻¹','N·kg⁻¹','S·m⁻¹','g·mol⁻¹','°C']
+    ],
+    svt:[
+      ['₂','₃','₄','⁺','⁻','→','⇌','%','×','≈','°','µ','Δ','·'],
+      ['A','T','G','C','U','–','≠','≤','≥','²','³','⁻¹','α','β']
+    ]
+  };
+  var SHORT=[['^-1','⁻¹'],['^-2','⁻²'],['^-3','⁻³'],['^2','²'],['^3','³'],['^4','⁴'],['^n','ⁿ'],['^+','⁺'],
+             ['_0','₀'],['_1','₁'],['_2','₂'],['_3','₃'],['_4','₄'],['_n','ₙ'],
+             ['≤>','⟺'],['<=','≤'],['>=','≥'],['!=','≠'],['=>','⇒'],['->','→'],['+-','±'],['sqrt','√']];
+  function insertAtCursor(ta,txt){
+    var st=ta.selectionStart, en=ta.selectionEnd, v=ta.value;
+    ta.value=v.slice(0,st)+txt+v.slice(en);
+    var pos=st+txt.length; ta.selectionStart=ta.selectionEnd=pos;
+    try{ ta.focus(); }catch(e){}
+    ta.dispatchEvent(new Event('input',{bubbles:true}));
+  }
+  function applyShortcuts(ta){
+    if(ta.selectionStart!==ta.selectionEnd) return false;
+    var pos=ta.selectionStart, before=ta.value.slice(0,pos);
+    for(var i=0;i<SHORT.length;i++){
+      var a=SHORT[i][0], b=SHORT[i][1];
+      if(before.slice(-a.length)!==a) continue;
+      if(/^[a-z]+$/.test(a)){ var pv=before.charAt(before.length-a.length-1); if(pv && /[A-Za-zÀ-ÿ]/.test(pv)) continue; }
+      var ns=pos-a.length;
+      ta.value=ta.value.slice(0,ns)+b+ta.value.slice(pos);
+      ta.selectionStart=ta.selectionEnd=ns+b.length;
+      return true;
+    }
+    return false;
+  }
+  /* ===== Photo de la copie manuscrite =====
+     Pour une démonstration, un tableau de variations ou un schéma, écrire au
+     clavier n'a pas de sens : l'élève compose sur papier et photographie sa
+     réponse. L'image est compressée puis envoyée au correcteur IA. */
+  function imgKey(id){ return 'pb_exam_img_'+id; }
+  function compressImage(file, cb){
+    try{
+      var fr=new FileReader();
+      fr.onload=function(){
+        var im=new Image();
+        im.onload=function(){
+          var mx=1200, w=im.width, h=im.height;
+          if(Math.max(w,h)>mx){ var r=mx/Math.max(w,h); w=Math.round(w*r); h=Math.round(h*r); }
+          try{ var c=document.createElement('canvas'); c.width=w; c.height=h;
+            c.getContext('2d').drawImage(im,0,0,w,h);
+            cb(c.toDataURL('image/jpeg',0.62));
+          }catch(e){ cb(null); }
+        };
+        im.onerror=function(){ cb(null); };
+        im.src=fr.result;
+      };
+      fr.onerror=function(){ cb(null); };
+      fr.readAsDataURL(file);
+    }catch(e){ cb(null); }
+  }
+  function attachPhoto(root,x){
+    if(!SYMS[x.subject]) return;           /* matières scientifiques */
+    var id=x.id;
+    root.querySelectorAll('textarea[data-k]').forEach(function(ta){
+      var key=ta.getAttribute('data-k');
+      var box=document.createElement('div'); box.className='ans-photo';
+      box.innerHTML='<button type="button" class="ph-btn">📷 Photographier ma réponse écrite</button>'
+        +'<input type="file" accept="image/*" capture="environment" hidden>'
+        +'<div class="ph-thumb" hidden><img alt="Ma réponse"><button type="button" class="ph-x" title="Retirer la photo">✕ Retirer</button></div>';
+      ta.parentNode.insertBefore(box, ta.nextSibling);
+      var btn=box.querySelector('.ph-btn'), inp=box.querySelector('input'), th=box.querySelector('.ph-thumb'), im=box.querySelector('img'), rm=box.querySelector('.ph-x');
+      function paint(u){ if(u){ im.src=u; th.hidden=false; btn.textContent='📷 Remplacer la photo'; } else { th.hidden=true; im.removeAttribute('src'); btn.textContent='📷 Photographier ma réponse écrite'; } }
+      var cur=ls(imgKey(id),{}); if(cur[key]) paint(cur[key]);
+      btn.addEventListener('click',function(){ inp.click(); });
+      inp.addEventListener('change',function(){
+        var f=inp.files && inp.files[0]; if(!f) return;
+        compressImage(f,function(url){
+          if(!url){ alert("Image illisible. Réessaie avec une autre photo."); return; }
+          var m=ls(imgKey(id),{}); m[key]=url;
+          try{ ss(imgKey(id),m); }catch(e){ alert("Mémoire pleine : la photo est gardée pour cette session mais ne sera pas conservée."); }
+          paint(url); inp.value='';
+        });
+      });
+      rm.addEventListener('click',function(){ var m=ls(imgKey(id),{}); delete m[key]; try{ ss(imgKey(id),m); }catch(e){} paint(null); });
+    });
+  }
+  function attachKeypad(root,x){
+    var rows=SYMS[x.subject]; if(!rows) return;
+    root.querySelectorAll('textarea[data-k]').forEach(function(ta){
+      var pad=document.createElement('div'); pad.className='sym-pad'; pad.hidden=true;
+      var h='';
+      rows.forEach(function(r){ h+='<div class="sym-row">'+r.map(function(c){
+        return '<button type="button" class="sym-b'+(c.length>2?' wide':'')+'" data-ins="'+c+'">'+c+'</button>'; }).join('')+'</div>'; });
+      h+='<div class="sym-tip">Astuce clavier : <b>^2</b>→² · <b>^-1</b>→⁻¹ · <b>_2</b>→₂ · <b>&lt;=</b>→≤ · <b>-&gt;</b>→→ · <b>sqrt</b>→√</div>';
+      pad.innerHTML=h;
+      ta.parentNode.insertBefore(pad, ta.nextSibling);
+      ta.addEventListener('focus',function(){ pad.hidden=false; });
+      ta.addEventListener('blur',function(){ setTimeout(function(){ if(document.activeElement!==ta) pad.hidden=true; },180); });
+      ta.addEventListener('input',function(){ applyShortcuts(ta); });
+      var fromPointer=false;
+      function padHit(e){
+        var b=e.target && e.target.closest ? e.target.closest('button[data-ins]') : null; if(!b) return;
+        e.preventDefault();
+        if(e.type==='click'){ if(fromPointer){ fromPointer=false; return; } }   /* déjà traité au pointerdown */
+        else { fromPointer=true; setTimeout(function(){ fromPointer=false; },700); }
+        insertAtCursor(ta, b.getAttribute('data-ins'));
+      }
+      pad.addEventListener('pointerdown',padHit);   /* garde le focus (souris/tactile) */
+      pad.addEventListener('click',padHit);         /* clic synthétique / clavier */
+    });
+  }
+
   function startExam(id){ var x=findExam(id); if(!x)return; var ans=ls(ansKey(id),{});
     var rtl=(x.lang==='ar'), ph=rtl?'أجب هنا…':'Ta réponse…';
     var body='<div class="exam-inner'+(rtl?' exam-rtl':'')+'"><div class="exam-consignes"><b>'+(rtl?'التعليمات.':'Consignes.')+'</b> '+esc(x.consignes)+'</div>';
@@ -258,6 +399,8 @@ document.addEventListener('DOMContentLoaded',function(){
     body+='<div class="exam-foot"><button class="btn ask" id="examFinish">✓ '+(rtl?'إنهاء الامتحان':'Terminer l\'épreuve')+'</button></div></div>';
     mode.innerHTML='<div class="exam-top"><div class="et-l"><span class="et-mat">'+esc(x.matiere)+(rtl?' · جهوي':' · '+(x.kind||'régional'))+'</span><span class="et-tit">'+esc(x.label)+'</span></div><div class="exam-timer" id="examTimer">'+fmt(x.durationMin*60)+'</div><button class="btn" id="examQuit">'+(rtl?'خروج':'Quitter')+'</button></div><div class="exam-body">'+body+'</div>';
     mode.hidden=false; document.body.classList.add('noscroll'); mode.scrollTop=0;
+    attachKeypad(mode, x);   /* clavier de symboles : AVANT les écouteurs de sauvegarde */
+    attachPhoto(mode, x);    /* photo de la copie manuscrite */
     try{ if(window.renderMath) window.renderMath(mode); }catch(e){}   /* formules $...$ (maths / physique) */
     mode.querySelectorAll('textarea[data-k]').forEach(function(t){ t.addEventListener('input',function(){ var a=ls(ansKey(id),{}); a[t.getAttribute('data-k')]=t.value; ss(ansKey(id),a); }); });
     mode.querySelectorAll('.exam-q[data-k]').forEach(function(qel){ if(qel.querySelector('.tcell')) wireCells(qel, qel.getAttribute('data-k'), id); });
@@ -295,9 +438,9 @@ document.addEventListener('DOMContentLoaded',function(){
       var o=JSON.parse(String(raw).slice(i,j+1)); var p=parseFloat(o.points); if(isNaN(p)) return null;
       p=Math.max(0,Math.min(max,p)); return { points:round2(p), verdict:normVerdict(o.verdict,p,max), feedback:(o.feedback||'').toString().trim() };
     }catch(e){ return null; } }
-  async function gradeOne(x, q, ans){
+  async function gradeOne(x, q, ans, img){
     var max=+q.points||0, a=String(ans||'').trim(), ar=(x.lang==='ar');
-    if(!a) return { points:0, verdict:'vide', feedback:(ar?(q.redaction?'لا يوجد إنشاء. كان عليك كتابة موضوع متكامل (مقدمة، عرض بأفكار متسلسلة، خاتمة) مع احترام الحجم المطلوب.':'بدون جواب. الجواب المنتظر: '+stripHtml(q.correction).slice(0,260)):(q.redaction?'Aucune rédaction. Il fallait écrire un texte argumenté : introduction (prise de position), 2-3 arguments avec exemples reliés par des connecteurs, conclusion.':'Pas de réponse. Réponse attendue : '+stripHtml(q.correction).slice(0,260))) };
+    if(!a && !img) return { points:0, verdict:'vide', feedback:(ar?(q.redaction?'لا يوجد إنشاء. كان عليك كتابة موضوع متكامل (مقدمة، عرض بأفكار متسلسلة، خاتمة) مع احترام الحجم المطلوب.':'بدون جواب. الجواب المنتظر: '+stripHtml(q.correction).slice(0,260)):(q.redaction?'Aucune rédaction. Il fallait écrire un texte argumenté : introduction (prise de position), 2-3 arguments avec exemples reliés par des connecteurs, conclusion.':'Pas de réponse. Réponse attendue : '+stripHtml(q.correction).slice(0,260))) };
     if(typeof window.PB_rawAI!=='function') return null;
     var qfull=q.q+(q.qHtml?'\n(Tableau / support de la question : '+stripHtml(q.qHtml)+')':'');
     var sys;
@@ -322,15 +465,18 @@ document.addEventListener('DOMContentLoaded',function(){
         +'RÉPONDS UNIQUEMENT par un objet JSON valide, sans texte autour : {"points":<nombre>,"verdict":"juste|partiel|faux","feedback":"<texte>"}';
     }
     var usr=(ar?'السؤال':'QUESTION')+' ('+max+' '+(ar?'ن':'pts')+') : '+qfull+'\n\n'+(ar?'التصحيح / سلّم التنقيط الرسمي':'CORRIGÉ / BARÈME OFFICIEL')+' : '+stripHtml(q.correction)+'\n\n'+(ar?'جواب التلميذ':'RÉPONSE DE L\'ÉLÈVE')+' : '+a;
-    var raw=''; try{ raw=await window.PB_rawAI([{role:'system',content:sys},{role:'user',content:usr}]); }catch(e){ raw=''; }
+    if(img) usr+='\n\n(La réponse de l\'élève est fournie sous forme de PHOTO de sa copie manuscrite, jointe à ce message : lis-la attentivement, y compris les calculs, schémas et tableaux.)';
+    var uc = img ? [{type:'text',text:usr},{type:'image_url',image_url:{url:img}}] : usr;
+    var raw=''; try{ raw=await window.PB_rawAI([{role:'system',content:sys},{role:'user',content:uc}]); }catch(e){ raw=''; }
     var g=raw?parseGrade(raw,max):null;
-    if(!g){ try{ raw=await window.PB_rawAI([{role:'system',content:sys+' IMPORTANT : réponds en JSON pur uniquement.'},{role:'user',content:usr}]); g=parseGrade(raw,max); }catch(e){} }
+    if(!g){ try{ raw=await window.PB_rawAI([{role:'system',content:sys+' IMPORTANT : réponds en JSON pur uniquement.'},{role:'user',content:uc}]); g=parseGrade(raw,max); }catch(e){} }
     return g; }
   async function runPool(items, n, worker){ var i=0;
     async function one(){ while(i<items.length){ var cur=i++; try{ await worker(items[cur],cur); }catch(e){} } }
     var rs=[]; for(var k=0;k<Math.min(n,items.length);k++) rs.push(one()); await Promise.all(rs); }
 
-  function openCorrection(id, reviewOnly){ var x=findExam(id); if(!x)return; var ans=ls(ansKey(id),{});
+  var examImgs={};
+  function openCorrection(id, reviewOnly){ var x=findExam(id); if(!x)return; var ans=ls(ansKey(id),{}); examImgs=ls(imgKey(id),{});
     var totalMax=x.total||0; if(!totalMax){ x.sections.forEach(function(s){ s.questions.forEach(function(q){ totalMax+=(+q.points||0); }); }); }
     function close(){ corr.hidden=true; document.body.classList.remove('noscroll'); renderList(); }
     /* ----- Corrigé seul (consultation) ----- */
@@ -375,7 +521,7 @@ document.addEventListener('DOMContentLoaded',function(){
     var secTot={}, total=0, done=0, weak=[];
     function setNote(){ var el=document.getElementById('rnNote'); if(el) el.textContent=round2(total)+' / '+totalMax; }
     runPool(items, 3, async function(it){
-      var g=await gradeOne(x, it.q, ans[it.key]);
+      var g=await gradeOne(x, it.q, ans[it.key], (examImgs||{})[it.key]);
       var fb=document.getElementById('fb-'+it.key), qp=document.getElementById('qp-'+it.key), qEl=document.getElementById('q-'+it.key);
       if(!g){ if(fb){ fb.className='corr-fb manual'; fb.innerHTML='<b>Correction auto indisponible.</b> Compare au corrigé ci-dessous et attribue-toi : <input type="number" min="0" max="'+it.q.points+'" step="0.25" data-man="'+it.key+'"> / '+it.q.points+' pts'; } }
       else {
@@ -459,4 +605,4 @@ document.addEventListener('DOMContentLoaded',function(){
     try{ if(window.PB_ASK) window.PB_ASK(prompt); else { var f=document.getElementById('fab'); if(f) f.click(); } }catch(e){} }
   renderList();
 });
-</script><div class="toast" id="toast" role="status" aria-live="polite"></div><button class="fab" id="fab">&#129302; Brio</button><div class="chatpanel" id="chatpanel"><div class="cp-head"><h3>Brio</h3><div class="cp-hbtns"><button class="cp-ic" id="chatExpand" title="Plein écran">&#10530;</button><button class="cp-ic" id="chatNew" title="Nouvelle conversation">&#8635;</button><button class="cp-ic" id="chatClose" title="Fermer">&times;</button></div></div><div class="sub">Pose ta question — je sais sur quelle page tu es.</div><div class="preset"><button data-ask="Explique-moi ce chapitre clairement, étape par étape, avec un exemple et 2 exercices corrigés : ">Explique un chapitre</button><button data-ask="Donne-moi une série de 5 exercices progressifs avec correction détaillée sur : ">Exercices + correction</button><button data-ask="Fais-moi passer un QCM interactif de 6 questions (je clique mes réponses, tu corriges) sur : ">Teste-moi (QCM interactif)</button><button data-ask="Corrige TOUTES les erreurs de mon travail (langue, méthode, raisonnement), explique chacune et donne une version corrigée. Voici mon travail : ">Corrige mon travail</button><button data-ask="Construis-moi un planning de révision de la semaine, personnalisé et imprimable (avec un tableau par jour). Priorités : Maths et Physique-Chimie. Voici mes contraintes : ">🗓️ Fais-moi un planning</button><button data-ask="Lance un QCM de maths">🧭 Lance un QCM</button></div><div class="cp-msgs" id="chatMsgs"></div><div class="cp-imgprev" id="cpImgPrev"></div><div class="cp-in"><button class="io-btn attach-btn" id="chatAttach" title="Joindre une photo">&#128206;</button><button class="io-btn mic-btn" id="chatMic" title="Dicter à la voix">&#127908;</button><button class="io-btn gen-btn" id="chatGen" title="Générer une image">&#127912;</button><textarea id="chatInput" rows="2" spellcheck="true" lang="fr" placeholder="Écris, dicte 🎤, photo 📎, image 🎨…"></textarea><button class="btn ask send" id="chatSend" aria-label="Envoyer">&#10148;</button></div><div class="cp-note">Réponses par une IA — vérifie les points importants.</div><input type="file" id="chatFile" accept="image/*" hidden></div><div class="chatfull" id="chatFull" hidden><aside class="cf-side"><div class="cf-brand"><span class="m"><svg class="brio-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c.45 3.2 1.35 5.4 2.95 7 1.6 1.6 3.8 2.5 7 2.95-3.2.45-5.4 1.35-7 2.95-1.6 1.6-2.5 3.8-2.95 7-.45-3.2-1.35-5.4-2.95-7-1.6-1.6-3.8-2.5-7-2.95 3.2-.45 5.4-1.35 7-2.95 1.6-1.6 2.5-3.8 2.95-7z"/></svg></span> Brio</div><button class="cf-new" id="cfNew">&#43; Nouvelle conversation</button><div class="cf-list" id="cfList"></div><div class="cf-side-foot" id="cfUser">Brio</div></aside><main class="cf-main"><header class="cf-top"><button class="cp-ic cf-menu" id="cfMenu" title="Conversations">&#9776;</button><div class="cf-title" id="cfTitle">Brio</div><div class="cp-hbtns"><button class="cp-ic" id="cfReduce" title="Réduire">&#10529;</button><button class="cp-ic" id="cfClose" title="Fermer">&times;</button></div></header><div class="cf-msgs" id="cfMsgs"></div><div class="cf-inwrap"><div class="cf-imgprev" id="cfImgPrev"></div><div class="cf-in"><button class="io-btn attach-btn" id="cfAttach" title="Joindre une photo">&#128206;</button><button class="io-btn mic-btn" id="cfMic" title="Dicter à la voix">&#127908;</button><button class="io-btn gen-btn" id="cfGen" title="Générer une image">&#127912;</button><textarea id="cfInput" rows="1" spellcheck="true" lang="fr" placeholder="Écris, dicte 🎤, photo 📎, image 🎨…"></textarea><button class="cf-send" id="cfSend" aria-label="Envoyer">&#10148;</button></div><div class="cf-note">Brio — ton tuteur IA : il connaît la page où tu es, lit tes photos et écoute ta voix. Réponses à vérifier.</div></div></main></div><button class="selask" id="selAsk" hidden>&#129302; Demander à l’IA</button><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script><script src="firebase-config.js"></script><script src="premium.js"></script><script src="app.js?v=157"></script><script src="auth.js?v=157"></script><script src="analytics.js?v=157"></script></body></html>
+</script><div class="toast" id="toast" role="status" aria-live="polite"></div><button class="fab" id="fab">&#129302; Brio</button><div class="chatpanel" id="chatpanel"><div class="cp-head"><h3>Brio</h3><div class="cp-hbtns"><button class="cp-ic" id="chatExpand" title="Plein écran">&#10530;</button><button class="cp-ic" id="chatNew" title="Nouvelle conversation">&#8635;</button><button class="cp-ic" id="chatClose" title="Fermer">&times;</button></div></div><div class="sub">Pose ta question — je sais sur quelle page tu es.</div><div class="preset"><button data-ask="Explique-moi ce chapitre clairement, étape par étape, avec un exemple et 2 exercices corrigés : ">Explique un chapitre</button><button data-ask="Donne-moi une série de 5 exercices progressifs avec correction détaillée sur : ">Exercices + correction</button><button data-ask="Fais-moi passer un QCM interactif de 6 questions (je clique mes réponses, tu corriges) sur : ">Teste-moi (QCM interactif)</button><button data-ask="Corrige TOUTES les erreurs de mon travail (langue, méthode, raisonnement), explique chacune et donne une version corrigée. Voici mon travail : ">Corrige mon travail</button><button data-ask="Construis-moi un planning de révision de la semaine, personnalisé et imprimable (avec un tableau par jour). Priorités : Maths et Physique-Chimie. Voici mes contraintes : ">🗓️ Fais-moi un planning</button><button data-ask="Lance un QCM de maths">🧭 Lance un QCM</button></div><div class="cp-msgs" id="chatMsgs"></div><div class="cp-imgprev" id="cpImgPrev"></div><div class="cp-in"><button class="io-btn attach-btn" id="chatAttach" title="Joindre une photo">&#128206;</button><button class="io-btn mic-btn" id="chatMic" title="Dicter à la voix">&#127908;</button><button class="io-btn gen-btn" id="chatGen" title="Générer une image">&#127912;</button><textarea id="chatInput" rows="2" spellcheck="true" lang="fr" placeholder="Écris, dicte 🎤, photo 📎, image 🎨…"></textarea><button class="btn ask send" id="chatSend" aria-label="Envoyer">&#10148;</button></div><div class="cp-note">Réponses par une IA — vérifie les points importants.</div><input type="file" id="chatFile" accept="image/*" hidden></div><div class="chatfull" id="chatFull" hidden><aside class="cf-side"><div class="cf-brand"><span class="m"><svg class="brio-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8c.45 3.2 1.35 5.4 2.95 7 1.6 1.6 3.8 2.5 7 2.95-3.2.45-5.4 1.35-7 2.95-1.6 1.6-2.5 3.8-2.95 7-.45-3.2-1.35-5.4-2.95-7-1.6-1.6-3.8-2.5-7-2.95 3.2-.45 5.4-1.35 7-2.95 1.6-1.6 2.5-3.8 2.95-7z"/></svg></span> Brio</div><button class="cf-new" id="cfNew">&#43; Nouvelle conversation</button><div class="cf-list" id="cfList"></div><div class="cf-side-foot" id="cfUser">Brio</div></aside><main class="cf-main"><header class="cf-top"><button class="cp-ic cf-menu" id="cfMenu" title="Conversations">&#9776;</button><div class="cf-title" id="cfTitle">Brio</div><div class="cp-hbtns"><button class="cp-ic" id="cfReduce" title="Réduire">&#10529;</button><button class="cp-ic" id="cfClose" title="Fermer">&times;</button></div></header><div class="cf-msgs" id="cfMsgs"></div><div class="cf-inwrap"><div class="cf-imgprev" id="cfImgPrev"></div><div class="cf-in"><button class="io-btn attach-btn" id="cfAttach" title="Joindre une photo">&#128206;</button><button class="io-btn mic-btn" id="cfMic" title="Dicter à la voix">&#127908;</button><button class="io-btn gen-btn" id="cfGen" title="Générer une image">&#127912;</button><textarea id="cfInput" rows="1" spellcheck="true" lang="fr" placeholder="Écris, dicte 🎤, photo 📎, image 🎨…"></textarea><button class="cf-send" id="cfSend" aria-label="Envoyer">&#10148;</button></div><div class="cf-note">Brio — ton tuteur IA : il connaît la page où tu es, lit tes photos et écoute ta voix. Réponses à vérifier.</div></div></main></div><button class="selask" id="selAsk" hidden>&#129302; Demander à l’IA</button><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script><script src="firebase-config.js"></script><script src="premium.js"></script><script src="app.js?v=158"></script><script src="auth.js?v=158"></script><script src="analytics.js?v=158"></script></body></html>
